@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <SeekBar
+        android:layout_gravity="center"
+        android:layout_width="340dp"
+        android:layout_height="30dp"
+        android:id="@+id/seekBar"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:text="투표하기"
+            android:layout_width="180dp"
+            android:layout_height="50dp"
+            android:id="@+id/btn_confirm"
+             />
+
+        <Button
+            android:text="취소"
+            android:layout_width="180dp"
+            android:layout_height="50dp"
+            android:id="@+id/btn_cancle"
+             />
+    </LinearLayout>
+</LinearLayout>
