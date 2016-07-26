@@ -82,6 +82,7 @@ public class ExpandListAdapter extends BaseExpandableListAdapter {
         if(convertView == null){
             LayoutInflater inf = (LayoutInflater)context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
             convertView = inf.inflate(R.layout.group_item,null);
+
         }
         return convertView;
     }
