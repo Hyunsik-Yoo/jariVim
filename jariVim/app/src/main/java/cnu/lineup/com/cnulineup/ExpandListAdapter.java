@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.SeekBar;
 
 import java.util.ArrayList;
@@ -45,6 +46,8 @@ public class ExpandListAdapter extends BaseExpandableListAdapter {
             LayoutInflater infalInflater = (LayoutInflater)context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
             convertView = infalInflater.inflate(R.layout.child_item,null);
         }
+
+
         //SeekBar seekBar = (SeekBar)convertView.findViewById(R.id.seekBar);
         //Button btnConrifm = (Button)convertView.findViewById(R.id.btn_confirm);
         //Button btnCancle = (Button)convertView.findViewById(R.id.btn_cancle);
