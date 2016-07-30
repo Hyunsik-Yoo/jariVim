@@ -4,8 +4,21 @@
     android:gravity="center"
     android:id="@+id/group_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    >
 
+
+
+    <cnu.lineup.com.cnulineup.TextProgressBar
+        style="?android:attr/progressBarStyleHorizontal"
+        android:gravity="center"
+        android:layout_width="350dp"
+        android:layout_height="50dp"
+        android:max="100"
+        android:progress="50"
+        />
+
+    <!--
     <TextView
         android:text="TextView"
         android:textSize="25dp"
@@ -22,5 +35,6 @@
         android:layout_height="50dp"
         android:max="100"
         android:progress="50" />
+    -->
 
 </LinearLayout>

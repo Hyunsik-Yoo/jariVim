@@ -1,5 +1,6 @@
 package cnu.lineup.com.cnulineup;
 
+import android.app.Activity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Button;
@@ -8,7 +9,7 @@ import android.widget.SeekBar;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
 
     private ExpandListAdapter ExpAdapter;
     private ArrayList<Group> ExpListItems;
@@ -19,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ExpandList = (ExpandableListView) findViewById(R.id.list);
+        ExpandList = (ExpandableListView) findViewById(R.id.list_main);
         ExpListItems = setItems();
         ExpAdapter = new ExpandListAdapter(MainActivity.this, ExpListItems);
         ExpandList.setAdapter(ExpAdapter);
@@ -30,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         ExpandList.setIndicatorBounds(ExpandList.getRight()-40,ExpandList.getWidth());
+
     }
 
     public ArrayList<Group> setItems() {
