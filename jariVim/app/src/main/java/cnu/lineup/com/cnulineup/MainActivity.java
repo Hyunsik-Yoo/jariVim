@@ -6,26 +6,43 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.SeekBar;
+import android.widget.TabHost;
 
 import java.util.ArrayList;
 
 public class MainActivity extends Activity {
-
     private ExpandListAdapter ExpAdapter;
     private ArrayList<Group> ExpListItems;
     private ExpandableListView ExpandList;
+
+    private TabHost tabHost;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         ExpandList = (ExpandableListView) findViewById(R.id.list_main);
         ExpListItems = setItems();
         ExpAdapter = new ExpandListAdapter(MainActivity.this, ExpListItems);
         ExpandList.setAdapter(ExpAdapter);
-    }
 
+        tabHost = (TabHost)findViewById(R.id.footer);
+        tabHost.setup();
+
+        TabHost.TabSpec tab1 = tabHost.newTabSpec("Tab1").setContent(R.id.tab1)
+                .setIndicator("Tab1");
+        TabHost.TabSpec tab2 = tabHost.newTabSpec("Tab2").setContent(R.id.tab2)
+                .setIndicator("Tab2");
+        TabHost.TabSpec tab3 = tabHost.newTabSpec("Tab3").setContent(R.id.tab2)
+                .setIndicator("Tab3");
+
+        tabHost.addTab(tab1);
+        tabHost.addTab(tab2);
+        tabHost.addTab(tab3);
+
+    }
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
@@ -63,4 +80,5 @@ public class MainActivity extends Activity {
 
         return list;
     }
+
 }
