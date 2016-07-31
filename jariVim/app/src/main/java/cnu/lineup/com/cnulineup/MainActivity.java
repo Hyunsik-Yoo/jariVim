@@ -35,12 +35,15 @@ public class MainActivity extends Activity {
                 .setIndicator("Tab1");
         TabHost.TabSpec tab2 = tabHost.newTabSpec("Tab2").setContent(R.id.tab2)
                 .setIndicator("Tab2");
-        TabHost.TabSpec tab3 = tabHost.newTabSpec("Tab3").setContent(R.id.tab2)
+        TabHost.TabSpec tab3 = tabHost.newTabSpec("Tab3").setContent(R.id.tab3)
                 .setIndicator("Tab3");
+        TabHost.TabSpec tab4 = tabHost.newTabSpec("Tab4").setContent(R.id.tab4)
+                .setIndicator("Tab4");
 
         tabHost.addTab(tab1);
         tabHost.addTab(tab2);
         tabHost.addTab(tab3);
+        tabHost.addTab(tab4);
 
     }
 
@@ -48,6 +51,7 @@ public class MainActivity extends Activity {
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         ExpandList.setIndicatorBounds(ExpandList.getRight()-40,ExpandList.getWidth());
+
 
     }
 
