@@ -16,7 +16,7 @@ public class MainActivity extends Activity {
     private ExpandableListView ExpandList;
 
     private TabHost tabHost;
-
+    private int lastExpandedPosition = -1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,6 +27,17 @@ public class MainActivity extends Activity {
         ExpListItems = setItems();
         ExpAdapter = new ExpandListAdapter(MainActivity.this, ExpListItems);
         ExpandList.setAdapter(ExpAdapter);
+        ExpandList.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+            @Override
+            public void onGroupExpand(int groupPosition) {
+                if (lastExpandedPosition != -1
+                        && groupPosition != lastExpandedPosition) {
+                    ExpandList.collapseGroup(lastExpandedPosition);
+                }
+                lastExpandedPosition = groupPosition;
+            }
+        });
+        //ExpandList.setDivider(null);
 
         tabHost = (TabHost)findViewById(R.id.footer);
         tabHost.setup();
