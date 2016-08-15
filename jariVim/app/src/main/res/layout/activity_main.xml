@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="cnu.lineup.com.cnulineup.MainActivity">
+   >
 
 
     <TabHost
@@ -28,60 +27,108 @@
                     android:id="@+id/tab1"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
-                    <LinearLayout
-                        android:id="@+id/layout_header"
+
+
+                    <ImageView
                         android:layout_width="match_parent"
-                        android:layout_height="56.67dp"
-                        android:layout_alignParentBottom="false"
-                        android:layout_alignParentTop="true"
-                        android:gravity="center"
-                        android:orientation="horizontal">
+                        android:layout_height="wrap_content"
 
-                        <ImageButton
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:id="@+id/imageButton3"
-                            android:layout_weight="1"
-                            android:background="@drawable/btn_back_xxhdpi" />
+                        android:background="@drawable/main_top_xxhdpi"
+                        android:id="@+id/main_top"
+                        />
 
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:id="@+id/imageView2"
-                            android:layout_weight="1"
-                            android:background="@drawable/top_category_xxhdpi" />
-
-                    </LinearLayout>
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPersonName"
+                        android:layout_below="@+id/main_top"
+                        android:background="@drawable/search_bar_xxhdpi"
+                        android:drawableLeft=""
+                        android:ems="10"
+                        android:id="@+id/shopname" />
 
                     <LinearLayout
-                        android:id="@+id/layout_infomation"
-                        android:layout_width="match_parent"
-                        android:layout_height="33.33dp"
-                        android:layout_below="@id/layout_header"
-                        android:gravity="center"
-                        android:background="@drawable/subtop_xxhdpi">
-
-                        <TextView
-                            android:layout_width="180dp"
-                            android:layout_height="match_parent"
-                            android:gravity="center"
-                            android:text="유현식 님 남은 투표 횟수"
-                            android:textAlignment="center"
-                            android:textSize="15dp"
-                            android:id="@+id/textView" />
-                    </LinearLayout>
-
-                    <ExpandableListView
-                        android:id="@+id/list_main"
+                        android:orientation="vertical"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_below="@id/layout_infomation"
-                        android:childDivider="#00000000"
-                        android:divider="@android:color/transparent"
-                        android:dividerHeight="20.0sp"
-                        android:padding="20dip"
-                        android:clipToPadding="false"
-                        />
+                        android:layout_below="@+id/shopname"
+                        >
+
+                        <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center">
+
+                            <Button
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/btn_bob"
+                                android:background="@drawable/category_01_bob_xxhdpi"
+                                />
+
+                            <Button
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:id="@+id/btn_noddle"
+                                android:background="@drawable/category_02_noddle_xxhdpi"
+                                />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center">
+
+                            <Button
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/btn_fastfood"
+                                android:background="@drawable/category_03_fastfood_xxhdpi"
+                                />
+
+                            <Button
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:id="@+id/btn_fork"
+                                android:background="@drawable/category_04_fork_xxhdpi"
+                                />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center">
+
+                            <Button
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/btn_cafe"
+                                android:background="@drawable/category_05_cafe_xxhdpi"
+                                />
+
+                            <Button
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:id="@+id/btn_drink"
+                                android:background="@drawable/category_06_drink_xxhdpi"
+                                />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"></LinearLayout>
+
+                        <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/notice_background_xxhdpi"></LinearLayout>
+                    </LinearLayout>
+
 
                 </RelativeLayout>
 

@@ -45,7 +45,7 @@ public class ExpandListAdapter extends BaseExpandableListAdapter {
         Child child = (Child)getChild(groupPosition,childPosition);
         if(convertView == null){
             //새로 child 레이아웃을 생성하는 듯!
-            LayoutInflater infalInflater = (LayoutInflater)context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater infalInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = infalInflater.inflate(R.layout.child_item,null);
         }
 
@@ -85,7 +85,7 @@ public class ExpandListAdapter extends BaseExpandableListAdapter {
                              ViewGroup parent) {
         Group group = (Group)getGroup(groupPoistion);
         if(convertView == null){
-            LayoutInflater inf = (LayoutInflater)context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater inf = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inf.inflate(R.layout.group_item,null);
         }
         return convertView;
