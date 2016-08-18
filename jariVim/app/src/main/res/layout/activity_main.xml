@@ -43,7 +43,6 @@
                         android:inputType="textPersonName"
                         android:layout_below="@+id/main_top"
                         android:background="@drawable/search_bar_xxhdpi"
-                        android:drawableLeft=""
                         android:ems="10"
                         android:id="@+id/shopname" />
 
