@@ -12,14 +12,15 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/mansuk_xxhdpi" />
+        android:background="@drawable/mansuk_xxhdpi"
+         />
 
     <cnu.lineup.com.cnulineup.TextProgressBar
         style="?android:attr/progressBarStyleHorizontal"
         android:background="@drawable/progress_bar_back_xxhdpi"
         android:progressDrawable="@drawable/progressbar_states"
 
-        android:layout_width="350dp"
+        android:layout_width="match_parent"
         android:layout_height="32.50dp"
         android:max="100"
         android:progress="50"

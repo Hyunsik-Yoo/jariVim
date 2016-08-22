@@ -42,7 +42,7 @@ public class MainActivity extends Activity {
         TabHost.TabSpec tab4 = tabHost.newTabSpec("Tab4").setContent(R.id.tab4)
                 .setIndicator("Tab4");
 
-        tabHost.addTab(teb);
+        tabHost.addTab(tab1);
         tabHost.addTab(tab2);
         tabHost.addTab(tab3);
         tabHost.addTab(tab4);*/

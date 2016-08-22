@@ -65,7 +65,8 @@ public class TextProgressBar extends ProgressBar{
         //가게이름 텍스트 그리기
         Rect rect_Subject = new Rect();
         paint_Subject.getTextBounds(text_Subject,0, text_Subject.length(), rect_Subject);
-        int x = canvas.getClipBounds().left+10;
+
+        int x = canvas.getClipBounds().left;
         int y = getHeight() / 2 - rect_Subject.centerY();
         canvas.drawText(text_Subject, x, y, paint_Subject);
 
@@ -75,7 +76,6 @@ public class TextProgressBar extends ProgressBar{
         x = canvas.getClipBounds().right-150;
         y = getHeight() / 2 - rect_People.centerY();
         canvas.drawText(text_Peoloe, x, y, paint_People);
-
     }
 
     public synchronized void setText(String text) {
