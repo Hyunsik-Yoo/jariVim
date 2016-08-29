@@ -18,12 +18,21 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <TabWidget
+                android:id="@android:id/tabs"
+                android:layout_width="match_parent"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_height="wrap_content"></TabWidget>
+
             <FrameLayout
                 android:id="@android:id/tabcontent"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_above="@android:id/tabs"
-                android:layout_alignParentTop="true">
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true">
 
                 <RelativeLayout
                     android:id="@+id/tab1"
@@ -34,7 +43,7 @@
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/main_top"
+                        android:background="@drawable/main_top"
                         android:id="@+id/main_top"
                         />
 
@@ -62,14 +71,14 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:id="@+id/btn_bob"
-                                android:background="@drawable/category_01_bob"
+                                android:background="@drawable/btn_cateogory_bob"
                                 />
 
                             <Button
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:id="@+id/btn_noddle"
-                                android:background="@drawable/category_02_noddle"
+                                android:background="@drawable/btn_category_noddle"
                                 />
                         </LinearLayout>
 
@@ -83,14 +92,14 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:id="@+id/btn_fastfood"
-                                android:background="@drawable/category_03_fastfood"
+                                android:background="@drawable/btn_category_fastfood"
                                 />
 
                             <Button
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
                                 android:id="@+id/btn_fork"
-                                android:background="@drawable/category_04_fork"
+                                android:background="@drawable/btn_category_fork"
                                 />
                         </LinearLayout>
 
@@ -104,14 +113,14 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:id="@+id/btn_cafe"
-                                android:background="@drawable/category_05_cafe"
+                                android:background="@drawable/btn_category_cafe"
                                 />
 
                             <Button
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
                                 android:id="@+id/btn_drink"
-                                android:background="@drawable/category_06_drink"
+                                android:background="@drawable/btn_category_drink"
                                 />
                         </LinearLayout>
 
@@ -149,14 +158,6 @@
                     android:orientation="vertical"></LinearLayout>
 
             </FrameLayout>
-
-            <TabWidget
-                android:id="@android:id/tabs"
-                android:layout_width="match_parent"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_height="wrap_content"></TabWidget>
         </RelativeLayout>
     </TabHost>
 </RelativeLayout>

@@ -2,11 +2,13 @@ package cnu.lineup.com.cnulineup;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.TabHost;
+import android.widget.TextView;
 
 public class MainActivity extends Activity {
 

@@ -20,6 +20,7 @@ public class TextProgressBar extends ProgressBar{
 
     public TextProgressBar(Context context){
         super(context);
+
         text_Subject = "가게이름";
         paint_Subject = new Paint();
         paint_Subject.setColor(Color.BLACK);
