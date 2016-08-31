@@ -47,18 +47,18 @@
                         android:id="@+id/main_top"
                         />
 
-                    <Button
+                    <ImageButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/main_top"
                         android:background="@drawable/search_bar"
-                        android:id="@+id/shopname" />
+                        android:id="@+id/search" />
 
                     <LinearLayout
                         android:orientation="vertical"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_below="@+id/shopname"
+                        android:layout_below="@+id/search"
                         >
 
                         <LinearLayout

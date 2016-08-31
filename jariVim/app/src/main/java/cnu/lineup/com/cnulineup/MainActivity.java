@@ -33,10 +33,12 @@ public class MainActivity extends Activity {
         });
 
 
+        /*TabHost.TabSpec temp_tab = tabHost.newTabSpec("Tab1");
+        temp_tab.setContent(R.id.tab1);
 
 
-        /*TabHost.TabSpec tab1 = tabHost.newTabSpec("tab_abc").setContent(R.id.tab1)
-                .setIndicator("Tab5");
+        TabHost.TabSpec tab1 = tabHost.newTabSpec("Tab1").setContent(R.id.tab1)
+                .setIndicator("Tab1");
         TabHost.TabSpec tab2 = tabHost.newTabSpec("Tab2").setContent(R.id.tab2)
                 .setIndicator("Tab2");
         TabHost.TabSpec tab3 = tabHost.newTabSpec("Tab3").setContent(R.id.tab3)
