@@ -19,7 +19,7 @@
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:id="@+id/imageButton3"
+            android:id="@+id/btn_back"
             android:layout_weight="1"
             android:background="@drawable/btn_back_xxhdpi" />
 
@@ -47,7 +47,7 @@
             android:text="유현식 님 남은 투표 횟수"
             android:textAlignment="center"
             android:textSize="15dp"
-            android:id="@+id/textView" />
+            android:id="@+id/text_user_info" />
     </LinearLayout>
 
     <ExpandableListView

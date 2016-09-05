@@ -1,11 +1,16 @@
 package cnu.lineup.com.cnulineup;
 
 import android.app.Activity;
+import android.graphics.Typeface;
+import android.media.Image;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ExpandableListView;
+import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TabHost;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -13,14 +18,29 @@ public class ListActivity extends Activity {
     private ExpandListAdapter ExpAdapter;
     private ArrayList<Group> ExpListItems;
     private ExpandableListView ExpandList;
+    private TextView text_user_info;
+    private ImageButton btn_back;
 
     private TabHost tabHost;
     private int lastExpandedPosition = -1;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
 
+        text_user_info = (TextView)findViewById(R.id.text_user_info);
+        Typeface custom_font = Typeface.createFromAsset(getAssets(),"fonts/BMHANNA.ttf");
+        text_user_info.setTypeface(custom_font);
+
+        btn_back = (ImageButton)findViewById(R.id.btn_back);
+        btn_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ListActivity.super.onBackPressed();
+            }
+        });
 
         ExpandList = (ExpandableListView) findViewById(R.id.list_main);
         ExpListItems = setItems();
@@ -32,10 +52,14 @@ public class ListActivity extends Activity {
                 if (lastExpandedPosition != -1
                         && groupPosition != lastExpandedPosition) {
                     ExpandList.collapseGroup(lastExpandedPosition);
+
                 }
                 lastExpandedPosition = groupPosition;
             }
         });
+
+
+
         //ExpandList.setDivider(null);
 
         /*tabHost = (TabHost)findViewById(R.id.footer);

@@ -13,13 +13,12 @@
         android:id="@+id/imageView" />
 
     <SeekBar
-        android:layout_gravity="center"
+        android:layout_gravity="center|center_horizontal|center_vertical"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:progressDrawable="@drawable/seekbar_xxhdpi"
         android:id="@+id/seekBar"
         android:thumb="@drawable/seekbarpoint_xxhdpi"
-        android:background="@null"
         android:max="100" />
 
     <LinearLayout

@@ -15,16 +15,38 @@
         android:background="@drawable/mansuk_xxhdpi"
          />
 
-    <cnu.lineup.com.cnulineup.TextProgressBar
-        style="?android:attr/progressBarStyleHorizontal"
-        android:background="@drawable/progress_bar_back_xxhdpi"
-        android:progressDrawable="@drawable/progressbar_states"
-
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="32.50dp"
-        android:max="100"
-        android:progress="50"
-        />
+        android:layout_height="wrap_content">
+
+
+        <cnu.lineup.com.cnulineup.TextProgressBar
+            style="?android:attr/progressBarStyleHorizontal"
+            android:id="@+id/progressbar"
+            android:background="@drawable/progress_bar_back_xxhdpi"
+            android:progressDrawable="@drawable/progressbar_states"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="100"
+            android:progress="50"
+            />
+        <TextView
+            android:id="@+id/text_shop_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/progressbar"
+            android:layout_marginLeft="30dp"
+            android:layout_centerVertical="true"
+            />
+        <TextView
+            android:id="@+id/text_population"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+
+            android:layout_centerVertical="true"/>
+    </RelativeLayout>
+
 
 
 
