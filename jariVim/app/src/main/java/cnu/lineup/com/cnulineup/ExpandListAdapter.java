@@ -53,7 +53,8 @@ public class ExpandListAdapter extends BaseExpandableListAdapter {
         if(convertView == null){
             //새로 child 레이아웃을 생성하는 듯!
             LayoutInflater infalInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = infalInflater.inflate(R.layout.child_item,null);
+
+            convertView = infalInflater.inflate(R.layout.child_item,null,false);
         }
 
 

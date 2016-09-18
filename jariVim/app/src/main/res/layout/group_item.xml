@@ -26,7 +26,7 @@
             android:background="@drawable/progress_bar_back_xxhdpi"
             android:progressDrawable="@drawable/progressbar_states"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="30dp"
             android:max="100"
             android:progress="50"
             />
