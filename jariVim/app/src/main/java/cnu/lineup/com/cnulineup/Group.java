@@ -12,15 +12,22 @@ import java.util.ArrayList;
 public class Group {
 
     private String name;
+    private int proportion;
     private Child items;
 
     public String getName(){
         return name;
     }
 
+    public int getProportion(){
+        return proportion;
+    }
+
     public void setName(String name){
         this.name = name;
     }
+
+    public void setProportion(int proportion) { this.proportion = proportion;}
 
     public Child getItems(){
         return items;

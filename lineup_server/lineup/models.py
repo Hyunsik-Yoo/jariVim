@@ -9,7 +9,7 @@ class Vote(models.Model):
     proportion = models.IntegerField(blank=False, default=0)
 
 
-class restaurant_list(models.Model):
+class RestaurantList(models.Model):
     category = models.CharField(max_length=100, blank=False, default='bob')
     title = models.CharField(max_length=100, blank=False, default='')
 

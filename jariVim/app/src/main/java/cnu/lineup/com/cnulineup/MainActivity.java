@@ -10,7 +10,7 @@ import android.widget.TabHost;
 
 public class MainActivity extends Activity {
 
-    Button btn_bob;
+    Button btn_bob, btn_noddle, btn_cafe, btn_drink, btn_fastfood, btn_fork;
     private TabHost tabHost;
 
     @Override
@@ -21,14 +21,17 @@ public class MainActivity extends Activity {
         tabHost = (TabHost)findViewById(R.id.footer);
 
         btn_bob = (Button)findViewById(R.id.btn_bob);
-        btn_bob.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this,ListActivity.class);
-                startActivity(intent);
-
-            }
-        });
+        btn_bob.setOnClickListener(listener_category);
+        btn_noddle = (Button)findViewById(R.id.btn_noddle);
+        btn_noddle.setOnClickListener(listener_category);
+        btn_cafe = (Button)findViewById(R.id.btn_cafe);
+        btn_cafe.setOnClickListener(listener_category);
+        btn_drink = (Button)findViewById(R.id.btn_drink);
+        btn_drink.setOnClickListener(listener_category);
+        btn_fastfood = (Button)findViewById(R.id.btn_fastfood);
+        btn_fastfood.setOnClickListener(listener_category);
+        btn_fork = (Button)findViewById(R.id.btn_meat);
+        btn_fork.setOnClickListener(listener_category);
 
         ImageView tab_home_icon = new ImageView(this);
         tab_home_icon.setImageResource(R.drawable.selector_tab_home);
@@ -56,4 +59,35 @@ public class MainActivity extends Activity {
         tabHost.addTab(tab4);
 
     }
+
+    Button.OnClickListener listener_category = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            Intent category_intent = new Intent(MainActivity.this, List_Activity.class);
+            String category_name=null;
+            switch (view.getId()){
+                case R.id.btn_bob:
+                    category_name = "bob";
+                    break;
+                case R.id.btn_noddle:
+                    category_name = "noddle";
+                    break;
+                case R.id.btn_fastfood:
+                    category_name = "fastfood";
+                    break;
+                case R.id.btn_meat:
+                    category_name = "meat";
+                    break;
+                case R.id.btn_cafe:
+                    category_name = "cafe";
+                    break;
+                case R.id.btn_drink:
+                    category_name = "drink";
+                    break;
+            }
+            category_intent.putExtra("category",category_name);
+            startActivity(category_intent);
+        }
+    };
+
 }

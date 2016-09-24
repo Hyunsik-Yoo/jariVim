@@ -27,7 +27,6 @@ public class ExpandListAdapter extends BaseExpandableListAdapter {
     public ExpandListAdapter(Context context, ArrayList<Group> groups) {
         this.context = context;
         this.groups = groups;
-        AssetManager temp = context.getAssets();
         this.customFont = Typeface.createFromAsset(context.getAssets(),"fonts/BMHANNA.ttf");
     }
 
@@ -47,8 +46,7 @@ public class ExpandListAdapter extends BaseExpandableListAdapter {
     @Override
     public View getChildView(int groupPosition, int childPosition,
                              boolean isLastChild, View convertView, ViewGroup parent) {
-
-
+        Group group = (Group)getGroup(groupPosition);
         Child child = (Child)getChild(groupPosition,childPosition);
         if(convertView == null){
             //새로 child 레이아웃을 생성하는 듯!
@@ -57,10 +55,11 @@ public class ExpandListAdapter extends BaseExpandableListAdapter {
             convertView = infalInflater.inflate(R.layout.child_item,null,false);
         }
 
+        SeekBar seekBar = (SeekBar)convertView.findViewById(R.id.seekBar);
+        seekBar.setProgress(group.getProportion());
 
-        //SeekBar seekBar = (SeekBar)convertView.findViewById(R.id.seekBar);
-        //Button btnConrifm = (Button)convertView.findViewById(R.id.btn_confirm);
-        //Button btnCancle = (Button)convertView.findViewById(R.id.btn_cancle);
+        Button btnConrifm = (Button)convertView.findViewById(R.id.btn_confirm);
+        Button btnCancle = (Button)convertView.findViewById(R.id.btn_cancle);
         return convertView;
     }
 
@@ -96,13 +95,17 @@ public class ExpandListAdapter extends BaseExpandableListAdapter {
             LayoutInflater inf = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inf.inflate(R.layout.group_item,null);
         }
+
         TextView text_shop_name = (TextView)convertView.findViewById(R.id.text_shop_name);
         text_shop_name.setText(group.getName());
         text_shop_name.setTypeface(customFont);
 
         TextView text_population = (TextView)convertView.findViewById(R.id.text_population);
-        text_population.setText("퍼센트 나오는곳!");
+        text_population.setText(group.getProportion()+"%");
         text_population.setTypeface(customFont);
+
+        TextProgressBar progressBar = (TextProgressBar)convertView.findViewById(R.id.progressbar);
+        progressBar.setProgress(group.getProportion());
 
         return convertView;
     }

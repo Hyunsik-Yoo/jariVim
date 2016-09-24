@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from rest_framework import serializers
-from lineup.models import Vote, restaurant_list
+from lineup.models import Vote, RestaurantList
 
 
 class restaurantSerializer(serializers.Serializer):
@@ -8,7 +8,7 @@ class restaurantSerializer(serializers.Serializer):
     title = serializers.CharField(required=True, allow_blank=False, max_length=100)
 
     def create(self, validated_data):
-        return restaurant_list.objects.create(**validated_data)
+        return RestaurantList.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
 

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="cnu.lineup.com.cnulineup.ListActivity">
+    tools:context="cnu.lineup.com.cnulineup.List_Activity">
 
 
     <LinearLayout
@@ -26,9 +26,9 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:id="@+id/imageView2"
+            android:id="@+id/image_category"
             android:layout_weight="1"
-            android:background="@drawable/top_category_xxhdpi" />
+            />
 
     </LinearLayout>
 
