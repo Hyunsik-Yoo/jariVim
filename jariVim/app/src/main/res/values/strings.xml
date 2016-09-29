@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">CNULineUp</string>
+    <string name="kakao_app_key">1332de52f56f20e75647868b4c6eebb5</string>
 </resources>

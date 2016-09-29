@@ -28,7 +28,7 @@ import java.net.URL;
 import java.util.ArrayList;
 
 public class List_Activity extends Activity {
-    public static String server_IP = "192.168.10.105";
+    public static String server_IP = "lineup-server.cloudapp.net";
     private ExpandListAdapter ExpAdapter;
     private ArrayList<Group> ExpListItems;
     private ExpandableListView ExpandList;
@@ -36,7 +36,6 @@ public class List_Activity extends Activity {
     private ImageButton btn_back;
     private ImageView image_category;
     private Intent intent_main;
-
     private TabHost tabHost;
     private int lastExpandedPosition = -1;
 
