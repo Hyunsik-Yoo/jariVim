@@ -28,7 +28,7 @@ import java.net.URL;
 import java.util.ArrayList;
 
 public class List_Activity extends Activity {
-    private String server_IP = "192.168.2.102";
+    public static String server_IP = "192.168.10.105";
     private ExpandListAdapter ExpAdapter;
     private ArrayList<Group> ExpListItems;
     private ExpandableListView ExpandList;
@@ -169,9 +169,13 @@ public class List_Activity extends Activity {
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
 
     //서버에서 정보를 받는 과정
-    private static String getStringFromInputStream(InputStream is) {
+    public static String getStringFromInputStream(InputStream is) {
 
         BufferedReader br = null;
         StringBuilder sb = new StringBuilder();

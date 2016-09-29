@@ -6,6 +6,7 @@ urlpatterns = [
     url(r'^lineup/restaurants/$',views.restaurent_list),
     url(r'^lineup/vote/$',views.vote_list),
     url(r'^lineup/current/$',views.current),
+    url(r'^lineup/voting/$',views.vote),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

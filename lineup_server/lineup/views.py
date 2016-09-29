@@ -96,4 +96,18 @@ def current(request):
     print(result)
     return Response(result, status=status.HTTP_201_CREATED)
 
+@api_view(['GET'])
+def vote(request):
+    try:
+        parm_title = request.GET['title']
+        parm_proportion = request.GET['proportion']
+        print "parm_title : ",parm_title, "parm_proportion : ", parm_proportion
+        vote = Vote(title=parm_title, proportion=int(parm_proportion))
+        vote.save()
+        return Response("Success",status=status.HTTP_201_CREATED)
+    except:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+
 
