@@ -4,7 +4,7 @@ from django.db import models
 import datetime
 
 class Vote(models.Model):
-    created_it = models.TimeField(blank=False, default=datetime.datetime.now())
+    created_it = models.TimeField(blank=False, auto_now_add=True)
     title = models.CharField(max_length=100, blank=False, default='')
     proportion = models.IntegerField(blank=False, default=0)
 
