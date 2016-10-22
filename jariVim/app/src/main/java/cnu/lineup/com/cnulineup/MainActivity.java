@@ -2,21 +2,34 @@ package cnu.lineup.com.cnulineup;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TabHost;
 
 public class MainActivity extends Activity {
 
     Button btn_bob, btn_noddle, btn_cafe, btn_drink, btn_fastfood, btn_fork;
+    ImageButton btn_search;
     private TabHost tabHost;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //status bar 색상 변경
+        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP){
+            Window window = this.getWindow();
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(this.getResources().getColor(R.color.colorOrange));
+        }
 
         tabHost = (TabHost)findViewById(R.id.footer);
 
@@ -32,6 +45,7 @@ public class MainActivity extends Activity {
         btn_fastfood.setOnClickListener(listener_category);
         btn_fork = (Button)findViewById(R.id.btn_meat);
         btn_fork.setOnClickListener(listener_category);
+        btn_search = (ImageButton)findViewById(R.id.btn_search);
 
         ImageView tab_home_icon = new ImageView(this);
         tab_home_icon.setImageResource(R.drawable.selector_tab_home);
@@ -41,6 +55,14 @@ public class MainActivity extends Activity {
         tab_account_icon.setImageResource(R.drawable.selector_tab_account);
         ImageView tab_statistics_icon = new ImageView(this);
         tab_statistics_icon.setImageResource(R.drawable.selector_tab_statistics);
+        btn_search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Search Activity 로 이동하는 코드
+                Intent intent_search = new Intent(MainActivity.this, SearchActivity.class);
+                startActivity(intent_search);
+            }
+        });
 
 
         tabHost.setup();
@@ -57,6 +79,12 @@ public class MainActivity extends Activity {
         tabHost.addTab(tab2);
         tabHost.addTab(tab3);
         tabHost.addTab(tab4);
+
+
+        //메인 탭을 제외한 타머지탭 disable
+        tabHost.getTabWidget().getChildTabViewAt(1).setEnabled(false);
+        tabHost.getTabWidget().getChildTabViewAt(2).setEnabled(false);
+        tabHost.getTabWidget().getChildTabViewAt(3).setEnabled(false);
 
     }
 

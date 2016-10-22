@@ -27,15 +27,15 @@
         >
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="66.7dp"
+            android:layout_height="75dp"
             android:id="@+id/btn_confirm"
             android:background="@drawable/btn_vote"
              />
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="66.7dp"
+            android:layout_height="75dp"
             android:id="@+id/btn_cancle"
             android:background="@drawable/btn_cancel"
              />

@@ -20,11 +20,12 @@
 
             <TabWidget
                 android:id="@android:id/tabs"
-                android:layout_width="match_parent"
+                android:layout_width="411dp"
+                android:layout_height="76.2dp"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
-                android:layout_height="wrap_content"></TabWidget>
+                ></TabWidget>
 
             <FrameLayout
                 android:id="@android:id/tabcontent"
@@ -41,8 +42,8 @@
 
 
                     <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="411dp"
+                        android:layout_height="65dp"
                         android:background="@drawable/main_top"
                         android:id="@+id/main_top"
                         />
@@ -51,7 +52,7 @@
                         android:orientation="vertical"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_below="@+id/search"
+                        android:layout_below="@+id/btn_search"
                         >
 
                         <LinearLayout
@@ -61,15 +62,15 @@
                             android:gravity="center">
 
                             <Button
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
+                                android:layout_width="205.5dp"
+                                android:layout_height="182.5dp"
                                 android:id="@+id/btn_bob"
                                 android:background="@drawable/btn_cateogory_bob"
                                 />
 
                             <Button
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
+                                android:layout_width="205.5dp"
+                                android:layout_height="182.5dp"
                                 android:id="@+id/btn_noddle"
                                 android:background="@drawable/btn_category_noddle"
                                 />
@@ -82,15 +83,14 @@
                             android:gravity="center">
 
                             <Button
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
+                                android:layout_width="205.5dp"
                                 android:id="@+id/btn_fastfood"
                                 android:background="@drawable/btn_category_fastfood"
-                                />
+                                android:layout_height="158dp" />
 
                             <Button
-                                android:layout_width="wrap_content"
-                                android:layout_height="match_parent"
+                                android:layout_width="205.5dp"
+                                android:layout_height="158dp"
                                 android:id="@+id/btn_meat"
                                 android:background="@drawable/btn_category_fork"
                                 />
@@ -103,18 +103,16 @@
                             android:gravity="center">
 
                             <Button
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
+                                android:layout_width="205.5dp"
                                 android:id="@+id/btn_cafe"
                                 android:background="@drawable/btn_category_cafe"
-                                />
+                                android:layout_height="180dp" />
 
                             <Button
-                                android:layout_width="wrap_content"
-                                android:layout_height="match_parent"
+                                android:layout_width="205.5dp"
                                 android:id="@+id/btn_drink"
                                 android:background="@drawable/btn_category_drink"
-                                />
+                                android:layout_height="180dp" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -125,10 +123,10 @@
                     </LinearLayout>
 
                     <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="411dp"
+                        android:layout_height="45dp"
                         android:background="@drawable/search_bar"
-                        android:id="@+id/search"
+                        android:id="@+id/btn_search"
                         android:layout_below="@+id/main_top"
                         android:layout_alignParentLeft="true"
                         android:layout_alignParentStart="true" />

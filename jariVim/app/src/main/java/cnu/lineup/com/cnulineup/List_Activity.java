@@ -4,9 +4,12 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ImageButton;
@@ -45,6 +48,13 @@ public class List_Activity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
 
+        //status bar 색상 변경
+        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP){
+            Window window = this.getWindow();
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(this.getResources().getColor(R.color.colorOrange));
+        }
 
         //List_Activity의 상단 카테고리 이미지 설정
         intent_main = getIntent();

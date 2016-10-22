@@ -48,7 +48,7 @@ def vote_list(request):
     if request.method == 'GET':
 
         time_threshold = datetime.now() - timedelta(minutes=5)
-        print time_threshold
+        print 'time threshold : ',time_threshold
         list = Vote.objects.filter(created_it__gt=time_threshold, title = parm_title)# __gt means "greater than" and lookup type field.
 
         serializer = voteSerializer(list, many=True)
@@ -101,12 +101,44 @@ def vote(request):
     try:
         parm_title = request.GET['title']
         parm_proportion = request.GET['proportion']
-        print "parm_title : ",parm_title, "parm_proportion : ", parm_proportion
         vote = Vote(title=parm_title, proportion=int(parm_proportion))
         vote.save()
         return Response("Success",status=status.HTTP_201_CREATED)
     except:
         return Response(status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['GET'])
+def search(request):
+    try:
+        parm_title = request.GET['title']
+        time_threshold = datetime.now() - timedelta(minutes=5)
+        filter_title = RestaurantList.objects.filter(title = parm_title)
+        for item in filter_title:
+            print item
+        if(len(filter_title)==0):
+            return Response("not exist")
+
+        filter_vote = Vote.objects.filter(created_it__gt=time_threshold, title__icontains = parm_title)
+
+        response = []
+        list_vote = []
+        for vote in filter_vote:
+            list_vote.append(vote.proportion)
+        try:
+            proportion = sum(list_vote) / len(list_vote)
+        except:
+            proportion = 0
+        print(proportion)
+
+        response.append({'title': parm_title, 'proportion': proportion})
+
+        result = {"data": response}
+        print(result)
+
+        return Response(result, status=status.HTTP_201_CREATED)
+    except:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
 
 
 

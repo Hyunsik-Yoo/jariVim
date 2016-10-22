@@ -1,15 +1,12 @@
 package cnu.lineup.com.cnulineup;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageInstaller;
 import android.os.Bundle;
 import android.os.Handler;
-import java.io.IOException;
-import com.kakao.auth.ISessionCallback;
-import com.kakao.auth.Session;
-import com.kakao.util.exception.KakaoException;
-import com.kakao.util.helper.log.Logger;
+import android.view.View;
 
 public class LoadingActivity extends Activity {
 
@@ -20,9 +17,14 @@ public class LoadingActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loading);
 
-        //SessionCallback callback = new SessionCallback();
-        //Session.getCurrentSession().addCallback(callback);
-        //Session.getCurrentSession().checkAndImplicitOpen();
+        View decorView = getWindow().getDecorView();
+        // Hide the status bar.
+        int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
+        decorView.setSystemUiVisibility(uiOptions);
+        // Remember that you should never show the action bar if the
+        // status bar is hidden, so hide that too if necessary.
+
+
 
 
 
