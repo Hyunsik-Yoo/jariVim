@@ -10,7 +10,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity"></activity>
+        <activity android:name=".MainActivity" />
         <activity android:name=".List_Activity" />
         <activity android:name=".LoadingActivity">
             <intent-filter>
@@ -24,7 +24,9 @@
             android:name="com.kakao.sdk.AppKey"
             android:value="@string/kakao_app_key" />
 
-        <activity android:name=".SearchActivity"></activity>
+
+        <activity android:name=".SearchActivity" />
+        <activity android:name=".KakaoSignupActivity"></activity>
     </application>
 
 </manifest>
