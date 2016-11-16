@@ -46,6 +46,8 @@ public class KakaoSignupActivity extends Activity {
 
             @Override
             public void onSuccess(UserProfile userProfile) {  //성공 시 userProfile 형태로 반환
+                String kakaoID = String.valueOf(userProfile.getId()); // userProfile에서 ID값을 가져옴
+                String kakaoNickname = userProfile.getNickname();     // Nickname 값을 가져옴
                 Logger.d("UserProfile : " + userProfile);
                 redirectMainActivity(); // 로그인 성공시 MainActivity로
             }
