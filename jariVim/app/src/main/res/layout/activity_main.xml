@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
    >
@@ -18,41 +19,142 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <LinearLayout
+                android:id="@+id/layout_top"
+                android:layout_alignParentTop="true"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="348dp"
+                    android:layout_height="71.44dp"
+                    android:background="@drawable/main_top"
+                    />
+
+                <ImageButton
+                    android:layout_width="61.18dp"
+                    android:layout_height="71.44dp"
+                    android:background="@drawable/icon_search"
+                    android:id="@+id/btn_search"
+                    />
+
+            </LinearLayout>
+
             <TabWidget
                 android:id="@android:id/tabs"
                 android:layout_width="411dp"
-                android:layout_height="76.2dp"
+                android:layout_height="76dp"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
                 ></TabWidget>
 
             <FrameLayout
                 android:id="@android:id/tabcontent"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_alignParentTop="true"
+                android:layout_below="@id/layout_top"
+                android:layout_above="@android:id/tabs"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true">
 
-                <RelativeLayout
+                <LinearLayout
                     android:id="@+id/tab1"
+                    android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/layout_time"
+                        >
 
-                    <ImageView
-                        android:layout_width="411dp"
-                        android:layout_height="65dp"
-                        android:background="@drawable/main_top"
-                        android:id="@+id/main_top"
-                        />
+                        <ImageView
+                            android:layout_width="355.7675dp"
+                            android:layout_height="38dp"
+                            android:background="@drawable/time_background"
+                            />
 
+                        <Button
+                            android:layout_width="55.1dp"
+                            android:layout_height="38dp"
+                            android:background="@drawable/btn_refresh"
+                            android:id="@+id/btn_refresh"
+                            />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/layout_category"
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <Button
+                            android:layout_width="68.4dp"
+                            android:layout_height="68.4dp"
+                            android:id="@+id/btn_category_bob"
+                            android:background="@drawable/btn_cateogory_bob"
+                            />
+
+                        <Button
+                            android:layout_width="68.4dp"
+                            android:layout_height="68.4dp"
+                            android:id="@+id/btn_category_noodle"
+                            android:background="@drawable/btn_category_noddle"
+                            />
+
+                        <Button
+                            android:layout_width="68.4dp"
+                            android:layout_height="68.4dp"
+                            android:id="@+id/btn_category_fastfood"
+                            android:background="@drawable/btn_category_fastfood"
+                            />
+
+                        <Button
+                            android:layout_width="68.4dp"
+                            android:layout_height="68.4dp"
+                            android:id="@+id/btn_category_fork"
+                            android:background="@drawable/btn_category_fork"
+                            />
+
+                        <Button
+                            android:layout_width="68.4dp"
+                            android:layout_height="68.4dp"
+                            android:id="@+id/btn_category_cafe"
+                            android:background="@drawable/btn_category_cafe"
+                            />
+
+                        <Button
+                            android:layout_width="68.4dp"
+                            android:layout_height="68.4dp"
+                            android:id="@+id/btn_category_beer"
+                            android:background="@drawable/btn_category_drink"
+                            />
+
+
+                    </LinearLayout>
+
+                    <ExpandableListView
+                        android:id="@+id/list_main"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:childDivider="#00000000"
+                        android:divider="@android:color/transparent"
+                        android:dividerHeight="20.0sp"
+                        android:padding="20dip"
+                        android:clipToPadding="false"
+                       />
+
+
+                    <!--
                     <LinearLayout
                         android:orientation="vertical"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_below="@+id/btn_search"
+                        android:layout_below="@+id/tabhos_category"
                         >
 
                         <LinearLayout
@@ -121,24 +223,17 @@
                             android:layout_height="wrap_content"></LinearLayout>
 
                     </LinearLayout>
+                    -->
 
-                    <ImageButton
-                        android:layout_width="411dp"
-                        android:layout_height="45dp"
-                        android:background="@drawable/search_bar"
-                        android:id="@+id/btn_search"
-                        android:layout_below="@+id/main_top"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true" />
-
-
-                </RelativeLayout>
+                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/tab2"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="vertical"></LinearLayout>
+                    android:orientation="vertical">
+
+                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/tab3"
