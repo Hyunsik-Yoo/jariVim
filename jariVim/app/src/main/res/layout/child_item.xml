@@ -13,31 +13,35 @@
         android:id="@+id/imageView" />
 
     <SeekBar
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:progressDrawable="@drawable/seekbar_xxhdpi"
+        android:layout_height="10.64dp"
+        android:layout_width="372.78dp"
+        android:background="@drawable/seekbar_backgound"
+        android:layout_gravity="center_horizontal"
         android:id="@+id/seekBar"
-        android:thumb="@drawable/seekbarpoint_xxhdpi"
+        android:thumb="@drawable/seekbar_thumb"
         android:max="100" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
+        android:layout_marginTop="10dp"
         >
 
         <Button
-            android:layout_width="66.7dp"
-            android:layout_height="75dp"
+            android:layout_width="54.34dp"
+            android:layout_height="54.34dp"
             android:id="@+id/btn_confirm"
             android:background="@drawable/btn_vote"
+            android:layout_marginRight="10dp"
              />
 
         <Button
-            android:layout_width="66.7dp"
-            android:layout_height="75dp"
+            android:layout_width="54.34dp"
+            android:layout_height="54.34dp"
             android:id="@+id/btn_cancle"
             android:background="@drawable/btn_cancel"
+            android:layout_marginLeft="10dp"
              />
     </LinearLayout>
 </LinearLayout>

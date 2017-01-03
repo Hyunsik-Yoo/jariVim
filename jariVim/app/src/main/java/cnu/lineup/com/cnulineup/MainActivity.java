@@ -50,7 +50,7 @@ public class MainActivity extends Activity {
             Window window = this.getWindow();
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(this.getResources().getColor(R.color.colorOrange));
+            window.setStatusBarColor(this.getResources().getColor(R.color.colorBlack));
         }
 
 

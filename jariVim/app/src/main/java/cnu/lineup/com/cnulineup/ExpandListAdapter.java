@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -128,7 +129,7 @@ public class ExpandListAdapter extends BaseExpandableListAdapter {
         text_population.setText(group.getProportion()+"%");
         text_population.setTypeface(customFont);
 
-        TextProgressBar progressBar = (TextProgressBar)convertView.findViewById(R.id.progressbar);
+        ProgressBar progressBar = (ProgressBar)convertView.findViewById(R.id.progressbar);
         progressBar.setProgress(group.getProportion());
 
         return convertView;

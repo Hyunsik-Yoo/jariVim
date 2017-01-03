@@ -144,8 +144,7 @@
                         android:childDivider="#00000000"
                         android:divider="@android:color/transparent"
                         android:dividerHeight="20.0sp"
-                        android:padding="20dip"
-                        android:clipToPadding="false"
+
                        />
 
 
