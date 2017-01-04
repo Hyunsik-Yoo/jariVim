@@ -92,44 +92,57 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
-                        <Button
+                        <ToggleButton
                             android:layout_width="68.4dp"
                             android:layout_height="68.4dp"
+                            android:textOn=""
+                            android:textOff=""
+                            android:checked="true"
                             android:id="@+id/btn_category_bob"
                             android:background="@drawable/btn_cateogory_bob"
                             />
 
-                        <Button
+                        <ToggleButton
                             android:layout_width="68.4dp"
                             android:layout_height="68.4dp"
+                            android:textOn=""
+                            android:textOff=""
                             android:id="@+id/btn_category_noodle"
                             android:background="@drawable/btn_category_noddle"
                             />
 
-                        <Button
+                        <ToggleButton
                             android:layout_width="68.4dp"
                             android:layout_height="68.4dp"
+                            android:textOn=""
+                            android:textOff=""
                             android:id="@+id/btn_category_fastfood"
                             android:background="@drawable/btn_category_fastfood"
                             />
 
-                        <Button
+                        <ToggleButton
                             android:layout_width="68.4dp"
                             android:layout_height="68.4dp"
+                            android:textOn=""
+                            android:textOff=""
                             android:id="@+id/btn_category_fork"
                             android:background="@drawable/btn_category_fork"
                             />
 
-                        <Button
+                        <ToggleButton
                             android:layout_width="68.4dp"
                             android:layout_height="68.4dp"
+                            android:textOn=""
+                            android:textOff=""
                             android:id="@+id/btn_category_cafe"
                             android:background="@drawable/btn_category_cafe"
                             />
 
-                        <Button
+                        <ToggleButton
                             android:layout_width="68.4dp"
                             android:layout_height="68.4dp"
+                            android:textOn=""
+                            android:textOff=""
                             android:id="@+id/btn_category_beer"
                             android:background="@drawable/btn_category_drink"
                             />

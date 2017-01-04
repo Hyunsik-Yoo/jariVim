@@ -1,6 +1,7 @@
 package cnu.lineup.com.cnulineup;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -15,6 +16,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TabHost;
+import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -31,8 +34,9 @@ import java.util.ArrayList;
 public class MainActivity extends Activity {
 
     public static String server_IP = "lineup-server.cloudapp.net";
-    Button btn_bob, btn_noddle, btn_cafe, btn_drink, btn_fastfood, btn_fork;
+    ToggleButton btn_bob, btn_noddle, btn_cafe, btn_drink, btn_fastfood, btn_fork;
     ImageButton btn_search;
+    public static Button btn_refresh;
     private TabHost tabHost;
     private ExpandListAdapter ExpAdapter;
     private ArrayList<Group> ExpListItems;
@@ -56,21 +60,56 @@ public class MainActivity extends Activity {
 
         tabHost = (TabHost)findViewById(R.id.footer);
 
-        btn_bob = (Button)findViewById(R.id.btn_category_bob);
+        btn_bob = (ToggleButton)findViewById(R.id.btn_category_bob);
         btn_bob.setOnClickListener(listener_category);
-        btn_noddle = (Button)findViewById(R.id.btn_category_noodle);
+        btn_noddle = (ToggleButton)findViewById(R.id.btn_category_noodle);
         btn_noddle.setOnClickListener(listener_category);
-        btn_cafe = (Button)findViewById(R.id.btn_category_cafe);
+        btn_cafe = (ToggleButton)findViewById(R.id.btn_category_cafe);
         btn_cafe.setOnClickListener(listener_category);
-        btn_drink = (Button)findViewById(R.id.btn_category_beer);
+        btn_drink = (ToggleButton)findViewById(R.id.btn_category_beer);
         btn_drink.setOnClickListener(listener_category);
-        btn_fastfood = (Button)findViewById(R.id.btn_category_fastfood);
+        btn_fastfood = (ToggleButton)findViewById(R.id.btn_category_fastfood);
         btn_fastfood.setOnClickListener(listener_category);
-        btn_fork = (Button)findViewById(R.id.btn_category_fork);
+        btn_fork = (ToggleButton)findViewById(R.id.btn_category_fork);
         btn_fork.setOnClickListener(listener_category);
         btn_search = (ImageButton)findViewById(R.id.btn_search);
 
+        btn_refresh = (Button)findViewById(R.id.btn_refresh);
+        btn_refresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String category_name ="";
 
+                if(btn_bob.isChecked()){
+                    category_name="bob";
+                }else if(btn_noddle.isChecked()){
+                    category_name = "noddle";
+                }else if(btn_cafe.isChecked()){
+                    category_name = "cafe";
+                }else if(btn_drink.isChecked()){
+                    category_name = "drink";
+                }else if(btn_fastfood.isChecked()){
+                    category_name = "fastfood";
+                }else if(btn_fork.isChecked()){
+                    category_name = "meat";
+                }
+                ExpListItems = setItems(category_name);
+                ExpAdapter = new ExpandListAdapter(MainActivity.this, ExpListItems, ExpandList);
+                ExpandList.setAdapter(ExpAdapter);
+                ExpandList.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+                    @Override
+                    public void onGroupExpand(int groupPosition) {
+                        if (lastExpandedPosition != -1
+                                && groupPosition != lastExpandedPosition) {
+                            ExpandList.collapseGroup(lastExpandedPosition);
+
+                        }
+                        lastExpandedPosition = groupPosition;
+                    }
+                });
+                Toast.makeText(MainActivity.this,"데이터 새로고침",Toast.LENGTH_SHORT).show();
+            }
+        });
 
         btn_search.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,7 +150,7 @@ public class MainActivity extends Activity {
         
         ExpandList = (ExpandableListView) findViewById(R.id.list_main);
         ExpListItems = setItems("bob");
-        ExpAdapter = new ExpandListAdapter(MainActivity.this, ExpListItems);
+        ExpAdapter = new ExpandListAdapter(MainActivity.this, ExpListItems,ExpandList);
         ExpandList.setAdapter(ExpAdapter);
         ExpandList.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
             @Override
@@ -145,26 +184,62 @@ public class MainActivity extends Activity {
             switch (view.getId()){
                 case R.id.btn_category_bob:
                     category_name = "bob";
+                    btn_bob.setChecked(true);
+                    btn_noddle.setChecked(false);
+                    btn_cafe.setChecked(false);
+                    btn_drink.setChecked(false);
+                    btn_fastfood.setChecked(false);
+                    btn_fork.setChecked(false);
                     break;
                 case R.id.btn_category_noodle:
                     category_name = "noddle";
+                    btn_bob.setChecked(false);
+                    btn_noddle.setChecked(true);
+                    btn_cafe.setChecked(false);
+                    btn_drink.setChecked(false);
+                    btn_fastfood.setChecked(false);
+                    btn_fork.setChecked(false);
                     break;
                 case R.id.btn_category_fastfood:
                     category_name = "fastfood";
+                    btn_bob.setChecked(false);
+                    btn_noddle.setChecked(false);
+                    btn_cafe.setChecked(false);
+                    btn_drink.setChecked(false);
+                    btn_fastfood.setChecked(true);
+                    btn_fork.setChecked(false);
                     break;
                 case R.id.btn_category_fork:
                     category_name = "meat";
+                    btn_bob.setChecked(false);
+                    btn_noddle.setChecked(false);
+                    btn_cafe.setChecked(false);
+                    btn_drink.setChecked(false);
+                    btn_fastfood.setChecked(false);
+                    btn_fork.setChecked(true);
                     break;
                 case R.id.btn_category_cafe:
                     category_name = "cafe";
+                    btn_bob.setChecked(false);
+                    btn_noddle.setChecked(false);
+                    btn_cafe.setChecked(true);
+                    btn_drink.setChecked(false);
+                    btn_fastfood.setChecked(false);
+                    btn_fork.setChecked(false);
                     break;
                 case R.id.btn_category_beer:
                     category_name = "drink";
+                    btn_bob.setChecked(false);
+                    btn_noddle.setChecked(false);
+                    btn_cafe.setChecked(false);
+                    btn_drink.setChecked(true);
+                    btn_fastfood.setChecked(false);
+                    btn_fork.setChecked(false);
                     break;
             }
 
             ExpListItems = setItems(category_name);
-            ExpAdapter = new ExpandListAdapter(MainActivity.this, ExpListItems);
+            ExpAdapter = new ExpandListAdapter(MainActivity.this, ExpListItems, ExpandList);
             ExpandList.setAdapter(ExpAdapter);
             ExpandList.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
                 @Override
@@ -177,6 +252,8 @@ public class MainActivity extends Activity {
                     lastExpandedPosition = groupPosition;
                 }
             });
+
+
 
         }
     };

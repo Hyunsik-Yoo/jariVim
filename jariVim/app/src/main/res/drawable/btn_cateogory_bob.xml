@@ -2,8 +2,8 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!--  Pressed Button -->
-    <item android:drawable="@drawable/category_01_bob_selected" android:state_pressed="true" />
+    <item android:drawable="@drawable/category_01_bob_selected" android:state_checked="true" />
     <!--  UnPressed Button -->
-    <item android:drawable="@drawable/category_01_bob" android:state_pressed="false"/>
+    <item android:drawable="@drawable/category_01_bob" android:state_checked="false"/>
 
 </selector>

@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
+import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
@@ -38,11 +39,13 @@ public class ExpandListAdapter extends BaseExpandableListAdapter {
     private Context context;
     private ArrayList<Group> groups;
     private Typeface customFont;
+    private ExpandableListView expandableListView;
 
-    public ExpandListAdapter(Context context, ArrayList<Group> groups) {
+    public ExpandListAdapter(Context context, ArrayList<Group> groups, ExpandableListView expandableListView) {
         this.context = context;
         this.groups = groups;
         this.customFont = Typeface.createFromAsset(context.getAssets(),"fonts/BMHANNA.ttf");
+        this.expandableListView = expandableListView;
     }
 
     @Override
@@ -59,8 +62,8 @@ public class ExpandListAdapter extends BaseExpandableListAdapter {
     }
 
     @Override
-    public View getChildView(int groupPosition, int childPosition,
-                             boolean isLastChild, View convertView, ViewGroup parent) {
+    public View getChildView(final int groupPosition, int childPosition,
+                             boolean isLastChild, View convertView, final ViewGroup parent) {
         Group group = (Group)getGroup(groupPosition);
         final String title = group.getName();
         final ViewGroup parm_parent = parent;
@@ -85,6 +88,13 @@ public class ExpandListAdapter extends BaseExpandableListAdapter {
             }
         });
         Button btnCancle = (Button)convertView.findViewById(R.id.btn_cancle);
+        btnCancle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                expandableListView.collapseGroup(groupPosition);
+            }
+        });
+
         return convertView;
     }
 
@@ -191,9 +201,11 @@ public class ExpandListAdapter extends BaseExpandableListAdapter {
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         try {
+                            //이부분 최적화 되어야함
+                            //서버통신 두번함
                             if(new Thread_vote().execute(parm_title, parm_proportion).get())
                             {
-
+                                MainActivity.btn_refresh.callOnClick();
                             }
                         }
                         catch (Exception e){

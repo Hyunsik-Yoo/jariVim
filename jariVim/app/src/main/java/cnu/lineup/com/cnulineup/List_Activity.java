@@ -37,7 +37,6 @@ public class List_Activity extends Activity {
     private ExpandableListView ExpandList;
     private TextView text_user_info;
     private ImageButton btn_back;
-    private ImageView image_category;
     private Intent intent_main;
     private TabHost tabHost;
     private int lastExpandedPosition = -1;
@@ -59,30 +58,10 @@ public class List_Activity extends Activity {
         //List_Activity의 상단 카테고리 이미지 설정
         intent_main = getIntent();
         String parm_category = intent_main.getStringExtra("category");
-        image_category = (ImageView)findViewById(R.id.image_category);
-        switch (parm_category){
-            case "bob":
-                image_category.setImageResource(R.drawable.top_category_bob);
-                break;
-            case "noddle":
-                image_category.setImageResource(R.drawable.top_category_noodle);
-                break;
-            case "fastfood":
-                image_category.setImageResource(R.drawable.top_category_fastfood);
-                break;
-            case "meat":
-                image_category.setImageResource(R.drawable.top_category_meat);
-                break;
-            case "cafe":
-                image_category.setImageResource(R.drawable.top_category_cafe);
-                break;
-            case "drink":
-                image_category.setImageResource(R.drawable.top_category_drink);
-                break;
-        }
 
 
 
+        /*
         text_user_info = (TextView)findViewById(R.id.text_user_info);
         Typeface custom_font = Typeface.createFromAsset(getAssets(),"fonts/BMHANNA.ttf");
         text_user_info.setTypeface(custom_font);
@@ -110,6 +89,7 @@ public class List_Activity extends Activity {
                 lastExpandedPosition = groupPosition;
             }
         });
+        */
 
 
 

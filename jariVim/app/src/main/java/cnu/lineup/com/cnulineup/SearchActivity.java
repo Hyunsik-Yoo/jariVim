@@ -72,7 +72,7 @@ public class SearchActivity extends Activity {
             public void onClick(View view) {
                 String parm_title = edit_title.getText().toString();
                 ExpListItems = setItems(parm_title);
-                ExpAdapter = new ExpandListAdapter(SearchActivity.this, ExpListItems);
+                ExpAdapter = new ExpandListAdapter(SearchActivity.this, ExpListItems,ExpandList);
                 ExpandList.setAdapter(ExpAdapter);
                 ExpandList.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
                     @Override
@@ -98,7 +98,7 @@ public class SearchActivity extends Activity {
             public boolean onEditorAction(TextView textView, int actionid, KeyEvent keyEvent) {
                 String parm_title = textView.getText().toString();
                 ExpListItems = setItems(parm_title);
-                ExpAdapter = new ExpandListAdapter(SearchActivity.this, ExpListItems);
+                ExpAdapter = new ExpandListAdapter(SearchActivity.this, ExpListItems, ExpandList);
                 ExpandList.setAdapter(ExpAdapter);
                 ExpandList.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
                     @Override
