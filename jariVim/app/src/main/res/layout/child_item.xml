@@ -9,11 +9,10 @@
         android:layout_width="376.58dp"
         android:layout_height="6.84dp"
         android:layout_gravity="center"
-        android:background="@drawable/seekbar_top"
-        android:id="@+id/imageView" />
+        android:background="@drawable/seekbar_top" />
 
     <SeekBar
-        android:layout_height="10.64dp"
+        android:layout_height="14.82dp"
         android:layout_width="372.78dp"
         android:layout_gravity="center_horizontal"
         android:id="@+id/seekBar"

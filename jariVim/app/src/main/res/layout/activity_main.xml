@@ -3,17 +3,16 @@
 
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-   >
+    android:layout_height="match_parent">
 
 
     <TabHost
         android:id="@+id/footer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -21,23 +20,21 @@
 
             <LinearLayout
                 android:id="@+id/layout_top"
-                android:layout_alignParentTop="true"
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:orientation="horizontal">
 
                 <ImageView
                     android:layout_width="348dp"
                     android:layout_height="71.44dp"
-                    android:background="@drawable/main_top"
-                    />
+                    android:background="@drawable/main_top" />
 
                 <ImageButton
+                    android:id="@+id/btn_search"
                     android:layout_width="61.18dp"
                     android:layout_height="71.44dp"
-                    android:background="@drawable/icon_search"
-                    android:id="@+id/btn_search"
-                    />
+                    android:background="@drawable/icon_search" />
 
             </LinearLayout>
 
@@ -46,109 +43,130 @@
                 android:layout_width="411dp"
                 android:layout_height="76dp"
                 android:layout_alignParentBottom="true"
-                android:layout_alignParentLeft="true"
-                ></TabWidget>
+                android:layout_alignParentLeft="true"></TabWidget>
 
             <FrameLayout
                 android:id="@android:id/tabcontent"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@id/layout_top"
                 android:layout_above="@android:id/tabs"
                 android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true">
+                android:layout_alignParentStart="true"
+                android:layout_below="@id/layout_top">
 
                 <LinearLayout
                     android:id="@+id/tab1"
-                    android:orientation="vertical"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
 
                     <LinearLayout
-                        android:orientation="horizontal"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/layout_time"
-                        >
+                        android:orientation="horizontal">
 
                         <ImageView
                             android:layout_width="355.7675dp"
                             android:layout_height="38dp"
-                            android:background="@drawable/time_background"
-                            />
+                            android:background="@drawable/time_background" />
 
                         <Button
+                            android:id="@+id/btn_refresh"
                             android:layout_width="55.1dp"
                             android:layout_height="38dp"
-                            android:background="@drawable/btn_refresh"
-                            android:id="@+id/btn_refresh"
-                            />
+                            android:background="@drawable/btn_refresh" />
 
                     </LinearLayout>
+
+                    <HorizontalScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fadeScrollbars="true"
+                        android:scrollbarStyle="insideOverlay"
+                        android:scrollbars="none"
+                        >
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <ToggleButton
+                                android:id="@+id/btn_category_bob"
+                                android:layout_width="68.4dp"
+                                android:layout_height="68.4dp"
+                                android:background="@drawable/btn_cateogory_bob"
+                                android:checked="true"
+                                android:textOff=""
+                                android:textOn="" />
+
+                            <ToggleButton
+                                android:id="@+id/btn_category_noodle"
+                                android:layout_width="68.4dp"
+                                android:layout_height="68.4dp"
+                                android:background="@drawable/btn_category_noddle"
+                                android:textOff=""
+                                android:textOn="" />
+
+                            <ToggleButton
+                                android:id="@+id/btn_category_fastfood"
+                                android:layout_width="68.4dp"
+                                android:layout_height="68.4dp"
+                                android:background="@drawable/btn_category_fastfood"
+                                android:textOff=""
+                                android:textOn="" />
+
+                            <ToggleButton
+                                android:id="@+id/btn_category_fork"
+                                android:layout_width="68.4dp"
+                                android:layout_height="68.4dp"
+                                android:background="@drawable/btn_category_fork"
+                                android:textOff=""
+                                android:textOn="" />
+
+                            <ToggleButton
+                                android:id="@+id/btn_category_cafe"
+                                android:layout_width="68.4dp"
+                                android:layout_height="68.4dp"
+                                android:background="@drawable/btn_category_cafe"
+                                android:textOff=""
+                                android:textOn="" />
+
+                            <ToggleButton
+                                android:id="@+id/btn_category_beer"
+                                android:layout_width="68.4dp"
+                                android:layout_height="68.4dp"
+                                android:background="@drawable/btn_category_drink"
+                                android:textOff=""
+                                android:textOn="" />
+
+                        </LinearLayout>
+                    </HorizontalScrollView>
+
 
                     <LinearLayout
-                        android:id="@+id/layout_category"
-                        android:orientation="horizontal"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_width="410.4dp"
+                        android:layout_height="52.06dp"
+                        android:orientation="horizontal">
 
                         <ToggleButton
-                            android:layout_width="68.4dp"
-                            android:layout_height="68.4dp"
-                            android:textOn=""
+                            android:id="@+id/btn_sortby_popular"
+                            android:layout_width="205.2dp"
+                            android:layout_height="52.06dp"
+                            android:background="@drawable/btn_sortby_popular"
                             android:textOff=""
-                            android:checked="true"
-                            android:id="@+id/btn_category_bob"
-                            android:background="@drawable/btn_cateogory_bob"
-                            />
+                            android:textOn="" />
 
                         <ToggleButton
-                            android:layout_width="68.4dp"
-                            android:layout_height="68.4dp"
-                            android:textOn=""
+                            android:id="@+id/btn_sortby_text"
+                            android:layout_width="205.2dp"
+                            android:layout_height="52.06dp"
+                            android:background="@drawable/btn_sortby_text"
                             android:textOff=""
-                            android:id="@+id/btn_category_noodle"
-                            android:background="@drawable/btn_category_noddle"
-                            />
-
-                        <ToggleButton
-                            android:layout_width="68.4dp"
-                            android:layout_height="68.4dp"
-                            android:textOn=""
-                            android:textOff=""
-                            android:id="@+id/btn_category_fastfood"
-                            android:background="@drawable/btn_category_fastfood"
-                            />
-
-                        <ToggleButton
-                            android:layout_width="68.4dp"
-                            android:layout_height="68.4dp"
-                            android:textOn=""
-                            android:textOff=""
-                            android:id="@+id/btn_category_fork"
-                            android:background="@drawable/btn_category_fork"
-                            />
-
-                        <ToggleButton
-                            android:layout_width="68.4dp"
-                            android:layout_height="68.4dp"
-                            android:textOn=""
-                            android:textOff=""
-                            android:id="@+id/btn_category_cafe"
-                            android:background="@drawable/btn_category_cafe"
-                            />
-
-                        <ToggleButton
-                            android:layout_width="68.4dp"
-                            android:layout_height="68.4dp"
-                            android:textOn=""
-                            android:textOff=""
-                            android:id="@+id/btn_category_beer"
-                            android:background="@drawable/btn_category_drink"
-                            />
-
+                            android:textOn="" />
 
                     </LinearLayout>
+
 
                     <ExpandableListView
                         android:id="@+id/list_main"
@@ -158,7 +176,7 @@
                         android:divider="@android:color/transparent"
                         android:dividerHeight="20.0sp"
 
-                       />
+                        />
 
 
                     <!--
@@ -257,7 +275,20 @@
                     android:id="@+id/tab4"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="vertical"></LinearLayout>
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/kakao_profile"
+                        android:layout_width="41.8dp"
+                        android:layout_height="41.8dp"
+                        android:layout_gravity="center_horizontal" />
+
+                    <TextView
+                        android:id="@+id/kakao_nickname"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal" />
+                </LinearLayout>
 
             </FrameLayout>
         </RelativeLayout>

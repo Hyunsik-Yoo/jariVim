@@ -3,6 +3,8 @@ package cnu.lineup.com.cnulineup;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,6 +18,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TabHost;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -28,13 +31,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.Collator;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class MainActivity extends Activity {
 
     public static String server_IP = "lineup-server.cloudapp.net";
-    ToggleButton btn_bob, btn_noddle, btn_cafe, btn_drink, btn_fastfood, btn_fork;
+    ToggleButton btn_bob, btn_noddle, btn_cafe, btn_drink, btn_fastfood, btn_fork, btn_sortby_popular, btn_sortby_text;
     ImageButton btn_search;
     public static Button btn_refresh;
     private TabHost tabHost;
@@ -42,6 +49,24 @@ public class MainActivity extends Activity {
     private ArrayList<Group> ExpListItems;
     private ExpandableListView ExpandList;
     private int lastExpandedPosition = -1;
+    private ImageView kakao_profile;
+    private Bitmap kakao_thumbnail;
+    private TextView kakao_nickname;
+
+    public static Comparator<Group> comparatorByText = new Comparator<Group>() {
+        private final Collator collator = Collator.getInstance();
+        @Override
+        public int compare(Group group1, Group group2) {
+            return collator.compare(group1.getName(),group2.getName());
+        }
+    };
+
+    public static Comparator<Group> comparatorByPopular = new Comparator<Group>() {
+        @Override
+        public int compare(Group group1, Group group2) {
+            return group1.getProportion() < group2.getProportion() ? 1 : group1.getProportion() > group2.getProportion() ? -1 : 0;
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +98,11 @@ public class MainActivity extends Activity {
         btn_fork = (ToggleButton)findViewById(R.id.btn_category_fork);
         btn_fork.setOnClickListener(listener_category);
         btn_search = (ImageButton)findViewById(R.id.btn_search);
+        btn_sortby_popular = (ToggleButton)findViewById(R.id.btn_sortby_popular);
+        btn_sortby_popular.setOnClickListener(sort_listener);
+        btn_sortby_popular.setChecked(true);
+        btn_sortby_text = (ToggleButton)findViewById(R.id.btn_sortby_text);
+        btn_sortby_text.setOnClickListener(sort_listener);
 
         btn_refresh = (Button)findViewById(R.id.btn_refresh);
         btn_refresh.setOnClickListener(new View.OnClickListener() {
@@ -94,19 +124,8 @@ public class MainActivity extends Activity {
                     category_name = "meat";
                 }
                 ExpListItems = setItems(category_name);
-                ExpAdapter = new ExpandListAdapter(MainActivity.this, ExpListItems, ExpandList);
-                ExpandList.setAdapter(ExpAdapter);
-                ExpandList.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
-                    @Override
-                    public void onGroupExpand(int groupPosition) {
-                        if (lastExpandedPosition != -1
-                                && groupPosition != lastExpandedPosition) {
-                            ExpandList.collapseGroup(lastExpandedPosition);
-
-                        }
-                        lastExpandedPosition = groupPosition;
-                    }
-                });
+                //정렬 눌린 버튼에 따라서 정렬해야함
+                setExpandListAdapter(ExpListItems);
                 Toast.makeText(MainActivity.this,"데이터 새로고침",Toast.LENGTH_SHORT).show();
             }
         });
@@ -132,6 +151,38 @@ public class MainActivity extends Activity {
 
 
 
+        //카카오 프로필사진 가져오기
+        kakao_profile = (ImageView)findViewById(R.id.kakao_profile);
+        Thread getThumbnail = new Thread(){
+            @Override
+            public void run() {
+                try {
+                    URL url = new URL(KakaoSignupActivity.profileImage);
+
+                    HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+                    conn.setDoInput(true);
+                    conn.connect();
+
+                    InputStream is = conn.getInputStream();
+                    kakao_thumbnail = BitmapFactory.decodeStream(is);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+                super.run();
+            }
+        };
+        getThumbnail.start();
+
+        try{
+            getThumbnail.join(); //쓰레드가 끝나기전에 이미지설정을 하면 안되므로 join으로 기다리기
+            kakao_profile.setImageBitmap(kakao_thumbnail);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        kakao_nickname = (TextView)findViewById(R.id.kakao_nickname);
+        kakao_nickname.setText(KakaoSignupActivity.kakaoNickname);
+
 
         tabHost.setup();
         TabHost.TabSpec tab1 = tabHost.newTabSpec("Tab1").setContent(R.id.tab1)
@@ -150,19 +201,8 @@ public class MainActivity extends Activity {
         
         ExpandList = (ExpandableListView) findViewById(R.id.list_main);
         ExpListItems = setItems("bob");
-        ExpAdapter = new ExpandListAdapter(MainActivity.this, ExpListItems,ExpandList);
-        ExpandList.setAdapter(ExpAdapter);
-        ExpandList.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
-            @Override
-            public void onGroupExpand(int groupPosition) {
-                if (lastExpandedPosition != -1
-                        && groupPosition != lastExpandedPosition) {
-                    ExpandList.collapseGroup(lastExpandedPosition);
-
-                }
-                lastExpandedPosition = groupPosition;
-            }
-        });
+        Collections.sort(ExpListItems,comparatorByPopular);
+        setExpandListAdapter(ExpListItems);
 
 
 
@@ -239,25 +279,47 @@ public class MainActivity extends Activity {
             }
 
             ExpListItems = setItems(category_name);
-            ExpAdapter = new ExpandListAdapter(MainActivity.this, ExpListItems, ExpandList);
-            ExpandList.setAdapter(ExpAdapter);
-            ExpandList.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
-                @Override
-                public void onGroupExpand(int groupPosition) {
-                    if (lastExpandedPosition != -1
-                            && groupPosition != lastExpandedPosition) {
-                        ExpandList.collapseGroup(lastExpandedPosition);
-
-                    }
-                    lastExpandedPosition = groupPosition;
-                }
-            });
-
-
-
+            Collections.sort(ExpListItems,comparatorByPopular);
+            setExpandListAdapter(ExpListItems);
         }
     };
 
+    Button.OnClickListener sort_listener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            switch(view.getId()){
+                case R.id.btn_sortby_popular:
+                    btn_sortby_popular.setChecked(true);
+                    btn_sortby_text.setChecked(false);
+                    Collections.sort(ExpListItems,comparatorByPopular);
+                    setExpandListAdapter(ExpListItems);
+
+                    break;
+                case R.id.btn_sortby_text:
+                    btn_sortby_popular.setChecked(false);
+                    btn_sortby_text.setChecked(true);
+                    Collections.sort(ExpListItems,comparatorByText);
+                    setExpandListAdapter(ExpListItems);
+                    break;
+            }
+        }
+    };
+
+    public void setExpandListAdapter(ArrayList<Group> ExpListItems){
+        ExpAdapter = new ExpandListAdapter(MainActivity.this, ExpListItems, ExpandList);
+        ExpandList.setAdapter(ExpAdapter);
+        ExpandList.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+            @Override
+            public void onGroupExpand(int groupPosition) {
+                if (lastExpandedPosition != -1
+                        && groupPosition != lastExpandedPosition) {
+                    ExpandList.collapseGroup(lastExpandedPosition);
+
+                }
+                lastExpandedPosition = groupPosition;
+            }
+        });
+    }
 
     public ArrayList<Group> setItems(String category) {
         JSONArray result=null;
@@ -351,6 +413,5 @@ public class MainActivity extends Activity {
         return sb.toString();
 
     }
-
 
 }

@@ -25,9 +25,8 @@
             android:name="com.kakao.sdk.AppKey"
             android:value="@string/kakao_app_key" />
 
-
         <activity android:name=".SearchActivity" />
-        <activity android:name=".KakaoSignupActivity"></activity>
+        <activity android:name=".KakaoSignupActivity" />
     </application>
 
 </manifest>

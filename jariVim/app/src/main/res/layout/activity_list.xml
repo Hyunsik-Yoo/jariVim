@@ -8,7 +8,6 @@
 
 
     <LinearLayout
-        android:id="@+id/layout_header"
         android:layout_width="match_parent"
         android:layout_height="56.67dp"
         android:layout_alignParentBottom="false"
@@ -19,14 +18,12 @@
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:id="@+id/btn_back"
             android:layout_weight="1"
             android:background="@drawable/btn_back_xxhdpi" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:id="@+id/image_category"
             android:layout_weight="1"
             />
 
