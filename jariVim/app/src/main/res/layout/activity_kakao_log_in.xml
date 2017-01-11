@@ -6,4 +6,12 @@
     android:background="@drawable/loading"
     tools:context="cnu.lineup.com.cnulineup.LoadingActivity">
 
+    <com.kakao.usermgmt.LoginButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginRight="20dp"/>
 </RelativeLayout>
+

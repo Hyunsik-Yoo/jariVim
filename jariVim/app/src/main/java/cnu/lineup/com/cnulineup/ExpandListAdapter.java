@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.AssetManager;
 import android.graphics.Typeface;
+import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -27,6 +29,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 import static cnu.lineup.com.cnulineup.List_Activity.getStringFromInputStream;
 import static cnu.lineup.com.cnulineup.List_Activity.server_IP;
@@ -64,6 +67,7 @@ public class ExpandListAdapter extends BaseExpandableListAdapter {
     @Override
     public View getChildView(final int groupPosition, int childPosition,
                              boolean isLastChild, View convertView, final ViewGroup parent) {
+
         Group group = (Group)getGroup(groupPosition);
         final String title = group.getName();
         final ViewGroup parm_parent = parent;
@@ -92,6 +96,24 @@ public class ExpandListAdapter extends BaseExpandableListAdapter {
             @Override
             public void onClick(View view) {
                 expandableListView.collapseGroup(groupPosition);
+            }
+        });
+
+        Button btnWiFiScan = (Button)convertView.findViewById(R.id.btn_wifiscan);
+        btnWiFiScan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                WifiManager wifi;
+                wifi = (WifiManager)view.getContext().getSystemService(Context.WIFI_SERVICE);
+
+                WiFiScan wifiScan = new WiFiScan(context);
+                try {
+                    wifiScan.execute(wifi.getDhcpInfo().gateway);
+                    MainActivity.displayAD(context);
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -207,6 +229,7 @@ public class ExpandListAdapter extends BaseExpandableListAdapter {
                             {
                                 MainActivity.btn_refresh.callOnClick();
                             }
+                            MainActivity.displayAD(context);
                         }
                         catch (Exception e){
                             e.printStackTrace();

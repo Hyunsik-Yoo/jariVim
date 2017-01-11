@@ -3,6 +3,8 @@
     package="cnu.lineup.com.cnulineup">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
     <application
         android:name=".GlobalApplication"
@@ -11,6 +13,10 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
         <activity android:name=".MainActivity" />
         <activity android:name=".List_Activity" />
         <activity android:name=".LoadingActivity">
@@ -27,6 +33,7 @@
 
         <activity android:name=".SearchActivity" />
         <activity android:name=".KakaoSignupActivity" />
+        <activity android:name=".KakaoLogInActivity"/>
     </application>
 
 </manifest>
