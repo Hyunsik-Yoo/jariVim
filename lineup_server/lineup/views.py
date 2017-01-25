@@ -41,14 +41,14 @@ def restaurent_list(request):
 def vote_list(request):
     try:
         parm_title = request.GET['title']
-        print parm_title
+        #print parm_title
     except:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
 
         time_threshold = datetime.now() - timedelta(minutes=5)
-        print 'time threshold : ',time_threshold
+        #print 'time threshold : ',time_threshold
         list = Vote.objects.filter(created_it__gt=time_threshold, title = parm_title)# __gt means "greater than" and lookup type field.
 
         serializer = voteSerializer(list, many=True)
@@ -68,16 +68,16 @@ def vote_list(request):
 def current(request):
     try:
         parm_category = request.GET['category']
-        print(parm_category)
+        #print(parm_category)
     except:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     list_title = list(RestaurantList.objects.filter(category=parm_category))
     response = []
     for item in list_title:
-        print item.title
+        #print item.title.encode('utf8')
         time_threshold = datetime.now() - timedelta(minutes=5)
-        print time_threshold
+        #print time_threshold
         filter_vote = Vote.objects.filter(created_it__gt=time_threshold
                                    ,title=item.title)  # __gt means "greater than" and lookup type field.
         list_vote = []
@@ -88,12 +88,12 @@ def current(request):
             proportion = sum(list_vote)/len(list_vote)
         except:
             proportion = 0
-        print(proportion)
+        #print(proportion)
 
         response.append({'title':item.title,'proportion':proportion})
 
     result = {"data":response}
-    print(result)
+    #print(result)
     return Response(result, status=status.HTTP_201_CREATED)
 
 @api_view(['GET'])
@@ -128,12 +128,12 @@ def search(request):
             proportion = sum(list_vote) / len(list_vote)
         except:
             proportion = 0
-        print(proportion)
+        #print(proportion)
 
         response.append({'title': parm_title, 'proportion': proportion})
 
         result = {"data": response}
-        print(result)
+        #print(result)
 
         return Response(result, status=status.HTTP_201_CREATED)
     except:
