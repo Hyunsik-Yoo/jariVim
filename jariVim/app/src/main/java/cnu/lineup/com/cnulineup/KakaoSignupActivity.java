@@ -3,6 +3,7 @@ package cnu.lineup.com.cnulineup;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.kakao.auth.ErrorCode;
 import com.kakao.network.ErrorResult;
@@ -12,7 +13,6 @@ import com.kakao.usermgmt.response.model.UserProfile;
 import com.kakao.util.helper.log.Logger;
 
 public class KakaoSignupActivity extends Activity {
-    public static String kakaoNickname, profileImage, votingOpportunity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,10 +47,15 @@ public class KakaoSignupActivity extends Activity {
 
             @Override
             public void onSuccess(UserProfile userProfile) {  //성공 시 userProfile 형태로 반환
-                kakaoNickname = userProfile.getNickname();     // Nickname 값을 가져옴
-                profileImage = userProfile.getThumbnailImagePath();
-                votingOpportunity = userProfile.getProperty("voting_opportunity");
+                UserInfo.KAKAO_NICKNAME = userProfile.getNickname();     // Nickname 값을 가져옴
+                UserInfo.PROFILE_IMAGE_PATH = userProfile.getThumbnailImagePath();
+                UserInfo.VOTING_OPPORTUNITY = userProfile.getProperty("voting_opportunity");
+                UserInfo.SEX = userProfile.getProperty("sex");
+                UserInfo.AGE = userProfile.getProperty("age");
                 Logger.d("UserProfile : " + userProfile);
+                Log.d("UserProfile : ", userProfile.toString());
+                Log.d("AGE",UserInfo.AGE);
+                Log.d("SEX",UserInfo.SEX);
                 redirectMainActivity(); // 로그인 성공시 MainActivity로
             }
         });

@@ -3,7 +3,6 @@ package cnu.lineup.com.cnulineup;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.res.AssetManager;
 import android.graphics.Typeface;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
@@ -14,22 +13,20 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 import android.widget.ExpandableListView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
+import java.util.Date;
+import java.util.TimeZone;
 
 import static cnu.lineup.com.cnulineup.List_Activity.getStringFromInputStream;
 import static cnu.lineup.com.cnulineup.List_Activity.server_IP;
@@ -177,14 +174,17 @@ public class ExpandListAdapter extends BaseExpandableListAdapter {
         return true;
     }
 
-    //카테고리별 음식점 이름과 최근인구밀도를 서버로부터 받아 리턴
-    private class Thread_vote extends AsyncTask<String,Integer, Boolean> {
+    private class threadVote extends AsyncTask<String,Integer, Boolean> {
         @Override
         protected Boolean doInBackground(String... parm) {
             try {
                 String title = URLEncoder.encode(parm[0],"utf-8");
                 int proportion = Integer.parseInt(parm[1]);
-                String url_str = "http://"+server_IP+":8000/lineup/voting/?title="+title+"&proportion="+proportion;
+                String time = StaticMethod.getTimeNow();
+                String url_str = "http://"+server_IP+":8000/lineup/voting/?title="+title
+                        +"&proportion="+proportion+"&time=" + time + "&sex=" + UserInfo.SEX +
+                        "&age=" + UserInfo.AGE;
+                Log.d("test",url_str);
                 URL url = new URL(url_str);
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 InputStream in = new BufferedInputStream(urlConnection.getInputStream());
@@ -218,6 +218,7 @@ public class ExpandListAdapter extends BaseExpandableListAdapter {
         final View parm_view = view;
         final String parm_title = title;
         final String parm_proportion = proportion;
+
         alt_bld.setMessage("투표하시겠습니까?").setCancelable(
                 false).setPositiveButton("Yes",
                 new DialogInterface.OnClickListener() {
@@ -225,11 +226,12 @@ public class ExpandListAdapter extends BaseExpandableListAdapter {
                         try {
                             //이부분 최적화 되어야함
                             //서버통신 두번함
-                            if(new Thread_vote().execute(parm_title, parm_proportion).get())
+                            if(new threadVote().execute(parm_title, parm_proportion).get())
                             {
-                                MainActivity.btn_refresh.callOnClick();
+                                //MainActivity.btnRefresh.callOnClick();
+                                //MainActivity.displayAD(context);
                             }
-                            MainActivity.displayAD(context);
+
                         }
                         catch (Exception e){
                             e.printStackTrace();
@@ -248,6 +250,9 @@ public class ExpandListAdapter extends BaseExpandableListAdapter {
         // Icon for AlertDialog
         alert.show();
     }
+
+
+
 
 
 }

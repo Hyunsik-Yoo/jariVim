@@ -2,8 +2,6 @@ package cnu.lineup.com.cnulineup;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -12,15 +10,20 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.UserManager;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.SeekBar;
+import android.widget.Spinner;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,10 +32,15 @@ import android.widget.ToggleButton;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.reward.RewardItem;
 import com.google.android.gms.ads.reward.RewardedVideoAd;
-import com.google.android.gms.ads.reward.RewardedVideoAdListener;
+import com.kakao.auth.ApiResponseCallback;
+import com.kakao.auth.ErrorCode;
+import com.kakao.network.ErrorResult;
+import com.kakao.usermgmt.UserManagement;
+import com.kakao.usermgmt.callback.MeResponseCallback;
+import com.kakao.usermgmt.response.model.User;
+import com.kakao.usermgmt.response.model.UserProfile;
+import com.kakao.util.helper.log.Logger;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -43,30 +51,40 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends Activity {
 
+    private final String TAG = this.getClass().getSimpleName();
     public static InterstitialAd interstitialAd;
     private RewardedVideoAd mAd;
-    public static String server_IP = "lineup-server.cloudapp.net";
-    ToggleButton btn_bob, btn_noddle, btn_cafe, btn_drink, btn_fastfood, btn_fork, btn_sortby_popular, btn_sortby_text;
-    ImageButton btn_search;
-    public static Button btn_refresh, btn_ad;
+    //public static String serverIP = "dbgustlr92.cafe24.com";
+    public static String serverIP = "192.168.2.102";
+    private ToggleButton btnBob, btnNoddle, btnCafe, btnDrink, btnFastfood, btnFork, btnSortByPopular, btnSortByText;
+    private ImageButton btnSearch;
+    public static Button btnRefresh, btnAd, btnProfileUpdate;
     private TabHost tabHost;
-    private ExpandListAdapter ExpAdapter;
-    private ArrayList<Group> ExpListItems;
-    private ExpandableListView ExpandList;
+    private ExpandListAdapter expAdapter;
+    private ArrayList<Group> expListItems;
+    private ExpandableListView expandList;
     private int lastExpandedPosition = -1;
-    private ImageView kakao_profile;
-    private Bitmap kakao_thumbnail;
-    private TextView kakao_nickname;
+    private ImageView kakaoProfile;
+    private Bitmap kakaoThumbnail;
+    private TextView kakaoNickname;
+    private Spinner spinnerAge;
+    private RadioGroup radioGroupSex;
+    private RadioButton radioMale, radioFemale, radioNothing;
+    private PrefManager prefManager;
 
+    /**
+     * 서버로부터 받은 가게이름을 가나다순으로 정렬
+     */
     public static Comparator<Group> comparatorByText = new Comparator<Group>() {
         private final Collator collator = Collator.getInstance();
 
@@ -76,10 +94,15 @@ public class MainActivity extends Activity {
         }
     };
 
+
+    /**
+     * Group(가게이름 , 인구비율)을 인기도순으로 정렬
+     */
     public static Comparator<Group> comparatorByPopular = new Comparator<Group>() {
         @Override
         public int compare(Group group1, Group group2) {
-            return group1.getProportion() < group2.getProportion() ? 1 : group1.getProportion() > group2.getProportion() ? -1 : 0;
+            return group1.getProportion() < group2.getProportion() ? 1 : group1.getProportion() >
+                    group2.getProportion() ? -1 : 0;
         }
     };
 
@@ -87,6 +110,12 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        prefManager = new PrefManager(this);
+        if (prefManager.isFirstTimeLaunch()) {
+            Log.d(TAG,"It's first time!!");
+            prefManager.setFirstTimeLaunch(false);
+        }
 
 
         //status bar 색상 변경
@@ -100,63 +129,127 @@ public class MainActivity extends Activity {
 
         tabHost = (TabHost) findViewById(R.id.footer);
 
-        btn_bob = (ToggleButton) findViewById(R.id.btn_category_bob);
-        btn_bob.setOnClickListener(listener_category);
-        btn_noddle = (ToggleButton) findViewById(R.id.btn_category_noodle);
-        btn_noddle.setOnClickListener(listener_category);
-        btn_cafe = (ToggleButton) findViewById(R.id.btn_category_cafe);
-        btn_cafe.setOnClickListener(listener_category);
-        btn_drink = (ToggleButton) findViewById(R.id.btn_category_beer);
-        btn_drink.setOnClickListener(listener_category);
-        btn_fastfood = (ToggleButton) findViewById(R.id.btn_category_fastfood);
-        btn_fastfood.setOnClickListener(listener_category);
-        btn_fork = (ToggleButton) findViewById(R.id.btn_category_fork);
-        btn_fork.setOnClickListener(listener_category);
-        btn_search = (ImageButton) findViewById(R.id.btn_search);
-        btn_sortby_popular = (ToggleButton) findViewById(R.id.btn_sortby_popular);
-        btn_sortby_popular.setOnClickListener(sort_listener);
-        btn_sortby_popular.setChecked(true);
-        btn_sortby_text = (ToggleButton) findViewById(R.id.btn_sortby_text);
-        btn_sortby_text.setOnClickListener(sort_listener);
-
+        btnBob = (ToggleButton) findViewById(R.id.btn_category_bob);
+        btnBob.setOnClickListener(listener_category);
+        btnNoddle = (ToggleButton) findViewById(R.id.btn_category_noodle);
+        btnNoddle.setOnClickListener(listener_category);
+        btnCafe = (ToggleButton) findViewById(R.id.btn_category_cafe);
+        btnCafe.setOnClickListener(listener_category);
+        btnDrink = (ToggleButton) findViewById(R.id.btn_category_beer);
+        btnDrink.setOnClickListener(listener_category);
+        btnFastfood = (ToggleButton) findViewById(R.id.btn_category_fastfood);
+        btnFastfood.setOnClickListener(listener_category);
+        btnFork = (ToggleButton) findViewById(R.id.btn_category_fork);
+        btnFork.setOnClickListener(listener_category);
+        btnSearch = (ImageButton) findViewById(R.id.btn_search);
+        btnSortByPopular = (ToggleButton) findViewById(R.id.btn_sortby_popular);
+        btnSortByPopular.setOnClickListener(sort_listener);
+        btnSortByPopular.setChecked(true);
+        btnSortByText = (ToggleButton) findViewById(R.id.btn_sortby_text);
+        btnSortByText.setOnClickListener(sort_listener);
+        btnProfileUpdate = (Button)findViewById(R.id.btn_profile_update);
+        spinnerAge = (Spinner)findViewById(R.id.spinner_age);
+        radioGroupSex = (RadioGroup)findViewById(R.id.radioGroup_sex);
+        radioMale = (RadioButton)findViewById(R.id.radioButton_male);
+        radioFemale = (RadioButton)findViewById(R.id.radioButton_female);
+        radioNothing = (RadioButton)findViewById(R.id.radioButton_nothing);
 
 
         setFullAd();
-        btn_ad = (Button) findViewById(R.id.btn_ad);
-        btn_ad.setOnClickListener(new View.OnClickListener() {
+        btnAd = (Button) findViewById(R.id.btn_ad);
+        btnAd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 displayAD(MainActivity.this);
             }
         });
 
-        btn_refresh = (Button) findViewById(R.id.btn_refresh);
-        btn_refresh.setOnClickListener(new View.OnClickListener() {
+        btnProfileUpdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                switch (radioGroupSex.getCheckedRadioButtonId()){
+                    case R.id.radioButton_female:
+                        UserInfo.SEX = "female";
+                        break;
+                    case R.id.radioButton_male:
+                        UserInfo.SEX = "male";
+                        break;
+                    default:
+                        UserInfo.SEX = "";
+                        break;
+                }
+
+                UserInfo.AGE = String.valueOf(spinnerAge.getSelectedItem());
+
+                requestUpdateProfile(UserInfo.SEX, UserInfo.AGE);
+
+            }
+        });
+
+
+
+
+
+        ArrayList<Integer> items = new ArrayList<Integer>();
+        for(int age=1;age<=100;age++){
+            items.add(age);
+        }
+        ArrayAdapter<Integer> adapter = new ArrayAdapter<Integer>(this,android.R.layout.simple_spinner_item, items);
+        spinnerAge.setAdapter(adapter);
+
+        if(UserInfo.AGE != null)
+            spinnerAge.setSelection(Integer.valueOf(UserInfo.AGE)-1);
+
+        switch(UserInfo.SEX){
+            case "male":
+                radioMale.setChecked(true);
+                break;
+            case "female":
+                radioFemale.setChecked(true);
+                break;
+            default:
+                radioNothing.setChecked(true);
+                break;
+        }
+
+
+
+
+
+
+        btnRefresh = (Button) findViewById(R.id.btn_refresh);
+        btnRefresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String category_name = "";
 
-                if (btn_bob.isChecked()) {
+                if (btnBob.isChecked()) {
                     category_name = "bob";
-                } else if (btn_noddle.isChecked()) {
+                } else if (btnNoddle.isChecked()) {
                     category_name = "noddle";
-                } else if (btn_cafe.isChecked()) {
+                } else if (btnCafe.isChecked()) {
                     category_name = "cafe";
-                } else if (btn_drink.isChecked()) {
+                } else if (btnDrink.isChecked()) {
                     category_name = "drink";
-                } else if (btn_fastfood.isChecked()) {
+                } else if (btnFastfood.isChecked()) {
                     category_name = "fastfood";
-                } else if (btn_fork.isChecked()) {
+                } else if (btnFork.isChecked()) {
                     category_name = "meat";
                 }
-                ExpListItems = setItems(category_name);
+                expListItems = setItems(category_name);
+
+                if (btnSortByPopular.isChecked())
+                    Collections.sort(expListItems, comparatorByPopular);
+                else if (btnSortByText.isChecked())
+                    Collections.sort(expListItems, comparatorByText);
                 //정렬 눌린 버튼에 따라서 정렬해야함
-                setExpandListAdapter(ExpListItems);
+                setExpandListAdapter(expListItems);
                 Toast.makeText(MainActivity.this, "데이터 새로고침", Toast.LENGTH_SHORT).show();
             }
         });
 
-        btn_search.setOnClickListener(new View.OnClickListener() {
+        btnSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //Search Activity 로 이동하는 코드
@@ -177,19 +270,19 @@ public class MainActivity extends Activity {
 
 
         //카카오 프로필사진 가져오기
-        kakao_profile = (ImageView) findViewById(R.id.kakao_profile);
+        kakaoProfile = (ImageView) findViewById(R.id.kakao_profile);
         Thread getThumbnail = new Thread() {
             @Override
             public void run() {
                 try {
-                    URL url = new URL(KakaoSignupActivity.profileImage);
+                    URL url = new URL(UserInfo.PROFILE_IMAGE_PATH);
 
                     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                     conn.setDoInput(true);
                     conn.connect();
 
                     InputStream is = conn.getInputStream();
-                    kakao_thumbnail = BitmapFactory.decodeStream(is);
+                    kakaoThumbnail = BitmapFactory.decodeStream(is);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -198,15 +291,19 @@ public class MainActivity extends Activity {
         };
         getThumbnail.start();
 
+
+        /**
+         * 내정보
+         */
         try {
             getThumbnail.join(); //쓰레드가 끝나기전에 이미지설정을 하면 안되므로 join으로 기다리기
-            kakao_profile.setImageBitmap(kakao_thumbnail);
+            kakaoProfile.setImageBitmap(kakaoThumbnail);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        kakao_nickname = (TextView) findViewById(R.id.kakao_nickname);
-        kakao_nickname.setText(KakaoSignupActivity.kakaoNickname);
+        kakaoNickname = (TextView) findViewById(R.id.kakao_nickname);
+        kakaoNickname.setText(UserInfo.KAKAO_NICKNAME);
 
 
         tabHost.setup();
@@ -224,10 +321,10 @@ public class MainActivity extends Activity {
         tabHost.addTab(tab3);
         tabHost.addTab(tab4);
 
-        ExpandList = (ExpandableListView) findViewById(R.id.list_main);
-        ExpListItems = setItems("bob");
-        Collections.sort(ExpListItems, comparatorByPopular);
-        setExpandListAdapter(ExpListItems);
+        expandList = (ExpandableListView) findViewById(R.id.list_main);
+        expListItems = setItems("bob");
+        Collections.sort(expListItems, comparatorByPopular);
+        setExpandListAdapter(expListItems);
 
 
         //메인 탭을 제외한 타머지탭 disable
@@ -247,63 +344,75 @@ public class MainActivity extends Activity {
             switch (view.getId()) {
                 case R.id.btn_category_bob:
                     category_name = "bob";
-                    btn_bob.setChecked(true);
-                    btn_noddle.setChecked(false);
-                    btn_cafe.setChecked(false);
-                    btn_drink.setChecked(false);
-                    btn_fastfood.setChecked(false);
-                    btn_fork.setChecked(false);
+                    btnBob.setChecked(true);
+                    btnNoddle.setChecked(false);
+                    btnCafe.setChecked(false);
+                    btnDrink.setChecked(false);
+                    btnFastfood.setChecked(false);
+                    btnFork.setChecked(false);
+                    btnSortByPopular.setChecked(true);
+                    btnSortByText.setChecked(false);
                     break;
                 case R.id.btn_category_noodle:
                     category_name = "noddle";
-                    btn_bob.setChecked(false);
-                    btn_noddle.setChecked(true);
-                    btn_cafe.setChecked(false);
-                    btn_drink.setChecked(false);
-                    btn_fastfood.setChecked(false);
-                    btn_fork.setChecked(false);
+                    btnBob.setChecked(false);
+                    btnNoddle.setChecked(true);
+                    btnCafe.setChecked(false);
+                    btnDrink.setChecked(false);
+                    btnFastfood.setChecked(false);
+                    btnFork.setChecked(false);
+                    btnSortByPopular.setChecked(true);
+                    btnSortByText.setChecked(false);
                     break;
                 case R.id.btn_category_fastfood:
                     category_name = "fastfood";
-                    btn_bob.setChecked(false);
-                    btn_noddle.setChecked(false);
-                    btn_cafe.setChecked(false);
-                    btn_drink.setChecked(false);
-                    btn_fastfood.setChecked(true);
-                    btn_fork.setChecked(false);
+                    btnBob.setChecked(false);
+                    btnNoddle.setChecked(false);
+                    btnCafe.setChecked(false);
+                    btnDrink.setChecked(false);
+                    btnFastfood.setChecked(true);
+                    btnFork.setChecked(false);
+                    btnSortByPopular.setChecked(true);
+                    btnSortByText.setChecked(false);
                     break;
                 case R.id.btn_category_fork:
                     category_name = "meat";
-                    btn_bob.setChecked(false);
-                    btn_noddle.setChecked(false);
-                    btn_cafe.setChecked(false);
-                    btn_drink.setChecked(false);
-                    btn_fastfood.setChecked(false);
-                    btn_fork.setChecked(true);
+                    btnBob.setChecked(false);
+                    btnNoddle.setChecked(false);
+                    btnCafe.setChecked(false);
+                    btnDrink.setChecked(false);
+                    btnFastfood.setChecked(false);
+                    btnFork.setChecked(true);
+                    btnSortByPopular.setChecked(true);
+                    btnSortByText.setChecked(false);
                     break;
                 case R.id.btn_category_cafe:
                     category_name = "cafe";
-                    btn_bob.setChecked(false);
-                    btn_noddle.setChecked(false);
-                    btn_cafe.setChecked(true);
-                    btn_drink.setChecked(false);
-                    btn_fastfood.setChecked(false);
-                    btn_fork.setChecked(false);
+                    btnBob.setChecked(false);
+                    btnNoddle.setChecked(false);
+                    btnCafe.setChecked(true);
+                    btnDrink.setChecked(false);
+                    btnFastfood.setChecked(false);
+                    btnFork.setChecked(false);
+                    btnSortByPopular.setChecked(true);
+                    btnSortByText.setChecked(false);
                     break;
                 case R.id.btn_category_beer:
                     category_name = "drink";
-                    btn_bob.setChecked(false);
-                    btn_noddle.setChecked(false);
-                    btn_cafe.setChecked(false);
-                    btn_drink.setChecked(true);
-                    btn_fastfood.setChecked(false);
-                    btn_fork.setChecked(false);
+                    btnBob.setChecked(false);
+                    btnNoddle.setChecked(false);
+                    btnCafe.setChecked(false);
+                    btnDrink.setChecked(true);
+                    btnFastfood.setChecked(false);
+                    btnFork.setChecked(false);
+                    btnSortByPopular.setChecked(true);
+                    btnSortByText.setChecked(false);
                     break;
             }
 
-            ExpListItems = setItems(category_name);
-            Collections.sort(ExpListItems, comparatorByPopular);
-            setExpandListAdapter(ExpListItems);
+            expListItems = setItems(category_name);
+            Collections.sort(expListItems, comparatorByPopular);
+            setExpandListAdapter(expListItems);
         }
     };
 
@@ -312,32 +421,31 @@ public class MainActivity extends Activity {
         public void onClick(View view) {
             switch (view.getId()) {
                 case R.id.btn_sortby_popular:
-                    btn_sortby_popular.setChecked(true);
-                    btn_sortby_text.setChecked(false);
-                    Collections.sort(ExpListItems, comparatorByPopular);
-                    setExpandListAdapter(ExpListItems);
-
+                    btnSortByPopular.setChecked(true);
+                    btnSortByText.setChecked(false);
+                    Collections.sort(expListItems, comparatorByPopular);
+                    setExpandListAdapter(expListItems);
                     break;
+
                 case R.id.btn_sortby_text:
-                    btn_sortby_popular.setChecked(false);
-                    btn_sortby_text.setChecked(true);
-                    Collections.sort(ExpListItems, comparatorByText);
-                    setExpandListAdapter(ExpListItems);
+                    btnSortByPopular.setChecked(false);
+                    btnSortByText.setChecked(true);
+                    Collections.sort(expListItems, comparatorByText);
+                    setExpandListAdapter(expListItems);
                     break;
             }
         }
     };
 
     public void setExpandListAdapter(ArrayList<Group> ExpListItems) {
-        ExpAdapter = new ExpandListAdapter(MainActivity.this, ExpListItems, ExpandList);
-        ExpandList.setAdapter(ExpAdapter);
-        ExpandList.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+        expAdapter = new ExpandListAdapter(MainActivity.this, ExpListItems, expandList);
+        expandList.setAdapter(expAdapter);
+        expandList.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
             @Override
             public void onGroupExpand(int groupPosition) {
                 if (lastExpandedPosition != -1
                         && groupPosition != lastExpandedPosition) {
-                    ExpandList.collapseGroup(lastExpandedPosition);
-
+                    expandList.collapseGroup(lastExpandedPosition);
                 }
                 lastExpandedPosition = groupPosition;
             }
@@ -348,7 +456,7 @@ public class MainActivity extends Activity {
         JSONArray result = null;
 
         try {
-            result = new Thread_vote().execute(category).get();
+            result = new threadVote().execute(category).get();
             Log.i("debug", result.toString());
 
             ArrayList<Group> list_group = new ArrayList<Group>();
@@ -381,12 +489,15 @@ public class MainActivity extends Activity {
     }
 
     //카테고리별 음식점 이름과 최근인구밀도를 서버로부터 받아 리턴
-    private class Thread_vote extends AsyncTask<String, Integer, JSONArray> {
+    private class threadVote extends AsyncTask<String, Integer, JSONArray> {
         @Override
         protected JSONArray doInBackground(String... parm) {
             try {
                 String category = parm[0];
-                URL url = new URL("http://" + server_IP + ":8000/lineup/current/?category=" + category);
+                String time = StaticMethod.getTimeNow();
+
+                URL url = new URL("http://" + serverIP + ":8000/lineup/current/?category=" +
+                        category + "&time=" + time);
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 InputStream in = new BufferedInputStream(urlConnection.getInputStream());
                 JSONObject json = new JSONObject(getStringFromInputStream(in));
@@ -506,9 +617,9 @@ public class MainActivity extends Activity {
 
 
     public static void displayAD(Context context) {
-        if(interstitialAd.isLoaded()){
+        if (interstitialAd.isLoaded()) {
             interstitialAd.show();
-        }else{
+        } else {
             AlertDialog.Builder dialog = new AlertDialog.Builder(context);
             dialog.setMessage("광고 요청중입니다. 다시 시도해 주세요.");
             dialog.setPositiveButton("확인", new DialogInterface.OnClickListener() {
@@ -520,5 +631,29 @@ public class MainActivity extends Activity {
             dialog.show();
         }
     }
+
+    protected void requestUpdateProfile(String sex, String age) { //유저의 정보를 받아오는 함수
+        final Map<String, String> properties = new HashMap<String, String>();
+        properties.put("sex", sex);
+        properties.put("age", age);
+
+        UserManagement.requestUpdateProfile(new ApiResponseCallback<Long>() {
+            @Override
+            public void onSessionClosed(ErrorResult errorResult) {
+                Log.e(TAG,errorResult.getErrorMessage());
+            }
+
+            @Override
+            public void onNotSignedUp() {
+
+            }
+
+            @Override
+            public void onSuccess(Long userId) {
+                Log.i(TAG, "succeeded to update user profile");
+            }
+        }, properties);
+    }
+
 
 }

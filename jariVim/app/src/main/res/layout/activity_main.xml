@@ -66,7 +66,7 @@
                         android:orientation="horizontal">
 
                         <ImageView
-                            android:layout_width="355.7675dp"
+                            android:layout_width="355.3dp"
                             android:layout_height="38dp"
                             android:background="@drawable/time_background" />
 
@@ -74,6 +74,7 @@
                             android:id="@+id/btn_refresh"
                             android:layout_width="55.1dp"
                             android:layout_height="38dp"
+                            style="?android:attr/borderlessButtonStyle"
                             android:background="@drawable/btn_refresh" />
 
                     </LinearLayout>
@@ -97,6 +98,7 @@
                                 android:layout_height="68.4dp"
                                 android:background="@drawable/btn_cateogory_bob"
                                 android:checked="true"
+                                style="?android:attr/borderlessButtonStyle"
                                 android:textOff=""
                                 android:textOn="" />
 
@@ -105,6 +107,7 @@
                                 android:layout_width="68.4dp"
                                 android:layout_height="68.4dp"
                                 android:background="@drawable/btn_category_noddle"
+                                style="?android:attr/borderlessButtonStyle"
                                 android:textOff=""
                                 android:textOn="" />
 
@@ -113,6 +116,7 @@
                                 android:layout_width="68.4dp"
                                 android:layout_height="68.4dp"
                                 android:background="@drawable/btn_category_fastfood"
+                                style="?android:attr/borderlessButtonStyle"
                                 android:textOff=""
                                 android:textOn="" />
 
@@ -121,6 +125,7 @@
                                 android:layout_width="68.4dp"
                                 android:layout_height="68.4dp"
                                 android:background="@drawable/btn_category_fork"
+                                style="?android:attr/borderlessButtonStyle"
                                 android:textOff=""
                                 android:textOn="" />
 
@@ -129,6 +134,7 @@
                                 android:layout_width="68.4dp"
                                 android:layout_height="68.4dp"
                                 android:background="@drawable/btn_category_cafe"
+                                style="?android:attr/borderlessButtonStyle"
                                 android:textOff=""
                                 android:textOn="" />
 
@@ -137,6 +143,7 @@
                                 android:layout_width="68.4dp"
                                 android:layout_height="68.4dp"
                                 android:background="@drawable/btn_category_drink"
+                                style="?android:attr/borderlessButtonStyle"
                                 android:textOff=""
                                 android:textOn="" />
 
@@ -293,6 +300,64 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/btn_ad"
                         android:text="광고"/>
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="성별" />
+
+                        <RadioGroup
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/radioGroup_sex">
+
+                            <RadioButton
+                                android:text="남자"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/radioButton_male" />
+
+                            <RadioButton
+                                android:text="여자"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/radioButton_female" />
+
+                            <RadioButton
+                                android:text="설정안함"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/radioButton_nothing" />
+                        </RadioGroup>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="나이" />
+
+                        <Spinner
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/spinner_age" />
+                    </LinearLayout>
+
+                    <Button
+                        android:text="정보 업데이트"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/btn_profile_update" />
+
                 </LinearLayout>
 
             </FrameLayout>

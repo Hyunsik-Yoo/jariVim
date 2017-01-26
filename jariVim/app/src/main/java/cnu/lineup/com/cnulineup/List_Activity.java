@@ -31,7 +31,7 @@ import java.net.URL;
 import java.util.ArrayList;
 
 public class List_Activity extends Activity {
-    public static String server_IP = "lineup-server.cloudapp.net";
+    public static String server_IP = "192.168.2.102";
     private ExpandListAdapter ExpAdapter;
     private ArrayList<Group> ExpListItems;
     private ExpandableListView ExpandList;
