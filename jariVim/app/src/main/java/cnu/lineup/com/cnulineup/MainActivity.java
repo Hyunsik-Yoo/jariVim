@@ -64,8 +64,7 @@ public class MainActivity extends Activity {
     private final String TAG = this.getClass().getSimpleName();
     public static InterstitialAd interstitialAd;
     private RewardedVideoAd mAd;
-    //public static String serverIP = "dbgustlr92.cafe24.com";
-    public static String serverIP = "192.168.2.102";
+    public static String serverIP = "222.239.249.114";
     private ToggleButton btnBob, btnNoddle, btnCafe, btnDrink, btnFastfood, btnFork, btnSortByPopular, btnSortByText;
     private ImageButton btnSearch;
     public static Button btnRefresh, btnAd, btnProfileUpdate;
