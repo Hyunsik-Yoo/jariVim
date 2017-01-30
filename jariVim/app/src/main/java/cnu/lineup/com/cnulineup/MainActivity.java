@@ -2,6 +2,7 @@ package cnu.lineup.com.cnulineup;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -80,6 +81,7 @@ public class MainActivity extends Activity {
     private RadioGroup radioGroupSex;
     private RadioButton radioMale, radioFemale, radioNothing;
     private PrefManager prefManager;
+    private ProgressDialog pd;
 
     /**
      * 서버로부터 받은 가게이름을 가나다순으로 정렬
@@ -109,7 +111,8 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        setFullAd();
+        /** 앱을 실행한 후 처음으로 실행하는지 확인. 첫실행이면 튜토리얼화면 진행*/
         prefManager = new PrefManager(this);
         if (prefManager.isFirstTimeLaunch()) {
             Log.d(TAG,"It's first time!!");
@@ -117,7 +120,7 @@ public class MainActivity extends Activity {
         }
 
 
-        //status bar 색상 변경
+        /** status bar 색상 변경 */
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
             Window window = this.getWindow();
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -154,7 +157,8 @@ public class MainActivity extends Activity {
         radioNothing = (RadioButton)findViewById(R.id.radioButton_nothing);
 
 
-        setFullAd();
+
+        /** 디버깅용(버튼눌렀을때 광고 뜨도록)*/
         btnAd = (Button) findViewById(R.id.btn_ad);
         btnAd.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -163,6 +167,8 @@ public class MainActivity extends Activity {
             }
         });
 
+
+        /** 사용자 정보 업데이트 버튼*/
         btnProfileUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -190,6 +196,7 @@ public class MainActivity extends Activity {
 
 
 
+
         ArrayList<Integer> items = new ArrayList<Integer>();
         for(int age=1;age<=100;age++){
             items.add(age);
@@ -197,6 +204,8 @@ public class MainActivity extends Activity {
         ArrayAdapter<Integer> adapter = new ArrayAdapter<Integer>(this,android.R.layout.simple_spinner_item, items);
         spinnerAge.setAdapter(adapter);
 
+
+        /** 사용자 정보 업데이트 칸에 사용자 정보 저장되어있으면 저장값 보여주기*/
         if(UserInfo.AGE != null)
             spinnerAge.setSelection(Integer.valueOf(UserInfo.AGE)-1);
 
@@ -217,6 +226,7 @@ public class MainActivity extends Activity {
 
 
 
+        /** 새로고침 버튼 */
         btnRefresh = (Button) findViewById(R.id.btn_refresh);
         btnRefresh.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -248,6 +258,7 @@ public class MainActivity extends Activity {
             }
         });
 
+        /** 검색버튼 */
         btnSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -256,6 +267,7 @@ public class MainActivity extends Activity {
                 startActivity(intent_search);
             }
         });
+
 
 
         ImageView tab_home_icon = new ImageView(this);
@@ -268,7 +280,7 @@ public class MainActivity extends Activity {
         tab_statistics_icon.setImageResource(R.drawable.selector_tab_statistics);
 
 
-        //카카오 프로필사진 가져오기
+        /** 카카오 프로필사진 가져오기 */
         kakaoProfile = (ImageView) findViewById(R.id.kakao_profile);
         Thread getThumbnail = new Thread() {
             @Override
@@ -326,12 +338,11 @@ public class MainActivity extends Activity {
         setExpandListAdapter(expListItems);
 
 
-        //메인 탭을 제외한 타머지탭 disable
-        /*
+        /** 메인 탭을 제외한 타머지탭 disable */
         tabHost.getTabWidget().getChildTabViewAt(1).setEnabled(false);
         tabHost.getTabWidget().getChildTabViewAt(2).setEnabled(false);
-        tabHost.getTabWidget().getChildTabViewAt(3).setEnabled(false);
-        */
+        //tabHost.getTabWidget().getChildTabViewAt(3).setEnabled(false);
+
 
     }
 
@@ -511,8 +522,14 @@ public class MainActivity extends Activity {
         }
 
         @Override
+        protected void onPostExecute(JSONArray jsonArray) {
+            pd.dismiss();
+        }
+
+        @Override
         protected void onPreExecute() {
-            super.onPreExecute();
+            pd = ProgressDialog.show(MainActivity.this, "Loading", "Please wait...");
+
         }
 
     }

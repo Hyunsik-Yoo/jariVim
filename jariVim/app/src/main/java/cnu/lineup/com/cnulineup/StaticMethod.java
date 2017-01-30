@@ -16,7 +16,7 @@ public class StaticMethod {
      * @return ISO format의 날짜 문자열
      */
     public static String getTimeNow(){
-        TimeZone tz = TimeZone.getTimeZone("UTC");
+        TimeZone tz = TimeZone.getTimeZone("Asia/Seoul");
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
         df.setTimeZone(tz);
         String nowAsISO = df.format(new Date());

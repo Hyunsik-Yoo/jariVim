@@ -84,7 +84,7 @@ public class ExpandListAdapter extends BaseExpandableListAdapter {
             @Override
             public void onClick(View view) {
                 int proportion = seekBar.getProgress();
-                DialogSimple(view,title,String.valueOf(proportion));
+                DialogSimple(view,title,String.valueOf(proportion), groupPosition);
 
             }
         });
@@ -213,23 +213,22 @@ public class ExpandListAdapter extends BaseExpandableListAdapter {
         super.notifyDataSetChanged();
     }
 
-    private void DialogSimple(final View view, String title, String proportion){
+    private void DialogSimple(final View view, String title, String proportion, int groupPosition){
         AlertDialog.Builder alt_bld = new AlertDialog.Builder(view.getContext());
         final View parm_view = view;
         final String parm_title = title;
         final String parm_proportion = proportion;
+        final int parm_groupPosition = groupPosition;
 
         alt_bld.setMessage("투표하시겠습니까?").setCancelable(
                 false).setPositiveButton("Yes",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         try {
-                            //이부분 최적화 되어야함
-                            //서버통신 두번함
                             if(new threadVote().execute(parm_title, parm_proportion).get())
                             {
-                                //MainActivity.btnRefresh.callOnClick();
-                                //MainActivity.displayAD(context);
+                                expandableListView.collapseGroup(parm_groupPosition);
+                                MainActivity.displayAD(context);
                             }
 
                         }
@@ -240,7 +239,6 @@ public class ExpandListAdapter extends BaseExpandableListAdapter {
                 }).setNegativeButton("No",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        // Action for 'NO' Button
                         dialog.cancel();
                     }
                 });
