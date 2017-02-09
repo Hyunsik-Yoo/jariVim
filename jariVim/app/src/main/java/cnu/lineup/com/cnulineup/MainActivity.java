@@ -11,7 +11,6 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.UserManager;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -21,6 +20,7 @@ import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
@@ -35,13 +35,8 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.reward.RewardedVideoAd;
 import com.kakao.auth.ApiResponseCallback;
-import com.kakao.auth.ErrorCode;
 import com.kakao.network.ErrorResult;
 import com.kakao.usermgmt.UserManagement;
-import com.kakao.usermgmt.callback.MeResponseCallback;
-import com.kakao.usermgmt.response.model.User;
-import com.kakao.usermgmt.response.model.UserProfile;
-import com.kakao.util.helper.log.Logger;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -72,7 +67,8 @@ public class MainActivity extends Activity {
     private TabHost tabHost;
     private ExpandListAdapter expAdapter;
     private ArrayList<Group> expListItems;
-    private ExpandableListView expandList;
+    private ExpandableListView expandList, expandlistFavorite;
+    private ListView listVote;
     private int lastExpandedPosition = -1;
     private ImageView kakaoProfile;
     private Bitmap kakaoThumbnail;
@@ -82,6 +78,8 @@ public class MainActivity extends Activity {
     private RadioButton radioMale, radioFemale, radioNothing;
     private PrefManager prefManager;
     private ProgressDialog pd;
+    public static JSONObject currentProportion;
+    public static DBOpenHelper dbOpenHelper;
 
     /**
      * 서버로부터 받은 가게이름을 가나다순으로 정렬
@@ -107,15 +105,24 @@ public class MainActivity extends Activity {
         }
     };
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setFullAd();
+
+        /*
+        try {
+            currentProportion = new threadVote(this).execute().get();
+        }catch (Exception e){
+            e.printStackTrace();
+        }*/
+
         /** 앱을 실행한 후 처음으로 실행하는지 확인. 첫실행이면 튜토리얼화면 진행*/
         prefManager = new PrefManager(this);
         if (prefManager.isFirstTimeLaunch()) {
-            Log.d(TAG,"It's first time!!");
+            Log.d(TAG, "It's first time!!");
             prefManager.setFirstTimeLaunch(false);
         }
 
@@ -149,16 +156,18 @@ public class MainActivity extends Activity {
         btnSortByPopular.setChecked(true);
         btnSortByText = (ToggleButton) findViewById(R.id.btn_sortby_text);
         btnSortByText.setOnClickListener(sort_listener);
-        btnProfileUpdate = (Button)findViewById(R.id.btn_profile_update);
-        spinnerAge = (Spinner)findViewById(R.id.spinner_age);
-        radioGroupSex = (RadioGroup)findViewById(R.id.radioGroup_sex);
-        radioMale = (RadioButton)findViewById(R.id.radioButton_male);
-        radioFemale = (RadioButton)findViewById(R.id.radioButton_female);
-        radioNothing = (RadioButton)findViewById(R.id.radioButton_nothing);
 
-
+        /*
+        btnProfileUpdate = (Button) findViewById(R.id.btn_profile_update);
+        spinnerAge = (Spinner) findViewById(R.id.spinner_age);
+        radioGroupSex = (RadioGroup) findViewById(R.id.radioGroup_sex);
+        radioMale = (RadioButton) findViewById(R.id.radioButton_male);
+        radioFemale = (RadioButton) findViewById(R.id.radioButton_female);
+        radioNothing = (RadioButton) findViewById(R.id.radioButton_nothing);
+        */
 
         /** 디버깅용(버튼눌렀을때 광고 뜨도록)*/
+        /*
         btnAd = (Button) findViewById(R.id.btn_ad);
         btnAd.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -166,14 +175,15 @@ public class MainActivity extends Activity {
                 displayAD(MainActivity.this);
             }
         });
-
+        */
 
         /** 사용자 정보 업데이트 버튼*/
+        /*
         btnProfileUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                switch (radioGroupSex.getCheckedRadioButtonId()){
+                switch (radioGroupSex.getCheckedRadioButtonId()) {
                     case R.id.radioButton_female:
                         UserInfo.SEX = "female";
                         break;
@@ -193,37 +203,34 @@ public class MainActivity extends Activity {
         });
 
 
-
-
-
-
         ArrayList<Integer> items = new ArrayList<Integer>();
-        for(int age=1;age<=100;age++){
+        for (int age = 1; age <= 100; age++) {
             items.add(age);
         }
-        ArrayAdapter<Integer> adapter = new ArrayAdapter<Integer>(this,android.R.layout.simple_spinner_item, items);
+        ArrayAdapter<Integer> adapter = new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_item, items);
         spinnerAge.setAdapter(adapter);
+        */
 
 
         /** 사용자 정보 업데이트 칸에 사용자 정보 저장되어있으면 저장값 보여주기*/
-        if(UserInfo.AGE != null)
-            spinnerAge.setSelection(Integer.valueOf(UserInfo.AGE)-1);
+        /*
+        if (UserInfo.AGE != null)
+            spinnerAge.setSelection(Integer.valueOf(UserInfo.AGE) - 1);
 
-        switch(UserInfo.SEX){
-            case "male":
-                radioMale.setChecked(true);
-                break;
-            case "female":
-                radioFemale.setChecked(true);
-                break;
-            default:
-                radioNothing.setChecked(true);
-                break;
+        if (UserInfo.SEX != null) {
+            switch (UserInfo.SEX) {
+                case "male":
+                    radioMale.setChecked(true);
+                    break;
+                case "female":
+                    radioFemale.setChecked(true);
+                    break;
+                default:
+                    radioNothing.setChecked(true);
+                    break;
+            }
         }
-
-
-
-
+        */
 
 
         /** 새로고침 버튼 */
@@ -231,6 +238,11 @@ public class MainActivity extends Activity {
         btnRefresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                try {
+                    currentProportion = new threadVote(MainActivity.this).execute().get();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 String category_name = "";
 
                 if (btnBob.isChecked()) {
@@ -269,7 +281,6 @@ public class MainActivity extends Activity {
         });
 
 
-
         ImageView tab_home_icon = new ImageView(this);
         tab_home_icon.setImageResource(R.drawable.selector_tab_home);
         ImageView tab_info_icon = new ImageView(this);
@@ -281,6 +292,7 @@ public class MainActivity extends Activity {
 
 
         /** 카카오 프로필사진 가져오기 */
+        /*
         kakaoProfile = (ImageView) findViewById(R.id.kakao_profile);
         Thread getThumbnail = new Thread() {
             @Override
@@ -301,11 +313,12 @@ public class MainActivity extends Activity {
             }
         };
         getThumbnail.start();
-
+        */
 
         /**
          * 내정보
          */
+        /*
         try {
             getThumbnail.join(); //쓰레드가 끝나기전에 이미지설정을 하면 안되므로 join으로 기다리기
             kakaoProfile.setImageBitmap(kakaoThumbnail);
@@ -315,7 +328,7 @@ public class MainActivity extends Activity {
 
         kakaoNickname = (TextView) findViewById(R.id.kakao_nickname);
         kakaoNickname.setText(UserInfo.KAKAO_NICKNAME);
-
+        */
 
         tabHost.setup();
         TabHost.TabSpec tab1 = tabHost.newTabSpec("Tab1").setContent(R.id.tab1)
@@ -336,6 +349,20 @@ public class MainActivity extends Activity {
         expListItems = setItems("bob");
         Collections.sort(expListItems, comparatorByPopular);
         setExpandListAdapter(expListItems);
+
+
+        /**
+         * 내정보 탭
+         */
+        /*
+        dbOpenHelper = new DBOpenHelper(this);
+        dbOpenHelper.open();
+
+        listVote = (ListView)findViewById(R.id.list_vote);
+        expandlistFavorite = (ExpandableListView)findViewById(R.id.list_favorite);
+        */
+
+
 
 
         /** 메인 탭을 제외한 타머지탭 disable */
@@ -463,18 +490,14 @@ public class MainActivity extends Activity {
     }
 
     public ArrayList<Group> setItems(String category) {
-        JSONArray result = null;
-
         try {
-            result = new threadVote().execute(category).get();
-            Log.i("debug", result.toString());
-
+            JSONArray restaurantList = currentProportion.getJSONArray(category);
             ArrayList<Group> list_group = new ArrayList<Group>();
 
-            if (result != null) {
-                for (int i = 0; i < result.length(); i++) {
-                    String group_name = ((JSONObject) result.get(i)).getString("title");
-                    int proportion = ((JSONObject) result.get(i)).getInt("proportion");
+            if (restaurantList != null) {
+                for (int i = 0; i < restaurantList.length(); i++) {
+                    String group_name = ((JSONObject) restaurantList.get(i)).getString("title");
+                    int proportion = ((JSONObject) restaurantList.get(i)).getInt("proportion");
                     Group group = new Group();
                     group.setName(group_name);
                     group.setProportion(proportion);
@@ -498,38 +521,30 @@ public class MainActivity extends Activity {
         }
     }
 
-    //카테고리별 음식점 이름과 최근인구밀도를 서버로부터 받아 리턴
-    private class threadVote extends AsyncTask<String, Integer, JSONArray> {
+    //현재 음식점 이름과 최근인구밀도를 서버로부터 받아 리턴
+    public static class threadVote extends AsyncTask<String, Integer, JSONObject> {
+        Context context;
+
+        public threadVote(Context context) {
+            this.context = context;
+        }
+
         @Override
-        protected JSONArray doInBackground(String... parm) {
+        protected JSONObject doInBackground(String... parm) {
             try {
-                String category = parm[0];
                 String time = StaticMethod.getTimeNow();
 
-                URL url = new URL("http://" + serverIP + ":8000/lineup/current/?category=" +
-                        category + "&time=" + time);
+                URL url = new URL("http://" + serverIP + ":8000/lineup/current/?time=" + time);
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 InputStream in = new BufferedInputStream(urlConnection.getInputStream());
                 JSONObject json = new JSONObject(getStringFromInputStream(in));
-                JSONArray data = json.getJSONArray("data");
 
-                return data;
+                return json;
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
             return null;
-        }
-
-        @Override
-        protected void onPostExecute(JSONArray jsonArray) {
-            pd.dismiss();
-        }
-
-        @Override
-        protected void onPreExecute() {
-            pd = ProgressDialog.show(MainActivity.this, "Loading", "Please wait...");
-
         }
 
     }
@@ -565,49 +580,6 @@ public class MainActivity extends Activity {
     }
 
     private void setFullAd() {
-        /*
-        MobileAds.initialize(this, "ca-app-pub-1527951560812478~9578415948");
-        mAd = MobileAds.getRewardedVideoAdInstance(this);
-        mAd.setRewardedVideoAdListener(new RewardedVideoAdListener() {
-            @Override
-            public void onRewardedVideoAdLoaded() {
-
-            }
-
-            @Override
-            public void onRewardedVideoAdOpened() {
-
-            }
-
-            @Override
-            public void onRewardedVideoStarted() {
-
-            }
-
-            @Override
-            public void onRewardedVideoAdClosed() {
-
-            }
-
-            @Override
-            public void onRewarded(RewardItem rewardItem) {
-
-            }
-
-            @Override
-            public void onRewardedVideoAdLeftApplication() {
-
-            }
-
-            @Override
-            public void onRewardedVideoAdFailedToLoad(int i) {
-
-            }
-        });
-        loadRewardedVideoAd();
-        */
-
-
         interstitialAd = new InterstitialAd(this); //새 광고를 만듭니다.
         interstitialAd.setAdUnitId(getResources().getString(R.string.ad_unit_id)); //이전에 String에 저장해 두었던 광고 ID를 전면 광고에 설정합니다.
         AdRequest adRequest1 = new AdRequest.Builder().build(); //새 광고요청
@@ -621,15 +593,7 @@ public class MainActivity extends Activity {
             }
         });
 
-
     }
-
-    /*
-    private void loadRewardedVideoAd() {
-        if (!mAd.isLoaded()) {
-            mAd.loadAd(getResources().getString(R.string.ad_unit_id), new AdRequest.Builder().build());
-        }
-    }*/
 
 
     public static void displayAD(Context context) {
@@ -656,7 +620,7 @@ public class MainActivity extends Activity {
         UserManagement.requestUpdateProfile(new ApiResponseCallback<Long>() {
             @Override
             public void onSessionClosed(ErrorResult errorResult) {
-                Log.e(TAG,errorResult.getErrorMessage());
+                Log.e(TAG, errorResult.getErrorMessage());
             }
 
             @Override

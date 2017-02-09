@@ -96,6 +96,8 @@ public class ExpandListAdapter extends BaseExpandableListAdapter {
             }
         });
 
+        /**
+         * 와이파이스캔버튼 필요 없어짐
         Button btnWiFiScan = (Button)convertView.findViewById(R.id.btn_wifiscan);
         btnWiFiScan.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -113,6 +115,7 @@ public class ExpandListAdapter extends BaseExpandableListAdapter {
                 }
             }
         });
+         */
 
         return convertView;
     }
@@ -228,6 +231,7 @@ public class ExpandListAdapter extends BaseExpandableListAdapter {
                             if(new threadVote().execute(parm_title, parm_proportion).get())
                             {
                                 expandableListView.collapseGroup(parm_groupPosition);
+                                MainActivity.dbOpenHelper.insertVote(parm_title,parm_proportion);
                                 MainActivity.displayAD(context);
                             }
 

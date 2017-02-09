@@ -26,14 +26,23 @@ public class KakaoLogInActivity extends Activity {
         // Remember that you should never show the action bar if the
         // status bar is hidden, so hide that too if necessary.
 
+        callback = new SessionCallback();                  // 이 두개의 함수 중요함
         //로그인정보가 남아있는지 확인
         if(Session.getCurrentSession().isClosed()){
-            callback = new SessionCallback();                  // 이 두개의 함수 중요함
             Session.getCurrentSession().addCallback(callback);
+            Session.getCurrentSession().checkAndImplicitOpen();
         }else{
             redirectSignupActivity();
         }
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (Session.getCurrentSession().handleActivityResult(requestCode, resultCode, data)) {
+            return;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     private class SessionCallback implements ISessionCallback {
@@ -48,7 +57,7 @@ public class KakaoLogInActivity extends Activity {
             if(exception != null) {
                 Logger.e(exception);
             }
-            setContentView(R.layout.activity_loading); // 세션 연결이 실패했을때
+            setContentView(R.layout.activity_kakao_log_in); // 세션 연결이 실패했을때
         }                                            // 로그인화면을 다시 불러옴
     }
 

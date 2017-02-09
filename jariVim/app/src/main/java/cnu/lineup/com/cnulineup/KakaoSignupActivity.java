@@ -43,10 +43,13 @@ public class KakaoSignupActivity extends Activity {
             }
 
             @Override
-            public void onNotSignedUp() {} // 카카오톡 회원이 아닐 시 showSignup(); 호출해야함
+            public void onNotSignedUp() {
+                Log.e("test","test_hello2222");
+            } // 카카오톡 회원이 아닐 시 showSignup(); 호출해야함
 
             @Override
             public void onSuccess(UserProfile userProfile) {  //성공 시 userProfile 형태로 반환
+                Log.e("test","test_hello");
                 UserInfo.KAKAO_NICKNAME = userProfile.getNickname();     // Nickname 값을 가져옴
                 UserInfo.PROFILE_IMAGE_PATH = userProfile.getThumbnailImagePath();
                 UserInfo.VOTING_OPPORTUNITY = userProfile.getProperty("voting_opportunity");
@@ -54,15 +57,19 @@ public class KakaoSignupActivity extends Activity {
                 UserInfo.AGE = userProfile.getProperty("age");
                 Logger.d("UserProfile : " + userProfile);
                 Log.d("UserProfile : ", userProfile.toString());
-                Log.d("AGE",UserInfo.AGE);
-                Log.d("SEX",UserInfo.SEX);
+                if(UserInfo.AGE != null)
+                    Log.d("AGE",UserInfo.AGE);
+                if(UserInfo.SEX != null)
+                    Log.d("SEX",UserInfo.SEX);
                 redirectMainActivity(); // 로그인 성공시 MainActivity로
             }
         });
     }
 
     private void redirectMainActivity() {
-        startActivity(new Intent(this, MainActivity.class));
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        startActivity(intent);
         finish();
     }
     protected void redirectLoginActivity() {

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="즐겨찾기 목록"/>
+
+    <ExpandableListView
+        android:id="@+id/list_favorite"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:childDivider="#00000000"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="20.0dp"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="내가 제보한 목록"/>
+
+    <ListView
+        android:id="@+id/list_vote"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        />
+
+
+    <!--
+    <ImageView
+        android:id="@+id/kakao_profile"
+        android:layout_width="41.8dp"
+        android:layout_height="41.8dp"
+        android:layout_gravity="center_horizontal" />
+
+    <TextView
+        android:id="@+id/kakao_nickname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal" />
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_ad"
+        android:text="광고"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="성별" />
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/radioGroup_sex">
+
+            <RadioButton
+                android:text="남자"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/radioButton_male" />
+
+            <RadioButton
+                android:text="여자"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/radioButton_female" />
+
+            <RadioButton
+                android:text="설정안함"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/radioButton_nothing" />
+        </RadioGroup>
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="나이" />
+
+        <Spinner
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/spinner_age" />
+    </LinearLayout>
+
+    <Button
+        android:text="정보 업데이트"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_profile_update" />
+    -->
+
+</LinearLayout>
