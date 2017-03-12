@@ -60,7 +60,7 @@ public class MainActivity extends Activity {
     private final String TAG = this.getClass().getSimpleName();
     public static InterstitialAd interstitialAd;
     private RewardedVideoAd mAd;
-    public static String serverIP = "222.239.249.114";
+    public static String serverIP = "168.188.127.132";
     private ToggleButton btnBob, btnNoddle, btnCafe, btnDrink, btnFastfood, btnFork, btnSortByPopular, btnSortByText;
     private ImageButton btnSearch;
     public static Button btnRefresh, btnAd, btnProfileUpdate;
@@ -368,7 +368,7 @@ public class MainActivity extends Activity {
         /** 메인 탭을 제외한 타머지탭 disable */
         tabHost.getTabWidget().getChildTabViewAt(1).setEnabled(false);
         tabHost.getTabWidget().getChildTabViewAt(2).setEnabled(false);
-        //tabHost.getTabWidget().getChildTabViewAt(3).setEnabled(false);
+        tabHost.getTabWidget().getChildTabViewAt(3).setEnabled(false);
 
 
     }
