@@ -185,8 +185,7 @@ public class ExpandListAdapter extends BaseExpandableListAdapter {
                 int proportion = Integer.parseInt(parm[1]);
                 String time = StaticMethod.getTimeNow();
                 String url_str = "http://"+server_IP+":8000/lineup/voting/?title="+title
-                        +"&proportion="+proportion+"&time=" + time + "&sex=" + UserInfo.SEX +
-                        "&age=" + UserInfo.AGE;
+                        +"&proportion="+proportion+"&time=" + time;
                 Log.d("test",url_str);
                 URL url = new URL(url_str);
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
@@ -231,7 +230,8 @@ public class ExpandListAdapter extends BaseExpandableListAdapter {
                             if(new threadVote().execute(parm_title, parm_proportion).get())
                             {
                                 expandableListView.collapseGroup(parm_groupPosition);
-                                MainActivity.dbOpenHelper.insertVote(parm_title,parm_proportion);
+                                // 내가 투표한곳 보여주기위해 코딩중
+                                ///MainActivity.dbOpenHelper.insertVote(parm_title,parm_proportion);
                                 MainActivity.displayAD(context);
                             }
 

@@ -58,12 +58,15 @@ import java.util.Map;
 public class MainActivity extends Activity {
 
     private final String TAG = this.getClass().getSimpleName();
+
     public static InterstitialAd interstitialAd;
-    private RewardedVideoAd mAd;
     public static String serverIP = "168.188.127.132";
+    public static Button btnRefresh, btnAd, btnProfileUpdate;
+    public static JSONObject currentProportion;
+    public static DBOpenHelper dbOpenHelper;
+
     private ToggleButton btnBob, btnNoddle, btnCafe, btnDrink, btnFastfood, btnFork, btnSortByPopular, btnSortByText;
     private ImageButton btnSearch;
-    public static Button btnRefresh, btnAd, btnProfileUpdate;
     private TabHost tabHost;
     private ExpandListAdapter expAdapter;
     private ArrayList<Group> expListItems;
@@ -78,13 +81,13 @@ public class MainActivity extends Activity {
     private RadioButton radioMale, radioFemale, radioNothing;
     private PrefManager prefManager;
     private ProgressDialog pd;
-    public static JSONObject currentProportion;
-    public static DBOpenHelper dbOpenHelper;
 
-    /**
-     * 서버로부터 받은 가게이름을 가나다순으로 정렬
-     */
+
+
     public static Comparator<Group> comparatorByText = new Comparator<Group>() {
+        /**
+         * 서버로부터 받은 가게이름을 가나다순으로 정렬
+         */
         private final Collator collator = Collator.getInstance();
 
         @Override
@@ -94,12 +97,12 @@ public class MainActivity extends Activity {
     };
 
 
-    /**
-     * Group(가게이름 , 인구비율)을 인기도순으로 정렬
-     */
     public static Comparator<Group> comparatorByPopular = new Comparator<Group>() {
         @Override
         public int compare(Group group1, Group group2) {
+            /**
+             * Group(가게이름 , 인구비율)을 인기도순으로 정렬
+             */
             return group1.getProportion() < group2.getProportion() ? 1 : group1.getProportion() >
                     group2.getProportion() ? -1 : 0;
         }
@@ -110,16 +113,12 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setFullAd();
+        setFullAd(); //메인엑티비티 로딩되면 광고 요청날림
 
-        /*
-        try {
-            currentProportion = new threadVote(this).execute().get();
-        }catch (Exception e){
-            e.printStackTrace();
-        }*/
-
-        /** 앱을 실행한 후 처음으로 실행하는지 확인. 첫실행이면 튜토리얼화면 진행*/
+        /**
+         * 앱을 실행한 후 처음으로 실행하는지 확인. 첫실행이면 튜토리얼화면 진행
+         * 추후에 나이와 성별 입력받기 위해 실험
+         */
         prefManager = new PrefManager(this);
         if (prefManager.isFirstTimeLaunch()) {
             Log.d(TAG, "It's first time!!");
