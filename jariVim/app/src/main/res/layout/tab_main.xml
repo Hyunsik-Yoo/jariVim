@@ -12,14 +12,14 @@
         <ImageView
             android:layout_width="355.3dp"
             android:layout_height="38dp"
-            android:background="@drawable/time_background"/>
+            android:background="@drawable/time_background" />
 
         <Button
             android:id="@+id/btn_refresh"
             style="?android:attr/borderlessButtonStyle"
             android:layout_width="55.1dp"
             android:layout_height="38dp"
-            android:background="@drawable/btn_refresh"/>
+            android:background="@drawable/btn_refresh" />
 
     </LinearLayout>
 

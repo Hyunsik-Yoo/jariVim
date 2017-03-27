@@ -22,14 +22,6 @@ public class KakaoLogInActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_kakao_log_in);
-
-        // 상단에 상태바 제거
-        View decorView = getWindow().getDecorView();
-        int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
-        decorView.setSystemUiVisibility(uiOptions);
-
-
 
 
         callback = new SessionCallback();
@@ -37,6 +29,12 @@ public class KakaoLogInActivity extends Activity {
         // 아직 열려있으면 그대로 해당 세션그대로 사용 -> redirectSignupAcitivy()
         // 닫혀있으면 새로운 세션을 열도록 callback 함수 호출
         if(Session.getCurrentSession().isClosed()){
+            setContentView(R.layout.activity_kakao_log_in);
+
+            // 상단에 상태바 제거
+            View decorView = getWindow().getDecorView();
+            int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
+            decorView.setSystemUiVisibility(uiOptions);
             Session.getCurrentSession().addCallback(callback);
             Session.getCurrentSession().checkAndImplicitOpen();
         }else{
@@ -148,6 +146,7 @@ public class KakaoLogInActivity extends Activity {
         overridePendingTransition(R.anim.anim_slide_in_right, R.anim.anim_slide_out_left);
         finish();
     }
+
     protected void redirectLoginActivity() {
         final Intent intent = new Intent(this, LoadingActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
