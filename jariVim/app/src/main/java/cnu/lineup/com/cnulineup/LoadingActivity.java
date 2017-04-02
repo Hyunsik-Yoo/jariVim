@@ -22,7 +22,8 @@ import java.util.concurrent.ExecutionException;
 
 public class LoadingActivity extends Activity {
     private String TAG = this.getClass().getSimpleName();
-    private LoadingActivity.SessionCallback callback;
+    private SessionCallback callback;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +38,7 @@ public class LoadingActivity extends Activity {
         try {
             MainActivity.currentProportion = new MainActivity.threadVote(LoadingActivity
                     .this).execute().get();
-            Thread.sleep(3000);
+            //Thread.sleep(3000);
         }catch (ExecutionException e){
             e.printStackTrace();
         }catch (InterruptedException e){
@@ -45,18 +46,21 @@ public class LoadingActivity extends Activity {
         }
 
 
+        //postDelayed함수가 메세지큐에 함수를 넣고있다가 2초뒤에 실행하기 때문에 메인(UI)쓰레드에 영향을 주지 않는다.
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(Session.getCurrentSession().isClosed()){
+                    setContentView(R.layout.activity_kakao_log_in);
+                    Session.getCurrentSession().addCallback(callback);
+                    Session.getCurrentSession().checkAndImplicitOpen();
+                    Log.d(TAG,"in Handler()");
+                }else{
+                    redirectSignupActivity();
+                }
+            }
+        },2000);
 
-        callback = new LoadingActivity.SessionCallback();
-        // 로그인정보가 남아있는지 확인
-        // 아직 열려있으면 그대로 해당 세션그대로 사용 -> redirectSignupAcitivy()
-        // 닫혀있으면 새로운 세션을 열도록 callback 함수 호출
-        if(Session.getCurrentSession().isClosed()){
-            setContentView(R.layout.activity_kakao_log_in);
-            Session.getCurrentSession().addCallback(callback);
-            Session.getCurrentSession().checkAndImplicitOpen();
-        }else{
-            redirectSignupActivity();
-        }
     }
 
 
@@ -66,6 +70,7 @@ public class LoadingActivity extends Activity {
          */
         @Override
         public void onSessionOpened() {
+            Log.d(TAG,"onSessionOpened()");
             redirectSignupActivity();  // 세션 연결성공 시 redirectSignupActivity() 호출
         }
 
@@ -84,7 +89,11 @@ public class LoadingActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (Session.getCurrentSession().handleActivityResult(requestCode, resultCode, data)) {
+            redirectMainActivity();
             return;
+        }
+        else{
+            Log.d(TAG,"in ActivityResult2");
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -128,22 +137,11 @@ public class LoadingActivity extends Activity {
 
             @Override
             public void onSuccess(UserProfile userProfile) {  //성공 시 userProfile 형태로 반환
-
                 UserInfo.KAKAO_NICKNAME = userProfile.getNickname();     // Nickname 값을 가져옴
                 UserInfo.PROFILE_IMAGE_PATH = userProfile.getThumbnailImagePath();
                 UserInfo.VOTING_OPPORTUNITY = userProfile.getProperty("voting_opportunity");
 
-                //UserInfo.SEX = userProfile.getProperty("sex");
-                //UserInfo.AGE = userProfile.getProperty("age");
-
-
-                /*
-                Logger.d("UserProfile : " + userProfile);
-                if(UserInfo.AGE != null)
-                    Log.d("AGE",UserInfo.AGE);
-                if(UserInfo.SEX != null)
-                    Log.d("SEX",UserInfo.SEX);
-                */
+                Log.d(TAG,userProfile.toString());
                 redirectMainActivity(); // 로그인 성공시 MainActivity로
             }
         });

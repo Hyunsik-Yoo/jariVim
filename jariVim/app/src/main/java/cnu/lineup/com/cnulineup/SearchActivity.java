@@ -67,8 +67,6 @@ public class SearchActivity extends Activity {
         //폰트 변경
         Typeface custom_font = Typeface.createFromAsset(getAssets(), "fonts/BMHANNA.ttf");
 
-
-
         // 리스트 처음에 빈값으로 초기화
         ExpandList = (ExpandableListView)findViewById(R.id.list_search);
         ExpandList.setGroupIndicator(null);

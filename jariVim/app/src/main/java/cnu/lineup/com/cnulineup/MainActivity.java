@@ -156,15 +156,6 @@ public class MainActivity extends Activity {
         btnSortByText = (ToggleButton) findViewById(R.id.btn_sortby_text);
         btnSortByText.setOnClickListener(sort_listener);
 
-        /*
-        btnProfileUpdate = (Button) findViewById(R.id.btn_profile_update);
-        spinnerAge = (Spinner) findViewById(R.id.spinner_age);
-        radioGroupSex = (RadioGroup) findViewById(R.id.radioGroup_sex);
-        radioMale = (RadioButton) findViewById(R.id.radioButton_male);
-        radioFemale = (RadioButton) findViewById(R.id.radioButton_female);
-        radioNothing = (RadioButton) findViewById(R.id.radioButton_nothing);
-        */
-
         /** 디버깅용(버튼눌렀을때 광고 뜨도록)*/
         /*
         btnAd = (Button) findViewById(R.id.btn_ad);
@@ -174,61 +165,6 @@ public class MainActivity extends Activity {
                 displayAD(MainActivity.this);
             }
         });
-        */
-
-        /** 사용자 정보 업데이트 버튼*/
-        /*
-        btnProfileUpdate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                switch (radioGroupSex.getCheckedRadioButtonId()) {
-                    case R.id.radioButton_female:
-                        UserInfo.SEX = "female";
-                        break;
-                    case R.id.radioButton_male:
-                        UserInfo.SEX = "male";
-                        break;
-                    default:
-                        UserInfo.SEX = "";
-                        break;
-                }
-
-                UserInfo.AGE = String.valueOf(spinnerAge.getSelectedItem());
-
-                requestUpdateProfile(UserInfo.SEX, UserInfo.AGE);
-
-            }
-        });
-
-
-        ArrayList<Integer> items = new ArrayList<Integer>();
-        for (int age = 1; age <= 100; age++) {
-            items.add(age);
-        }
-        ArrayAdapter<Integer> adapter = new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_item, items);
-        spinnerAge.setAdapter(adapter);
-        */
-
-
-        /** 사용자 정보 업데이트 칸에 사용자 정보 저장되어있으면 저장값 보여주기*/
-        /*
-        if (UserInfo.AGE != null)
-            spinnerAge.setSelection(Integer.valueOf(UserInfo.AGE) - 1);
-
-        if (UserInfo.SEX != null) {
-            switch (UserInfo.SEX) {
-                case "male":
-                    radioMale.setChecked(true);
-                    break;
-                case "female":
-                    radioFemale.setChecked(true);
-                    break;
-                default:
-                    radioNothing.setChecked(true);
-                    break;
-            }
-        }
         */
 
 
@@ -291,7 +227,7 @@ public class MainActivity extends Activity {
 
 
         /** 카카오 프로필사진 가져오기 */
-        /*
+
         kakaoProfile = (ImageView) findViewById(R.id.kakao_profile);
         Thread getThumbnail = new Thread() {
             @Override
@@ -312,12 +248,12 @@ public class MainActivity extends Activity {
             }
         };
         getThumbnail.start();
-        */
+
 
         /**
          * 내정보
          */
-        /*
+
         try {
             getThumbnail.join(); //쓰레드가 끝나기전에 이미지설정을 하면 안되므로 join으로 기다리기
             kakaoProfile.setImageBitmap(kakaoThumbnail);
@@ -327,7 +263,7 @@ public class MainActivity extends Activity {
 
         kakaoNickname = (TextView) findViewById(R.id.kakao_nickname);
         kakaoNickname.setText(UserInfo.KAKAO_NICKNAME);
-        */
+
 
         tabHost.setup();
         TabHost.TabSpec tab1 = tabHost.newTabSpec("Tab1").setContent(R.id.tab1)
@@ -367,7 +303,7 @@ public class MainActivity extends Activity {
         /** 메인 탭을 제외한 타머지탭 disable */
         tabHost.getTabWidget().getChildTabViewAt(1).setEnabled(false);
         tabHost.getTabWidget().getChildTabViewAt(2).setEnabled(false);
-        tabHost.getTabWidget().getChildTabViewAt(3).setEnabled(false);
+        //tabHost.getTabWidget().getChildTabViewAt(3).setEnabled(false);
 
 
     }
