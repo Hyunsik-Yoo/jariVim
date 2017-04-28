@@ -15,7 +15,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ImageButton;
@@ -33,7 +32,6 @@ import android.widget.ToggleButton;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
-import com.google.android.gms.ads.reward.RewardedVideoAd;
 import com.kakao.auth.ApiResponseCallback;
 import com.kakao.network.ErrorResult;
 import com.kakao.usermgmt.UserManagement;
@@ -79,7 +77,7 @@ public class MainActivity extends Activity {
     private Spinner spinnerAge;
     private RadioGroup radioGroupSex;
     private RadioButton radioMale, radioFemale, radioNothing;
-    private PrefManager prefManager;
+
     private ProgressDialog pd;
 
 
@@ -113,17 +111,8 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setFullAd(); //메인엑티비티 로딩되면 광고 요청날림
+        //setFullAd(); //메인엑티비티 로딩되면 광고 요청날림
 
-        /**
-         * 앱을 실행한 후 처음으로 실행하는지 확인. 첫실행이면 튜토리얼화면 진행
-         * 추후에 나이와 성별 입력받기 위해 실험
-         */
-        prefManager = new PrefManager(this);
-        if (prefManager.isFirstTimeLaunch()) {
-            Log.d(TAG, "It's first time!!");
-            prefManager.setFirstTimeLaunch(false);
-        }
 
 
         /** status bar 색상 변경 */
@@ -155,17 +144,6 @@ public class MainActivity extends Activity {
         btnSortByPopular.setChecked(true);
         btnSortByText = (ToggleButton) findViewById(R.id.btn_sortby_text);
         btnSortByText.setOnClickListener(sort_listener);
-
-        /** 디버깅용(버튼눌렀을때 광고 뜨도록)*/
-        /*
-        btnAd = (Button) findViewById(R.id.btn_ad);
-        btnAd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                displayAD(MainActivity.this);
-            }
-        });
-        */
 
 
         /** 새로고침 버튼 */
@@ -516,7 +494,7 @@ public class MainActivity extends Activity {
 
     private void setFullAd() {
         interstitialAd = new InterstitialAd(this); //새 광고를 만듭니다.
-        interstitialAd.setAdUnitId(getResources().getString(R.string.ad_unit_id)); //이전에 String에 저장해 두었던 광고 ID를 전면 광고에 설정합니다.
+        interstitialAd.setAdUnitId(getResources().getString(R.string.ad_test_id)); //이전에 String에 저장해 두었던 광고 ID를 전면 광고에 설정합니다.
         AdRequest adRequest1 = new AdRequest.Builder().build(); //새 광고요청
         interstitialAd.loadAd(adRequest1); //요청한 광고를 load 합니다.
         interstitialAd.setAdListener(new AdListener() { //전면 광고의 상태를 확인하는 리스너 등록

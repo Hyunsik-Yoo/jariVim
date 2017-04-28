@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Typeface;
-import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,14 +21,10 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.TimeZone;
 
-import static cnu.lineup.com.cnulineup.List_Activity.getStringFromInputStream;
-import static cnu.lineup.com.cnulineup.List_Activity.server_IP;
+import static cnu.lineup.com.cnulineup.MainActivity.getStringFromInputStream;
+
 
 /**
  * Created by macgongmon on 7/18/16.
@@ -96,26 +91,6 @@ public class ExpandListAdapter extends BaseExpandableListAdapter {
             }
         });
 
-        /**
-         * 와이파이스캔버튼 필요 없어짐
-        Button btnWiFiScan = (Button)convertView.findViewById(R.id.btn_wifiscan);
-        btnWiFiScan.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                WifiManager wifi;
-                wifi = (WifiManager)view.getContext().getSystemService(Context.WIFI_SERVICE);
-
-                WiFiScan wifiScan = new WiFiScan(context);
-                try {
-                    wifiScan.execute(wifi.getDhcpInfo().gateway);
-                    MainActivity.displayAD(context);
-                }
-                catch (Exception e){
-                    e.printStackTrace();
-                }
-            }
-        });
-         */
 
         return convertView;
     }
@@ -177,6 +152,49 @@ public class ExpandListAdapter extends BaseExpandableListAdapter {
         return true;
     }
 
+    @Override
+    public void notifyDataSetChanged() {
+        super.notifyDataSetChanged();
+    }
+
+    private void DialogSimple(final View view, String title, String proportion, int groupPosition){
+        AlertDialog.Builder alt_bld = new AlertDialog.Builder(view.getContext());
+        final View parm_view = view;
+        final String parm_title = title;
+        final String parm_proportion = proportion;
+        final int parm_groupPosition = groupPosition;
+
+        alt_bld.setMessage("투표하시겠습니까?").setCancelable(
+                false).setPositiveButton("Yes",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        try {
+                            if(new threadVote().execute(parm_title, parm_proportion).get())
+                            {
+                                expandableListView.collapseGroup(parm_groupPosition);
+                                // 내가 투표한곳 보여주기위해 코딩중
+                                ///MainActivity.dbOpenHelper.insertVote(parm_title,parm_proportion);
+                                //MainActivity.displayAD(context);
+                            }
+
+                        }
+                        catch (Exception e){
+                            e.printStackTrace();
+                        }
+                    }
+                }).setNegativeButton("No",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alert = alt_bld.create();
+        // Title for AlertDialog
+        alert.setTitle("확인");
+        // Icon for AlertDialog
+        alert.show();
+    }
+
     private class threadVote extends AsyncTask<String,Integer, Boolean> {
         @Override
         protected Boolean doInBackground(String... parm) {
@@ -184,7 +202,7 @@ public class ExpandListAdapter extends BaseExpandableListAdapter {
                 String title = URLEncoder.encode(parm[0],"utf-8");
                 int proportion = Integer.parseInt(parm[1]);
                 String time = StaticMethod.getTimeNow();
-                String url_str = "http://"+server_IP+":8000/lineup/voting/?title="+title
+                String url_str = "http://"+MainActivity.serverIP+":8000/lineup/voting/?title="+title
                         +"&proportion="+proportion+"&time=" + time;
                 Log.d("test",url_str);
                 URL url = new URL(url_str);
@@ -208,49 +226,6 @@ public class ExpandListAdapter extends BaseExpandableListAdapter {
             super.onPreExecute();
         }
 
-    }
-
-    @Override
-    public void notifyDataSetChanged() {
-        super.notifyDataSetChanged();
-    }
-
-    private void DialogSimple(final View view, String title, String proportion, int groupPosition){
-        AlertDialog.Builder alt_bld = new AlertDialog.Builder(view.getContext());
-        final View parm_view = view;
-        final String parm_title = title;
-        final String parm_proportion = proportion;
-        final int parm_groupPosition = groupPosition;
-
-        alt_bld.setMessage("투표하시겠습니까?").setCancelable(
-                false).setPositiveButton("Yes",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        try {
-                            if(new threadVote().execute(parm_title, parm_proportion).get())
-                            {
-                                expandableListView.collapseGroup(parm_groupPosition);
-                                // 내가 투표한곳 보여주기위해 코딩중
-                                ///MainActivity.dbOpenHelper.insertVote(parm_title,parm_proportion);
-                                MainActivity.displayAD(context);
-                            }
-
-                        }
-                        catch (Exception e){
-                            e.printStackTrace();
-                        }
-                    }
-                }).setNegativeButton("No",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
-        AlertDialog alert = alt_bld.create();
-        // Title for AlertDialog
-        alert.setTitle("확인");
-        // Icon for AlertDialog
-        alert.show();
     }
 
 
