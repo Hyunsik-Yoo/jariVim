@@ -17,8 +17,10 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ExpandableListView;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -51,6 +53,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 
 public class MainActivity extends Activity {
@@ -59,26 +64,23 @@ public class MainActivity extends Activity {
 
     public static InterstitialAd interstitialAd;
     public static String serverIP = "168.188.127.132";
-    public static Button btnRefresh, btnAd, btnProfileUpdate;
+    public static Button btnRefresh;
     public static JSONObject currentProportion;
     public static DBOpenHelper dbOpenHelper;
 
-    private ToggleButton btnBob, btnNoddle, btnCafe, btnDrink, btnFastfood, btnFork, btnSortByPopular, btnSortByText;
+    private ToggleButton btnBob, btnNoddle, btnCafe, btnDrink, btnFastfood, btnFork, btnSortByPopular,
+            btnSortByText, btnFavorite, btnVote;
     private ImageButton btnSearch;
     private TabHost tabHost;
     private ExpandListAdapter expAdapter;
     private ArrayList<Group> expListItems;
-    private ExpandableListView expandList, expandlistFavorite;
-    private ListView listVote;
+    private ExpandableListView expandList, expandlistFavorite, expandListVote;
     private int lastExpandedPosition = -1;
     private ImageView kakaoProfile;
     private Bitmap kakaoThumbnail;
-    private TextView kakaoNickname;
-    private Spinner spinnerAge;
-    private RadioGroup radioGroupSex;
-    private RadioButton radioMale, radioFemale, radioNothing;
 
     private ProgressDialog pd;
+    private LinearLayout frameFavorite, frameVote;
 
 
 
@@ -112,6 +114,11 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //setFullAd(); //메인엑티비티 로딩되면 광고 요청날림
+        dbOpenHelper = new DBOpenHelper(this).open();
+
+        //dbOpenHelper.insertFavoriteRestaurant("하오치");
+        //Log.d(TAG,"insert 하오치 in sqlite");
+
 
 
 
@@ -144,6 +151,12 @@ public class MainActivity extends Activity {
         btnSortByPopular.setChecked(true);
         btnSortByText = (ToggleButton) findViewById(R.id.btn_sortby_text);
         btnSortByText.setOnClickListener(sort_listener);
+
+        btnFavorite = (ToggleButton)findViewById(R.id.btn_favorite);
+        btnVote = (ToggleButton)findViewById(R.id.btn_vote_list);
+        frameFavorite = (LinearLayout) findViewById(R.id.layout_favorite);
+        frameVote = (LinearLayout) findViewById(R.id.layout_vote_list);
+
 
 
         /** 새로고침 버튼 */
@@ -239,8 +252,7 @@ public class MainActivity extends Activity {
             e.printStackTrace();
         }
 
-        kakaoNickname = (TextView) findViewById(R.id.kakao_nickname);
-        kakaoNickname.setText(UserInfo.KAKAO_NICKNAME);
+
 
 
         tabHost.setup();
@@ -267,13 +279,13 @@ public class MainActivity extends Activity {
         /**
          * 내정보 탭
          */
-        /*
-        dbOpenHelper = new DBOpenHelper(this);
-        dbOpenHelper.open();
 
-        listVote = (ListView)findViewById(R.id.list_vote);
+        btnFavorite.setOnClickListener(userInfoListener);
+        btnVote.setOnClickListener(userInfoListener);
         expandlistFavorite = (ExpandableListView)findViewById(R.id.list_favorite);
-        */
+        expandListVote = (ExpandableListView)findViewById(R.id.list_vote);
+        expListItems = setItemsFavorite();
+        setExpandListAdapterFavorite(expListItems);
 
 
 
@@ -285,7 +297,6 @@ public class MainActivity extends Activity {
 
 
     }
-
 
     Button.OnClickListener listener_category = new View.OnClickListener() {
         @Override
@@ -387,6 +398,32 @@ public class MainActivity extends Activity {
         }
     };
 
+    Button.OnClickListener userInfoListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            switch (view.getId()){
+                case R.id.btn_favorite:
+                    btnVote.setChecked(false);
+                    btnFavorite.setChecked(true);
+                    frameFavorite.setVisibility(LinearLayout.VISIBLE);
+                    frameVote.setVisibility(LinearLayout.INVISIBLE);
+                    expListItems = setItemsFavorite();
+                    setExpandListAdapterFavorite(expListItems);
+                    break;
+                case R.id.btn_vote_list:
+                    btnVote.setChecked(true);
+                    btnFavorite.setChecked(false);
+                    expListItems = setItemsVote();
+                    setExpandListAdapterVote(expListItems);
+                    frameFavorite.setVisibility(LinearLayout.INVISIBLE);
+                    frameVote.setVisibility(LinearLayout.VISIBLE);
+
+                    break;
+
+            }
+        }
+    };
+
     public void setExpandListAdapter(ArrayList<Group> ExpListItems) {
         expAdapter = new ExpandListAdapter(MainActivity.this, ExpListItems, expandList);
         expandList.setAdapter(expAdapter);
@@ -396,6 +433,36 @@ public class MainActivity extends Activity {
                 if (lastExpandedPosition != -1
                         && groupPosition != lastExpandedPosition) {
                     expandList.collapseGroup(lastExpandedPosition);
+                }
+                lastExpandedPosition = groupPosition;
+            }
+        });
+    }
+
+    public void setExpandListAdapterFavorite(ArrayList<Group> ExpListItems) {
+        expAdapter = new ExpandListAdapter(MainActivity.this, ExpListItems, expandlistFavorite);
+        expandlistFavorite.setAdapter(expAdapter);
+        expandlistFavorite.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+            @Override
+            public void onGroupExpand(int groupPosition) {
+                if (lastExpandedPosition != -1
+                        && groupPosition != lastExpandedPosition) {
+                    expandlistFavorite.collapseGroup(lastExpandedPosition);
+                }
+                lastExpandedPosition = groupPosition;
+            }
+        });
+    }
+
+    public void setExpandListAdapterVote(ArrayList<Group> ExpListItems) {
+        expAdapter = new ExpandListAdapter(MainActivity.this, ExpListItems, expandListVote);
+        expandListVote.setAdapter(expAdapter);
+        expandListVote.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+            @Override
+            public void onGroupExpand(int groupPosition) {
+                if (lastExpandedPosition != -1
+                        && groupPosition != lastExpandedPosition) {
+                    expandListVote.collapseGroup(lastExpandedPosition);
                 }
                 lastExpandedPosition = groupPosition;
             }
@@ -433,6 +500,82 @@ public class MainActivity extends Activity {
             return null;
         }
     }
+
+    public ArrayList<Group> setItemsFavorite() {
+        try {
+            ArrayList<Group> list_group = new ArrayList<Group>();
+            ArrayList<JSONArray> restaurantList = new ArrayList<>();
+            restaurantList.add(currentProportion.getJSONArray("bob"));
+            restaurantList.add(currentProportion.getJSONArray("noddle"));
+            restaurantList.add(currentProportion.getJSONArray("cafe"));
+            restaurantList.add(currentProportion.getJSONArray("drink"));
+            restaurantList.add(currentProportion.getJSONArray("fastfood"));
+            restaurantList.add(currentProportion.getJSONArray("meat"));
+
+            List<String> favoriteRes = dbOpenHelper.getFavoriteRestaurant();
+
+
+            Iterator<JSONArray> iterRestaurant = restaurantList.iterator();
+            while(iterRestaurant.hasNext()){
+                JSONArray restaurant = iterRestaurant.next();
+
+                if (restaurant != null) {
+                    for (int i = 0; i < restaurant.length(); i++) {
+                        String group_name = ((JSONObject) restaurant.get(i)).getString("title");
+                        int proportion = ((JSONObject) restaurant.get(i)).getInt("proportion");
+                        if(!favoriteRes.contains(group_name)){
+                            continue;
+                        }
+                        Log.d(TAG,group_name);
+                        Group group = new Group();
+                        group.setName(group_name);
+                        group.setProportion(proportion);
+
+                        Child child = new Child();
+                        SeekBar seekBar = (SeekBar) findViewById(R.id.seekBar);
+                        Button btnConfirm = (Button) findViewById(R.id.btn_confirm);
+                        Button btnCancle = (Button) findViewById(R.id.btn_cancle);
+                        child.setSeekBar(seekBar);
+                        child.setConfirm(btnConfirm);
+                        child.setCancle(btnCancle);
+
+                        group.setItems(child);
+                        list_group.add(group);
+                    }
+                }
+            }
+            return list_group;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public ArrayList<Group> setItemsVote() {
+        try {
+            ArrayList<Group> list_group = new ArrayList<Group>();
+
+            ArrayList<ArrayList<String>> voteRes = new ArrayList<>(dbOpenHelper.getVote());
+            Iterator<ArrayList<String>> voteIter =voteRes.iterator();
+            while(voteIter.hasNext()){
+                ArrayList<String> votePair = voteIter.next();
+                String group_name = votePair.get(0);
+                int proportion = Integer.parseInt(votePair.get(1));
+
+                Group group = new Group();
+                group.setName(group_name);
+                group.setProportion(proportion);
+                Log.d(TAG,group_name + " : "+proportion);
+
+                list_group.add(group);
+            }
+            return list_group;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 
     //현재 음식점 이름과 최근인구밀도를 서버로부터 받아 리턴
     public static class threadVote extends AsyncTask<String, Integer, JSONObject> {

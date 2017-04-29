@@ -173,7 +173,7 @@ public class ExpandListAdapter extends BaseExpandableListAdapter {
                             {
                                 expandableListView.collapseGroup(parm_groupPosition);
                                 // 내가 투표한곳 보여주기위해 코딩중
-                                ///MainActivity.dbOpenHelper.insertVote(parm_title,parm_proportion);
+                                MainActivity.dbOpenHelper.insertVote(parm_title,parm_proportion);
                                 //MainActivity.displayAD(context);
                             }
 
