@@ -31,7 +31,7 @@
             android:value="@string/kakao_app_key" />
 
         <activity android:name=".SearchActivity" />
-        <activity android:name=".KakaoLogInActivity"/>
+        <activity android:name=".KakaoLogInActivity" />
     </application>
 
 </manifest>

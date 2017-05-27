@@ -1,6 +1,5 @@
 package cnu.lineup.com.cnulineup;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -11,25 +10,19 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ExpandableListView;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.SeekBar;
-import android.widget.Spinner;
-import android.widget.TabHost;
-import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
@@ -37,6 +30,7 @@ import com.google.android.gms.ads.InterstitialAd;
 import com.kakao.auth.ApiResponseCallback;
 import com.kakao.network.ErrorResult;
 import com.kakao.usermgmt.UserManagement;
+import com.viewpagerindicator.TitlePageIndicator;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -48,65 +42,26 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.text.Collator;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 
-public class MainActivity extends Activity {
+public class MainActivity extends AppCompatActivity {
 
     private final String TAG = this.getClass().getSimpleName();
 
-    public static InterstitialAd interstitialAd;
-    public static String serverIP = "168.188.127.132";
-    public static Button btnRefresh;
+    // 현재 인구가 저장되는 JSON Obejct
     public static JSONObject currentProportion;
     public static DBOpenHelper dbOpenHelper;
 
-    private ToggleButton btnBob, btnNoddle, btnCafe, btnDrink, btnFastfood, btnFork, btnSortByPopular,
-            btnSortByText, btnFavorite, btnVote;
-    private ImageButton btnSearch;
-    private TabHost tabHost;
-    private ExpandListAdapter expAdapter;
-    private ArrayList<Group> expListItems;
-    private ExpandableListView expandList, expandlistFavorite, expandListVote;
-    private int lastExpandedPosition = -1;
-    private ImageView kakaoProfile;
-    private Bitmap kakaoThumbnail;
 
-    private ProgressDialog pd;
-    private LinearLayout frameFavorite, frameVote;
+    ViewPager vp;
+    public static InterstitialAd interstitialAd;
+    public static Button btnHome, btnResInfo, btnStatistic, btnUserInfo;
+    public ImageButton btnSearch;
 
-
-
-    public static Comparator<Group> comparatorByText = new Comparator<Group>() {
-        /**
-         * 서버로부터 받은 가게이름을 가나다순으로 정렬
-         */
-        private final Collator collator = Collator.getInstance();
-
-        @Override
-        public int compare(Group group1, Group group2) {
-            return collator.compare(group1.getName(), group2.getName());
-        }
-    };
-
-
-    public static Comparator<Group> comparatorByPopular = new Comparator<Group>() {
-        @Override
-        public int compare(Group group1, Group group2) {
-            /**
-             * Group(가게이름 , 인구비율)을 인기도순으로 정렬
-             */
-            return group1.getProportion() < group2.getProportion() ? 1 : group1.getProportion() >
-                    group2.getProportion() ? -1 : 0;
-        }
-    };
 
 
     @Override
@@ -115,10 +70,6 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         //setFullAd(); //메인엑티비티 로딩되면 광고 요청날림
         dbOpenHelper = new DBOpenHelper(this).open();
-
-        //dbOpenHelper.insertFavoriteRestaurant("하오치");
-        //Log.d(TAG,"insert 하오치 in sqlite");
-
 
 
 
@@ -131,68 +82,46 @@ public class MainActivity extends Activity {
         }
 
 
-        tabHost = (TabHost) findViewById(R.id.footer);
 
-        btnBob = (ToggleButton) findViewById(R.id.btn_category_bob);
-        btnBob.setOnClickListener(listener_category);
-        btnNoddle = (ToggleButton) findViewById(R.id.btn_category_noodle);
-        btnNoddle.setOnClickListener(listener_category);
-        btnCafe = (ToggleButton) findViewById(R.id.btn_category_cafe);
-        btnCafe.setOnClickListener(listener_category);
-        btnDrink = (ToggleButton) findViewById(R.id.btn_category_beer);
-        btnDrink.setOnClickListener(listener_category);
-        btnFastfood = (ToggleButton) findViewById(R.id.btn_category_fastfood);
-        btnFastfood.setOnClickListener(listener_category);
-        btnFork = (ToggleButton) findViewById(R.id.btn_category_fork);
-        btnFork.setOnClickListener(listener_category);
-        btnSearch = (ImageButton) findViewById(R.id.btn_search);
-        btnSortByPopular = (ToggleButton) findViewById(R.id.btn_sortby_popular);
-        btnSortByPopular.setOnClickListener(sort_listener);
-        btnSortByPopular.setChecked(true);
-        btnSortByText = (ToggleButton) findViewById(R.id.btn_sortby_text);
-        btnSortByText.setOnClickListener(sort_listener);
-
-        btnFavorite = (ToggleButton)findViewById(R.id.btn_favorite);
-        btnVote = (ToggleButton)findViewById(R.id.btn_vote_list);
-        frameFavorite = (LinearLayout) findViewById(R.id.layout_favorite);
-        frameVote = (LinearLayout) findViewById(R.id.layout_vote_list);
+        vp = (ViewPager)findViewById(R.id.vp);
+        btnHome = (Button)findViewById(R.id.btn_home);
+        btnResInfo = (Button)findViewById(R.id.btn_info);
+        btnStatistic = (Button)findViewById(R.id.btn_statistics);
+        btnUserInfo = (Button)findViewById(R.id.btn_account);
+        btnSearch = (ImageButton)findViewById(R.id.btn_search);
 
 
+        //ViewPager
+        vp.setAdapter(new pagerAdapter(getSupportFragmentManager()));
+        vp.setCurrentItem(0);
 
-        /** 새로고침 버튼 */
-        btnRefresh = (Button) findViewById(R.id.btn_refresh);
-        btnRefresh.setOnClickListener(new View.OnClickListener() {
+        btnHome.setOnClickListener(movePageListener);
+        btnHome.setTag(0);
+        btnResInfo.setOnClickListener(movePageListener);
+        btnResInfo.setTag(1);
+        btnStatistic.setOnClickListener(movePageListener);
+        btnStatistic.setTag(2);
+        btnUserInfo.setOnClickListener(movePageListener);
+        btnUserInfo.setTag(3);
+
+
+        /** ViewPager 스크롤 기능 추가하던중 미룸 */
+        TitlePageIndicator titleIndicator = (TitlePageIndicator)findViewById(R.id.titles);
+        titleIndicator.setViewPager(vp);
+        titleIndicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public void onClick(View view) {
-                try {
-                    currentProportion = new threadVote(MainActivity.this).execute().get();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                String category_name = "";
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
-                if (btnBob.isChecked()) {
-                    category_name = "bob";
-                } else if (btnNoddle.isChecked()) {
-                    category_name = "noddle";
-                } else if (btnCafe.isChecked()) {
-                    category_name = "cafe";
-                } else if (btnDrink.isChecked()) {
-                    category_name = "drink";
-                } else if (btnFastfood.isChecked()) {
-                    category_name = "fastfood";
-                } else if (btnFork.isChecked()) {
-                    category_name = "meat";
-                }
-                expListItems = setItems(category_name);
+            }
 
-                if (btnSortByPopular.isChecked())
-                    Collections.sort(expListItems, comparatorByPopular);
-                else if (btnSortByText.isChecked())
-                    Collections.sort(expListItems, comparatorByText);
-                //정렬 눌린 버튼에 따라서 정렬해야함
-                setExpandListAdapter(expListItems);
-                Toast.makeText(MainActivity.this, "데이터 새로고침", Toast.LENGTH_SHORT).show();
+            @Override
+            public void onPageSelected(int position) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
             }
         });
 
@@ -206,434 +135,17 @@ public class MainActivity extends Activity {
             }
         });
 
-
-        ImageView tab_home_icon = new ImageView(this);
-        tab_home_icon.setImageResource(R.drawable.selector_tab_home);
-        ImageView tab_info_icon = new ImageView(this);
-        tab_info_icon.setImageResource(R.drawable.selector_tab_info);
-        ImageView tab_account_icon = new ImageView(this);
-        tab_account_icon.setImageResource(R.drawable.selector_tab_account);
-        ImageView tab_statistics_icon = new ImageView(this);
-        tab_statistics_icon.setImageResource(R.drawable.selector_tab_statistics);
-
-
-        /** 카카오 프로필사진 가져오기 */
-
-        kakaoProfile = (ImageView) findViewById(R.id.kakao_profile);
-        Thread getThumbnail = new Thread() {
-            @Override
-            public void run() {
-                try {
-                    URL url = new URL(UserInfo.PROFILE_IMAGE_PATH);
-
-                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                    conn.setDoInput(true);
-                    conn.connect();
-
-                    InputStream is = conn.getInputStream();
-                    kakaoThumbnail = BitmapFactory.decodeStream(is);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                super.run();
-            }
-        };
-        getThumbnail.start();
-
-
-        /**
-         * 내정보
-         */
-
-        try {
-            getThumbnail.join(); //쓰레드가 끝나기전에 이미지설정을 하면 안되므로 join으로 기다리기
-            kakaoProfile.setImageBitmap(kakaoThumbnail);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
-
-
-        tabHost.setup();
-        TabHost.TabSpec tab1 = tabHost.newTabSpec("Tab1").setContent(R.id.tab1)
-                .setIndicator(tab_home_icon);
-        TabHost.TabSpec tab2 = tabHost.newTabSpec("Tab2").setContent(R.id.tab2)
-                .setIndicator(tab_info_icon);
-        TabHost.TabSpec tab3 = tabHost.newTabSpec("Tab3").setContent(R.id.tab3)
-                .setIndicator(tab_statistics_icon);
-        TabHost.TabSpec tab4 = tabHost.newTabSpec("Tab4").setContent(R.id.tab4)
-                .setIndicator(tab_account_icon);
-
-        tabHost.addTab(tab1);
-        tabHost.addTab(tab2);
-        tabHost.addTab(tab3);
-        tabHost.addTab(tab4);
-
-        expandList = (ExpandableListView) findViewById(R.id.list_main);
-        expListItems = setItems("bob");
-        Collections.sort(expListItems, comparatorByPopular);
-        setExpandListAdapter(expListItems);
-
-
-        /**
-         * 내정보 탭
-         */
-
-        btnFavorite.setOnClickListener(userInfoListener);
-        btnVote.setOnClickListener(userInfoListener);
-        expandlistFavorite = (ExpandableListView)findViewById(R.id.list_favorite);
-        expandListVote = (ExpandableListView)findViewById(R.id.list_vote);
-        expListItems = setItemsFavorite();
-        setExpandListAdapterFavorite(expListItems);
-
-
-
-
-        /** 메인 탭을 제외한 타머지탭 disable */
-        tabHost.getTabWidget().getChildTabViewAt(1).setEnabled(false);
-        tabHost.getTabWidget().getChildTabViewAt(2).setEnabled(false);
-        //tabHost.getTabWidget().getChildTabViewAt(3).setEnabled(false);
-
-
     }
 
-    Button.OnClickListener listener_category = new View.OnClickListener() {
+    View.OnClickListener movePageListener = new View.OnClickListener()
+    {
         @Override
-        public void onClick(View view) {
-            String category_name = null;
-            switch (view.getId()) {
-                case R.id.btn_category_bob:
-                    category_name = "bob";
-                    btnBob.setChecked(true);
-                    btnNoddle.setChecked(false);
-                    btnCafe.setChecked(false);
-                    btnDrink.setChecked(false);
-                    btnFastfood.setChecked(false);
-                    btnFork.setChecked(false);
-                    btnSortByPopular.setChecked(true);
-                    btnSortByText.setChecked(false);
-                    break;
-                case R.id.btn_category_noodle:
-                    category_name = "noddle";
-                    btnBob.setChecked(false);
-                    btnNoddle.setChecked(true);
-                    btnCafe.setChecked(false);
-                    btnDrink.setChecked(false);
-                    btnFastfood.setChecked(false);
-                    btnFork.setChecked(false);
-                    btnSortByPopular.setChecked(true);
-                    btnSortByText.setChecked(false);
-                    break;
-                case R.id.btn_category_fastfood:
-                    category_name = "fastfood";
-                    btnBob.setChecked(false);
-                    btnNoddle.setChecked(false);
-                    btnCafe.setChecked(false);
-                    btnDrink.setChecked(false);
-                    btnFastfood.setChecked(true);
-                    btnFork.setChecked(false);
-                    btnSortByPopular.setChecked(true);
-                    btnSortByText.setChecked(false);
-                    break;
-                case R.id.btn_category_fork:
-                    category_name = "meat";
-                    btnBob.setChecked(false);
-                    btnNoddle.setChecked(false);
-                    btnCafe.setChecked(false);
-                    btnDrink.setChecked(false);
-                    btnFastfood.setChecked(false);
-                    btnFork.setChecked(true);
-                    btnSortByPopular.setChecked(true);
-                    btnSortByText.setChecked(false);
-                    break;
-                case R.id.btn_category_cafe:
-                    category_name = "cafe";
-                    btnBob.setChecked(false);
-                    btnNoddle.setChecked(false);
-                    btnCafe.setChecked(true);
-                    btnDrink.setChecked(false);
-                    btnFastfood.setChecked(false);
-                    btnFork.setChecked(false);
-                    btnSortByPopular.setChecked(true);
-                    btnSortByText.setChecked(false);
-                    break;
-                case R.id.btn_category_beer:
-                    category_name = "drink";
-                    btnBob.setChecked(false);
-                    btnNoddle.setChecked(false);
-                    btnCafe.setChecked(false);
-                    btnDrink.setChecked(true);
-                    btnFastfood.setChecked(false);
-                    btnFork.setChecked(false);
-                    btnSortByPopular.setChecked(true);
-                    btnSortByText.setChecked(false);
-                    break;
-            }
-
-            expListItems = setItems(category_name);
-            Collections.sort(expListItems, comparatorByPopular);
-            setExpandListAdapter(expListItems);
+        public void onClick(View v)
+        {
+            int tag = (int) v.getTag();
+            vp.setCurrentItem(tag);
         }
     };
-
-    Button.OnClickListener sort_listener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            switch (view.getId()) {
-                case R.id.btn_sortby_popular:
-                    btnSortByPopular.setChecked(true);
-                    btnSortByText.setChecked(false);
-                    Collections.sort(expListItems, comparatorByPopular);
-                    setExpandListAdapter(expListItems);
-                    break;
-
-                case R.id.btn_sortby_text:
-                    btnSortByPopular.setChecked(false);
-                    btnSortByText.setChecked(true);
-                    Collections.sort(expListItems, comparatorByText);
-                    setExpandListAdapter(expListItems);
-                    break;
-            }
-        }
-    };
-
-    Button.OnClickListener userInfoListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            switch (view.getId()){
-                case R.id.btn_favorite:
-                    btnVote.setChecked(false);
-                    btnFavorite.setChecked(true);
-                    frameFavorite.setVisibility(LinearLayout.VISIBLE);
-                    frameVote.setVisibility(LinearLayout.INVISIBLE);
-                    expListItems = setItemsFavorite();
-                    setExpandListAdapterFavorite(expListItems);
-                    break;
-                case R.id.btn_vote_list:
-                    btnVote.setChecked(true);
-                    btnFavorite.setChecked(false);
-                    expListItems = setItemsVote();
-                    setExpandListAdapterVote(expListItems);
-                    frameFavorite.setVisibility(LinearLayout.INVISIBLE);
-                    frameVote.setVisibility(LinearLayout.VISIBLE);
-
-                    break;
-
-            }
-        }
-    };
-
-    public void setExpandListAdapter(ArrayList<Group> ExpListItems) {
-        expAdapter = new ExpandListAdapter(MainActivity.this, ExpListItems, expandList);
-        expandList.setAdapter(expAdapter);
-        expandList.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
-            @Override
-            public void onGroupExpand(int groupPosition) {
-                if (lastExpandedPosition != -1
-                        && groupPosition != lastExpandedPosition) {
-                    expandList.collapseGroup(lastExpandedPosition);
-                }
-                lastExpandedPosition = groupPosition;
-            }
-        });
-    }
-
-    public void setExpandListAdapterFavorite(ArrayList<Group> ExpListItems) {
-        expAdapter = new ExpandListAdapter(MainActivity.this, ExpListItems, expandlistFavorite);
-        expandlistFavorite.setAdapter(expAdapter);
-        expandlistFavorite.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
-            @Override
-            public void onGroupExpand(int groupPosition) {
-                if (lastExpandedPosition != -1
-                        && groupPosition != lastExpandedPosition) {
-                    expandlistFavorite.collapseGroup(lastExpandedPosition);
-                }
-                lastExpandedPosition = groupPosition;
-            }
-        });
-    }
-
-    public void setExpandListAdapterVote(ArrayList<Group> ExpListItems) {
-        expAdapter = new ExpandListAdapter(MainActivity.this, ExpListItems, expandListVote);
-        expandListVote.setAdapter(expAdapter);
-        expandListVote.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
-            @Override
-            public void onGroupExpand(int groupPosition) {
-                if (lastExpandedPosition != -1
-                        && groupPosition != lastExpandedPosition) {
-                    expandListVote.collapseGroup(lastExpandedPosition);
-                }
-                lastExpandedPosition = groupPosition;
-            }
-        });
-    }
-
-    public ArrayList<Group> setItems(String category) {
-        try {
-            JSONArray restaurantList = currentProportion.getJSONArray(category);
-            ArrayList<Group> list_group = new ArrayList<Group>();
-
-            if (restaurantList != null) {
-                for (int i = 0; i < restaurantList.length(); i++) {
-                    String group_name = ((JSONObject) restaurantList.get(i)).getString("title");
-                    int proportion = ((JSONObject) restaurantList.get(i)).getInt("proportion");
-                    Group group = new Group();
-                    group.setName(group_name);
-                    group.setProportion(proportion);
-
-                    Child child = new Child();
-                    SeekBar seekBar = (SeekBar) findViewById(R.id.seekBar);
-                    Button btnConfirm = (Button) findViewById(R.id.btn_confirm);
-                    Button btnCancle = (Button) findViewById(R.id.btn_cancle);
-                    child.setSeekBar(seekBar);
-                    child.setConfirm(btnConfirm);
-                    child.setCancle(btnCancle);
-
-                    group.setItems(child);
-                    list_group.add(group);
-                }
-            }
-            return list_group;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public ArrayList<Group> setItemsFavorite() {
-        try {
-            ArrayList<Group> list_group = new ArrayList<Group>();
-            ArrayList<JSONArray> restaurantList = new ArrayList<>();
-            restaurantList.add(currentProportion.getJSONArray("bob"));
-            restaurantList.add(currentProportion.getJSONArray("noddle"));
-            restaurantList.add(currentProportion.getJSONArray("cafe"));
-            restaurantList.add(currentProportion.getJSONArray("drink"));
-            restaurantList.add(currentProportion.getJSONArray("fastfood"));
-            restaurantList.add(currentProportion.getJSONArray("meat"));
-
-            List<String> favoriteRes = dbOpenHelper.getFavoriteRestaurant();
-
-
-            Iterator<JSONArray> iterRestaurant = restaurantList.iterator();
-            while(iterRestaurant.hasNext()){
-                JSONArray restaurant = iterRestaurant.next();
-
-                if (restaurant != null) {
-                    for (int i = 0; i < restaurant.length(); i++) {
-                        String group_name = ((JSONObject) restaurant.get(i)).getString("title");
-                        int proportion = ((JSONObject) restaurant.get(i)).getInt("proportion");
-                        if(!favoriteRes.contains(group_name)){
-                            continue;
-                        }
-                        Log.d(TAG,group_name);
-                        Group group = new Group();
-                        group.setName(group_name);
-                        group.setProportion(proportion);
-
-                        Child child = new Child();
-                        SeekBar seekBar = (SeekBar) findViewById(R.id.seekBar);
-                        Button btnConfirm = (Button) findViewById(R.id.btn_confirm);
-                        Button btnCancle = (Button) findViewById(R.id.btn_cancle);
-                        child.setSeekBar(seekBar);
-                        child.setConfirm(btnConfirm);
-                        child.setCancle(btnCancle);
-
-                        group.setItems(child);
-                        list_group.add(group);
-                    }
-                }
-            }
-            return list_group;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public ArrayList<Group> setItemsVote() {
-        try {
-            ArrayList<Group> list_group = new ArrayList<Group>();
-
-            ArrayList<ArrayList<String>> voteRes = new ArrayList<>(dbOpenHelper.getVote());
-            Iterator<ArrayList<String>> voteIter =voteRes.iterator();
-            while(voteIter.hasNext()){
-                ArrayList<String> votePair = voteIter.next();
-                String group_name = votePair.get(0);
-                int proportion = Integer.parseInt(votePair.get(1));
-
-                Group group = new Group();
-                group.setName(group_name);
-                group.setProportion(proportion);
-                Log.d(TAG,group_name + " : "+proportion);
-
-                list_group.add(group);
-            }
-            return list_group;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-
-    //현재 음식점 이름과 최근인구밀도를 서버로부터 받아 리턴
-    public static class threadVote extends AsyncTask<String, Integer, JSONObject> {
-        Context context;
-
-        public threadVote(Context context) {
-            this.context = context;
-        }
-
-        @Override
-        protected JSONObject doInBackground(String... parm) {
-            try {
-                String time = StaticMethod.getTimeNow();
-
-                URL url = new URL("http://" + serverIP + ":8000/lineup/current/?time=" + time);
-                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-                JSONObject json = new JSONObject(getStringFromInputStream(in));
-
-                return json;
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-    }
-
-    //서버에서 정보를 받는 과정
-    public static String getStringFromInputStream(InputStream is) {
-
-        BufferedReader br = null;
-        StringBuilder sb = new StringBuilder();
-
-        String line;
-        try {
-
-            br = new BufferedReader(new InputStreamReader(is));
-            while ((line = br.readLine()) != null) {
-                sb.append(line);
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (br != null) {
-                try {
-                    br.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        return sb.toString();
-
-    }
 
     private void setFullAd() {
         interstitialAd = new InterstitialAd(this); //새 광고를 만듭니다.
@@ -668,28 +180,35 @@ public class MainActivity extends Activity {
         }
     }
 
-    protected void requestUpdateProfile(String sex, String age) { //유저의 정보를 받아오는 함수
-        final Map<String, String> properties = new HashMap<String, String>();
-        properties.put("sex", sex);
-        properties.put("age", age);
 
-        UserManagement.requestUpdateProfile(new ApiResponseCallback<Long>() {
-            @Override
-            public void onSessionClosed(ErrorResult errorResult) {
-                Log.e(TAG, errorResult.getErrorMessage());
+    private class pagerAdapter extends FragmentStatePagerAdapter
+    {
+        public pagerAdapter(android.support.v4.app.FragmentManager fm)
+        {
+            super(fm);
+        }
+        @Override
+        public android.support.v4.app.Fragment getItem(int position)
+        {
+            switch(position)
+            {
+                case 0:
+                    return new FragMain();
+                case 1:
+                    return new FragInfo();
+                case 2:
+                    return new FragStatistics();
+                case 3:
+                    return new FragUserInfo();
+                default:
+                    return null;
             }
-
-            @Override
-            public void onNotSignedUp() {
-
-            }
-
-            @Override
-            public void onSuccess(Long userId) {
-                Log.i(TAG, "succeeded to update user profile");
-            }
-        }, properties);
+        }
+        @Override
+        public int getCount()
+        {
+            return 4;
+        }
     }
-
 
 }

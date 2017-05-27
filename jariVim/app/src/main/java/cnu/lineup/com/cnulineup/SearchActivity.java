@@ -98,7 +98,7 @@ public class SearchActivity extends Activity {
                 ExpListItems = getSearchResult(title);
 
                 if(ExpListItems != null) {
-                    Collections.sort(ExpListItems, MainActivity.comparatorByPopular);
+                    Collections.sort(ExpListItems, UtilMethod.comparatorByPopular);
                     ExpAdapter = new ExpandListAdapter(SearchActivity.this, ExpListItems, ExpandList);
                     ExpandList.setAdapter(ExpAdapter);
                     ExpandList.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
@@ -126,7 +126,7 @@ public class SearchActivity extends Activity {
                 ExpListItems = getSearchResult(title);
 
                 if(ExpListItems != null) {
-                    Collections.sort(ExpListItems, MainActivity.comparatorByPopular);
+                    Collections.sort(ExpListItems, UtilMethod.comparatorByPopular);
                     ExpAdapter = new ExpandListAdapter(SearchActivity.this, ExpListItems, ExpandList);
                     ExpandList.setAdapter(ExpAdapter);
                     ExpandList.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {

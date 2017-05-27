@@ -28,8 +28,6 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:23.2.1'
-    testCompile 'junit:junit:4.12'
 
 
     compile group: 'com.kakao.sdk', name: 'kakaolink', version: project.KAKAO_SDK_VERSION
@@ -43,6 +41,10 @@ dependencies {
     // push sdk를 사용하기 위해 필요.
     compile group: 'com.kakao.sdk', name: 'push', version: project.KAKAO_SDK_VERSION
 
-    compile 'com.google.android.gms:play-services:10.2.1'
 
+    compile 'com.android.support:appcompat-v7:23.2.1'
+    compile 'com.google.android.gms:play-services:10.2.1'
+    compile 'fr.avianey.com.viewpagerindicator:library:2.4.1.1@aar'
+    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha4'
+    testCompile 'junit:junit:4.12'
 }

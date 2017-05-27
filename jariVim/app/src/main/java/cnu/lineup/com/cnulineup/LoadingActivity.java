@@ -7,7 +7,6 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 
-
 import com.kakao.auth.ErrorCode;
 import com.kakao.auth.ISessionCallback;
 import com.kakao.auth.Session;
@@ -35,10 +34,11 @@ public class LoadingActivity extends Activity {
         int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
         decorView.setSystemUiVisibility(uiOptions);
 
+
+        // 전체 예측 인원 가져오기 (다 가지고 올때까지 기다림)
         try {
-            MainActivity.currentProportion = new MainActivity.threadVote(LoadingActivity
+            MainActivity.currentProportion = new UtilMethod.getAllPopulation(LoadingActivity
                     .this).execute().get();
-            //Thread.sleep(3000);
         }catch (ExecutionException e){
             e.printStackTrace();
         }catch (InterruptedException e){

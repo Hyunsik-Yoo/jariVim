@@ -23,7 +23,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 
-import static cnu.lineup.com.cnulineup.MainActivity.getStringFromInputStream;
+import static cnu.lineup.com.cnulineup.UtilMethod.getStringFromInputStream;
 
 
 /**
@@ -201,8 +201,8 @@ public class ExpandListAdapter extends BaseExpandableListAdapter {
             try {
                 String title = URLEncoder.encode(parm[0],"utf-8");
                 int proportion = Integer.parseInt(parm[1]);
-                String time = StaticMethod.getTimeNow();
-                String url_str = "http://"+MainActivity.serverIP+":8000/lineup/voting/?title="+title
+                String time = UtilMethod.getTimeNow();
+                String url_str = "http://"+UtilMethod.serverIP+":8000/lineup/voting/?title="+title
                         +"&proportion="+proportion+"&time=" + time;
                 Log.d("test",url_str);
                 URL url = new URL(url_str);
