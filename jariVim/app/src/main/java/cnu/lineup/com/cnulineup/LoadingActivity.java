@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 
+
 import com.kakao.auth.ErrorCode;
 import com.kakao.auth.ISessionCallback;
 import com.kakao.auth.Session;
@@ -35,10 +36,11 @@ public class LoadingActivity extends Activity {
         decorView.setSystemUiVisibility(uiOptions);
 
 
-        // 전체 예측 인원 가져오기 (다 가지고 올때까지 기다림)
+        //TODO : 여기 get함수 때문에 처음에 앱 키는 속도가 줄어드는 것 같다 onCreate말고 다른데에서 쓰레드 돌려야 할듯
         try {
-            MainActivity.currentProportion = new UtilMethod.getAllPopulation(LoadingActivity
+            MainActivity.currentProportion = new UtilMethod.threadVote(LoadingActivity
                     .this).execute().get();
+            //Thread.sleep(3000);
         }catch (ExecutionException e){
             e.printStackTrace();
         }catch (InterruptedException e){

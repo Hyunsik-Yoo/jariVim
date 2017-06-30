@@ -13,32 +13,13 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.Collator;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Comparator;
-import java.util.Date;
-import java.util.TimeZone;
 
 /**
- * Created by macgongmon on 1/26/17.
+ * Created by macgongmon on 6/11/17.
  */
 
 public class UtilMethod {
-    public static String serverIP = "168.188.127.132";
-
-    /**
-     * 현재시간을 ISO format형태로 반환해줌
-     * yyyy-MM-ddTHH:mmZ format
-     * @return ISO format의 날짜 문자열
-     */
-    public static String getTimeNow(){
-        TimeZone tz = TimeZone.getTimeZone("Asia/Seoul");
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
-        df.setTimeZone(tz);
-        String nowAsISO = df.format(new Date());
-
-        return nowAsISO;
-    }
 
     public static Comparator<Group> comparatorByText = new Comparator<Group>() {
         /**
@@ -64,11 +45,9 @@ public class UtilMethod {
         }
     };
 
-
+    //서버에서 정보를 받는 과정
     public static String getStringFromInputStream(InputStream is) {
-        /**
-         * 서버에서 받은 정보를 String으로 변환해주는 함수
-         */
+
         BufferedReader br = null;
         StringBuilder sb = new StringBuilder();
 
@@ -91,29 +70,28 @@ public class UtilMethod {
                 }
             }
         }
+
         return sb.toString();
+
     }
 
-
-    public static class getAllPopulation extends AsyncTask<String, Integer, JSONObject> {
-        /**
-         * 전체 음식점과 음식점들에 대한 현재시간의 인구예측결과를 받아온다.
-         */
+    //현재 음식점 이름과 최근인구밀도를 서버로부터 받아 리턴
+    public static class threadVote extends AsyncTask<String, Integer, JSONObject> {
         Context context;
 
-        public getAllPopulation(Context context) {
+        public threadVote(Context context) {
             this.context = context;
         }
 
         @Override
         protected JSONObject doInBackground(String... parm) {
             try {
-                String time = UtilMethod.getTimeNow();
+                String time = StaticMethod.getTimeNow();
 
-                URL url = new URL("http://" + serverIP + ":8000/lineup/current/?time=" + time);
+                URL url = new URL("http://" + MainActivity.serverIP + ":8000/lineup/current/?time=" + time);
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-                JSONObject json = new JSONObject(getStringFromInputStream(in));
+                JSONObject json = new JSONObject(UtilMethod.getStringFromInputStream(in));
 
                 return json;
 
@@ -122,8 +100,8 @@ public class UtilMethod {
             }
             return null;
         }
-
     }
+
 
 
 }

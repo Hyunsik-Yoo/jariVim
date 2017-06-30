@@ -23,8 +23,6 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 
-import static cnu.lineup.com.cnulineup.UtilMethod.getStringFromInputStream;
-
 
 /**
  * Created by macgongmon on 7/18/16.
@@ -201,14 +199,14 @@ public class ExpandListAdapter extends BaseExpandableListAdapter {
             try {
                 String title = URLEncoder.encode(parm[0],"utf-8");
                 int proportion = Integer.parseInt(parm[1]);
-                String time = UtilMethod.getTimeNow();
-                String url_str = "http://"+UtilMethod.serverIP+":8000/lineup/voting/?title="+title
+                String time = StaticMethod.getTimeNow();
+                String url_str = "http://"+MainActivity.serverIP+":8000/lineup/voting/?title="+title
                         +"&proportion="+proportion+"&time=" + time;
                 Log.d("test",url_str);
                 URL url = new URL(url_str);
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-                String result = getStringFromInputStream(in);
+                String result = UtilMethod.getStringFromInputStream(in);
 
                 if(result.substring(1,8).equals("Success"))
                     return true;

@@ -94,7 +94,7 @@
         </LinearLayout>
     </HorizontalScrollView>
 
-
+<!--
     <LinearLayout
         android:layout_width="410.4dp"
         android:layout_height="52.06dp"
@@ -127,5 +127,11 @@
         android:divider="@android:color/transparent"
         android:dividerHeight="20.0dp"
         />
+        -->
+    <android.support.v4.view.ViewPager
+        android:id="@+id/vp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </android.support.v4.view.ViewPager>
 </LinearLayout>
 
