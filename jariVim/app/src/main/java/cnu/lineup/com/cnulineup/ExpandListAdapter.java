@@ -199,7 +199,7 @@ public class ExpandListAdapter extends BaseExpandableListAdapter {
             try {
                 String title = URLEncoder.encode(parm[0],"utf-8");
                 int proportion = Integer.parseInt(parm[1]);
-                String time = StaticMethod.getTimeNow();
+                String time = UtilMethod.getTimeNow();
                 String url_str = "http://"+MainActivity.serverIP+":8000/lineup/voting/?title="+title
                         +"&proportion="+proportion+"&time=" + time;
                 Log.d("test",url_str);

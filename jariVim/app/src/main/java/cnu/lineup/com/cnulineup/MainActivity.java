@@ -1,6 +1,5 @@
 package cnu.lineup.com.cnulineup;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -8,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -20,17 +18,11 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ExpandableListView;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.SeekBar;
-import android.widget.Spinner;
 import android.widget.TabHost;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -44,21 +36,13 @@ import com.kakao.usermgmt.UserManagement;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.text.Collator;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
@@ -77,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
     private TabHost tabHost;
     private ExpandListAdapter expAdapter;
     private ArrayList<Group> expListItems;
-    private ExpandableListView expandList, expandlistFavorite, expandListVote;
+    private ExpandableListView expandListFavorite, expandListVote;
     private int lastExpandedPosition = -1;
     private ImageView kakaoProfile;
     private Bitmap kakaoThumbnail;
@@ -85,7 +69,6 @@ public class MainActivity extends AppCompatActivity {
     private ProgressDialog pd;
     private LinearLayout frameFavorite, frameVote;
     private ViewPager vp;
-    private FragList FragBob, FragNoddle, FragCafe, FragDrink, FragFastfood, FragFork;
 
 
     @Override
@@ -97,15 +80,6 @@ public class MainActivity extends AppCompatActivity {
 
         //dbOpenHelper.insertFavoriteRestaurant("하오치");
         //Log.d(TAG,"insert 하오치 in sqlite");
-
-        FragBob = FragList.newInstance("bob");
-        FragNoddle = FragList.newInstance("noddle");
-        FragFastfood = FragList.newInstance("fastfood");
-        FragFork =  FragList.newInstance("meat");
-        FragCafe =  FragList.newInstance("cafe");
-        FragDrink = FragList.newInstance("drink");
-
-
 
 
         /** status bar 색상 변경 */
@@ -119,23 +93,21 @@ public class MainActivity extends AppCompatActivity {
 
         tabHost = (TabHost) findViewById(R.id.footer);
 
+
         btnBob = (ToggleButton) findViewById(R.id.btn_category_bob);
         btnNoddle = (ToggleButton) findViewById(R.id.btn_category_noodle);
         btnCafe = (ToggleButton) findViewById(R.id.btn_category_cafe);
         btnDrink = (ToggleButton) findViewById(R.id.btn_category_beer);
         btnFastfood = (ToggleButton) findViewById(R.id.btn_category_fastfood);
         btnFork = (ToggleButton) findViewById(R.id.btn_category_fork);
+
+
         btnSearch = (ImageButton) findViewById(R.id.btn_search);
-        btnFavorite = (ToggleButton)findViewById(R.id.btn_favorite);
-        btnVote = (ToggleButton)findViewById(R.id.btn_vote_list);
+        btnFavorite = (ToggleButton) findViewById(R.id.btn_favorite);
+        btnVote = (ToggleButton) findViewById(R.id.btn_vote_list);
         frameFavorite = (LinearLayout) findViewById(R.id.layout_favorite);
         frameVote = (LinearLayout) findViewById(R.id.layout_vote_list);
 
-
-        /** ViewPager Setting **/
-        vp = (ViewPager)findViewById(R.id.vp);
-        vp.setAdapter(new pagerAdapter(getSupportFragmentManager()));
-        vp.setCurrentItem(0);
 
         /** Resgister ViewPager **/
         btnBob.setOnClickListener(movePageListener);
@@ -152,6 +124,11 @@ public class MainActivity extends AppCompatActivity {
         btnDrink.setTag(5);
 
 
+        /** ViewPager Setting **/
+        vp = (ViewPager) findViewById(R.id.vp);
+        vp.setAdapter(new pagerAdapter(getSupportFragmentManager()));
+        vp.setCurrentItem(0);
+        btnBob.setChecked(true);
 
 
         /**
@@ -249,18 +226,15 @@ public class MainActivity extends AppCompatActivity {
          */
         btnFavorite.setOnClickListener(userInfoListener);
         btnVote.setOnClickListener(userInfoListener);
-        expandlistFavorite = (ExpandableListView)findViewById(R.id.list_favorite);
-        expandListVote = (ExpandableListView)findViewById(R.id.list_vote);
+        expandListFavorite = (ExpandableListView) findViewById(R.id.list_favorite);
+        expandListVote = (ExpandableListView) findViewById(R.id.list_vote);
         expListItems = setItemsFavorite();
-        setExpandListAdapterFavorite(expListItems);
-
-
+        setExpandListAdapter(expandListFavorite, expListItems);
 
 
         /** 메인 탭을 제외한 타머지탭 disable */
         tabHost.getTabWidget().getChildTabViewAt(1).setEnabled(false);
         tabHost.getTabWidget().getChildTabViewAt(2).setEnabled(false);
-        //tabHost.getTabWidget().getChildTabViewAt(3).setEnabled(false);
 
 
     }
@@ -269,20 +243,20 @@ public class MainActivity extends AppCompatActivity {
     Button.OnClickListener userInfoListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            switch (view.getId()){
+            switch (view.getId()) {
                 case R.id.btn_favorite:
                     btnVote.setChecked(false);
                     btnFavorite.setChecked(true);
                     frameFavorite.setVisibility(LinearLayout.VISIBLE);
                     frameVote.setVisibility(LinearLayout.INVISIBLE);
                     expListItems = setItemsFavorite();
-                    setExpandListAdapterFavorite(expListItems);
+                    setExpandListAdapter(expandListFavorite, expListItems);
                     break;
                 case R.id.btn_vote_list:
                     btnVote.setChecked(true);
                     btnFavorite.setChecked(false);
                     expListItems = setItemsVote();
-                    setExpandListAdapterVote(expListItems);
+                    setExpandListAdapter(expandListVote, expListItems);
                     frameFavorite.setVisibility(LinearLayout.INVISIBLE);
                     frameVote.setVisibility(LinearLayout.VISIBLE);
 
@@ -292,46 +266,21 @@ public class MainActivity extends AppCompatActivity {
     };
 
 
-    // TODO : 밑에 3개 함수 하나로 합칠 수 있을듯?
-    public void setExpandListAdapter(ArrayList<Group> ExpListItems) {
-        expAdapter = new ExpandListAdapter(MainActivity.this, ExpListItems, expandList);
-        expandList.setAdapter(expAdapter);
-        expandList.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+    /**
+     * ExpandListView 어댑터 설정 함수.
+     * 총 3개의 ExpandListView(전체 가게, 즐겨찾기, 투표한 리스트)들에 대하여 어댑터 설정
+     * @param expandableListView
+     * @param ExpListItems
+     */
+    public void setExpandListAdapter(final ExpandableListView expandableListView, ArrayList<Group> ExpListItems) {
+        expAdapter = new ExpandListAdapter(MainActivity.this, ExpListItems, expandableListView);
+        expandableListView.setAdapter(expAdapter);
+        expandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
             @Override
             public void onGroupExpand(int groupPosition) {
                 if (lastExpandedPosition != -1
                         && groupPosition != lastExpandedPosition) {
-                    expandList.collapseGroup(lastExpandedPosition);
-                }
-                lastExpandedPosition = groupPosition;
-            }
-        });
-    }
-
-    public void setExpandListAdapterFavorite(ArrayList<Group> ExpListItems) {
-        expAdapter = new ExpandListAdapter(MainActivity.this, ExpListItems, expandlistFavorite);
-        expandlistFavorite.setAdapter(expAdapter);
-        expandlistFavorite.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
-            @Override
-            public void onGroupExpand(int groupPosition) {
-                if (lastExpandedPosition != -1
-                        && groupPosition != lastExpandedPosition) {
-                    expandlistFavorite.collapseGroup(lastExpandedPosition);
-                }
-                lastExpandedPosition = groupPosition;
-            }
-        });
-    }
-
-    public void setExpandListAdapterVote(ArrayList<Group> ExpListItems) {
-        expAdapter = new ExpandListAdapter(MainActivity.this, ExpListItems, expandListVote);
-        expandListVote.setAdapter(expAdapter);
-        expandListVote.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
-            @Override
-            public void onGroupExpand(int groupPosition) {
-                if (lastExpandedPosition != -1
-                        && groupPosition != lastExpandedPosition) {
-                    expandListVote.collapseGroup(lastExpandedPosition);
+                    expandableListView.collapseGroup(lastExpandedPosition);
                 }
                 lastExpandedPosition = groupPosition;
             }
@@ -353,17 +302,17 @@ public class MainActivity extends AppCompatActivity {
 
 
             Iterator<JSONArray> iterRestaurant = restaurantList.iterator();
-            while(iterRestaurant.hasNext()){
+            while (iterRestaurant.hasNext()) {
                 JSONArray restaurant = iterRestaurant.next();
 
                 if (restaurant != null) {
                     for (int i = 0; i < restaurant.length(); i++) {
                         String group_name = ((JSONObject) restaurant.get(i)).getString("title");
                         int proportion = ((JSONObject) restaurant.get(i)).getInt("proportion");
-                        if(!favoriteRes.contains(group_name)){
+                        if (!favoriteRes.contains(group_name)) {
                             continue;
                         }
-                        Log.d(TAG,group_name);
+                        Log.d(TAG, group_name);
                         Group group = new Group();
                         group.setName(group_name);
                         group.setProportion(proportion);
@@ -393,8 +342,8 @@ public class MainActivity extends AppCompatActivity {
             ArrayList<Group> list_group = new ArrayList<Group>();
 
             ArrayList<ArrayList<String>> voteRes = new ArrayList<>(dbOpenHelper.getVote());
-            Iterator<ArrayList<String>> voteIter =voteRes.iterator();
-            while(voteIter.hasNext()){
+            Iterator<ArrayList<String>> voteIter = voteRes.iterator();
+            while (voteIter.hasNext()) {
                 ArrayList<String> votePair = voteIter.next();
                 String group_name = votePair.get(0);
                 int proportion = Integer.parseInt(votePair.get(1));
@@ -402,7 +351,7 @@ public class MainActivity extends AppCompatActivity {
                 Group group = new Group();
                 group.setName(group_name);
                 group.setProportion(proportion);
-                Log.d(TAG,group_name + " : "+proportion);
+                Log.d(TAG, group_name + " : " + proportion);
 
                 list_group.add(group);
             }
@@ -412,8 +361,6 @@ public class MainActivity extends AppCompatActivity {
             return null;
         }
     }
-
-
 
 
     private void setFullAd() {
@@ -473,64 +420,61 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
-    private class pagerAdapter extends FragmentStatePagerAdapter
-    {
-        public pagerAdapter(android.support.v4.app.FragmentManager fm)
-        {
+    private class pagerAdapter extends FragmentStatePagerAdapter {
+        public pagerAdapter(android.support.v4.app.FragmentManager fm) {
             super(fm);
         }
+
         @Override
-        public android.support.v4.app.Fragment getItem(int position)
-        {
-            switch(position)
-            {
+        public android.support.v4.app.Fragment getItem(int position) {
+            /**
+             * ViewPager특성상 0 과 1번째 페이지는 디폴트로 로딩된다.(어쩔수 없이 불림)
+             */
+            disable_all_button();
+            switch (position) {
                 case 0:
-                    return FragBob;
+                    return FragList.newInstance("bob");
                 case 1:
-                    return FragNoddle;
+                    return FragList.newInstance("noddle");
                 case 2:
-                    return FragFastfood;
+                    return FragList.newInstance("fastfood");
                 case 3:
-                    return FragFork;
+                    return FragList.newInstance("meat");
                 case 4:
-                    return FragCafe;
+                    return FragList.newInstance("cafe");
                 case 5:
-                    return FragDrink;
+                    return FragList.newInstance("drink");
                 default:
                     return null;
             }
         }
 
-        /**
-         * btnBob = (ToggleButton) findViewById(R.id.btn_category_bob);
-         btnNoddle = (ToggleButton) findViewById(R.id.btn_category_noodle);
-         btnCafe = (ToggleButton) findViewById(R.id.btn_category_cafe);
-         btnDrink = (ToggleButton) findViewById(R.id.btn_category_beer);
-         btnFastfood = (ToggleButton) findViewById(R.id.btn_category_fastfood);
-         btnFork = (ToggleButton) findViewById(R.id.btn_category_fork);
-         btnSearch = (ImageButton) findViewById(R.id.btn_search);
-         btnFavorite = (ToggleButton)findViewById(R.id.btn_favorite);
-         btnVote = (ToggleButton)findViewById(R.id.btn_vote_list);
-         frameFavorite = (LinearLayout) findViewById(R.id.layout_favorite);
-         frameVote = (LinearLayout) findViewById(R.id.layout_vote_list);
-         */
-
         @Override
-        public int getCount()
-        {
-            return 5;
+        public int getCount() {
+            return 6;
         }
     }
 
-    View.OnClickListener movePageListener = new View.OnClickListener()
-    {
+    View.OnClickListener movePageListener = new View.OnClickListener() {
         @Override
-        public void onClick(View v)
-        {
+        public void onClick(View v) {
             int tag = (int) v.getTag();
-            vp.setCurrentItem(tag);
+            ToggleButton btn = (ToggleButton) v.findViewById(v.getId()); // 이거로 누른버튼 객체 가져올 수 있음!
+            if (vp.getCurrentItem() != tag) {
+                vp.setCurrentItem(tag);
+                disable_all_button();
+            }
+            btn.setChecked(true);
         }
     };
+
+    public void disable_all_button() {
+        btnBob.setChecked(false);
+        btnNoddle.setChecked(false);
+        btnFastfood.setChecked(false);
+        btnFork.setChecked(false);
+        btnCafe.setChecked(false);
+        btnDrink.setChecked(false);
+    }
 
 }

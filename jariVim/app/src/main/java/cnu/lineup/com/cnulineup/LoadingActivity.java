@@ -36,6 +36,7 @@ public class LoadingActivity extends Activity {
         decorView.setSystemUiVisibility(uiOptions);
 
 
+
         //TODO : 여기 get함수 때문에 처음에 앱 키는 속도가 줄어드는 것 같다 onCreate말고 다른데에서 쓰레드 돌려야 할듯
         try {
             MainActivity.currentProportion = new UtilMethod.threadVote(LoadingActivity
@@ -48,6 +49,14 @@ public class LoadingActivity extends Activity {
         }
 
 
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                redirectMainActivity();
+            }
+        }, 2000);
+
+        /*
         //postDelayed함수가 메세지큐에 함수를 넣고있다가 2초뒤에 실행하기 때문에 메인(UI)쓰레드에 영향을 주지 않는다.
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -62,6 +71,7 @@ public class LoadingActivity extends Activity {
                 }
             }
         },2000);
+        */
 
     }
 
@@ -129,6 +139,8 @@ public class LoadingActivity extends Activity {
 
             @Override
             public void onSessionClosed(ErrorResult errorResult) {
+
+                Log.e(TAG,errorResult.toString());
                 redirectLoginActivity();
             }
 

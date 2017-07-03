@@ -8,6 +8,4 @@ public class UserInfo {
     public static String KAKAO_NICKNAME;
     public static String PROFILE_IMAGE_PATH;
     public static String VOTING_OPPORTUNITY;
-    public static String SEX;
-    public static String AGE;
 }

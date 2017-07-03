@@ -13,7 +13,11 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.Collator;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Comparator;
+import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * Created by macgongmon on 6/11/17.
@@ -86,7 +90,7 @@ public class UtilMethod {
         @Override
         protected JSONObject doInBackground(String... parm) {
             try {
-                String time = StaticMethod.getTimeNow();
+                String time = UtilMethod.getTimeNow();
 
                 URL url = new URL("http://" + MainActivity.serverIP + ":8000/lineup/current/?time=" + time);
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
@@ -101,6 +105,21 @@ public class UtilMethod {
             return null;
         }
     }
+
+    /**
+     * 현재시간을 ISO format형태로 반환해줌
+     * yyyy-MM-ddTHH:mmZ format
+     * @return ISO format의 날짜 문자열
+     */
+    public static String getTimeNow(){
+        TimeZone tz = TimeZone.getTimeZone("Asia/Seoul");
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
+        df.setTimeZone(tz);
+        String nowAsISO = df.format(new Date());
+
+        return nowAsISO;
+    }
+
 
 
 

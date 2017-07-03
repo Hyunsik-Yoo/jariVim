@@ -21,6 +21,7 @@ import java.util.Collections;
 
 /**
  * Created by macgongmon on 5/27/17.
+ * 메인화면에서 카테고리별 음식점들의 인원 현황 Fragment를 만들기 위한 부모 클래스
  */
 
 public class FragList extends Fragment {
@@ -42,7 +43,7 @@ public class FragList extends Fragment {
     public static FragList newInstance(String category) {
         FragList f = new FragList();
         Bundle args = new Bundle();
-        args.putString("category", category);
+        args.putString("category",category);
         f.setArguments(args);
         return f;
     }
@@ -64,15 +65,6 @@ public class FragList extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
 
-        Bundle bundle = getArguments();
-        if(bundle != null)
-            category = bundle.getString("category");
-
-        expandList = (ExpandableListView) getActivity().findViewById(R.id.list_main);
-        Log.e(TAG,category);
-        expListItems = setItems(category);
-        Collections.sort(expListItems, UtilMethod.comparatorByPopular);
-        setExpandListAdapter(expListItems);
     }
 
     @Override
@@ -88,6 +80,31 @@ public class FragList extends Fragment {
         btnSortByPopular.setChecked(true);
         btnSortByText = (ToggleButton) view.findViewById(R.id.btn_sortby_text);
         btnSortByText.setOnClickListener(sort_listener);
+
+        Bundle bundle = getArguments();
+        category = bundle.getString("category");
+
+        expandList = (ExpandableListView) view.findViewById(R.id.list_main);
+        Log.e(TAG,category);
+        expListItems = setItems(category);
+        Collections.sort(expListItems, UtilMethod.comparatorByPopular);
+
+        //setExpandListAdapter(expListItems);
+
+        expAdapter = new ExpandListAdapter(this.getActivity(), expListItems, expandList);
+        expandList.setAdapter(expAdapter);
+        expandList.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+            @Override
+            public void onGroupExpand(int groupPosition) {
+                if (lastExpandedPosition != -1
+                        && groupPosition != lastExpandedPosition) {
+                    expandList.collapseGroup(lastExpandedPosition);
+                }
+                lastExpandedPosition = groupPosition;
+            }
+        });
+
+
 
         return view;
     }
@@ -108,8 +125,8 @@ public class FragList extends Fragment {
                     Child child = new Child();
 
                     SeekBar seekBar = (SeekBar) FragList.this.getActivity().findViewById(R.id.seekBar);
-                    Button btnConfirm = (Button) getView().findViewById(R.id.btn_confirm);
-                    Button btnCancle = (Button) getView().findViewById(R.id.btn_cancle);
+                    Button btnConfirm = (Button) FragList.this.getActivity().findViewById(R.id.btn_confirm);
+                    Button btnCancle = (Button) FragList.this.getActivity().findViewById(R.id.btn_cancle);
                     child.setSeekBar(seekBar);
                     child.setConfirm(btnConfirm);
                     child.setCancle(btnCancle);
