@@ -9,7 +9,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -128,6 +131,44 @@ public class MainActivity extends AppCompatActivity {
         vp = (ViewPager) findViewById(R.id.vp);
         vp.setAdapter(new pagerAdapter(getSupportFragmentManager()));
         vp.setCurrentItem(0);
+        vp.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                //현재 페이지가 스크롤되었을때 발생하는 CallBack함수
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                disable_all_button();
+                switch (position){
+                    case 0:
+                        btnBob.setChecked(true);
+                        break;
+                    case 1:
+                        btnNoddle.setChecked(true);
+                        break;
+                    case 2:
+                        btnFastfood.setChecked(true);
+                        break;
+                    case 3:
+                        btnFork.setChecked(true);
+                        break;
+                    case 4:
+                        btnCafe.setChecked(true);
+                        break;
+                    case 5:
+                        btnDrink.setChecked(true);
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                //스크롤 상태가 변했을 경우에 불리는 함수인데 스크롤 상태가 변한것이 어떤상태인지 아직 파악 못함
+            }
+        });
         btnBob.setChecked(true);
 
 
@@ -430,7 +471,6 @@ public class MainActivity extends AppCompatActivity {
             /**
              * ViewPager특성상 0 과 1번째 페이지는 디폴트로 로딩된다.(어쩔수 없이 불림)
              */
-            disable_all_button();
             switch (position) {
                 case 0:
                     return FragList.newInstance("bob");
@@ -453,21 +493,25 @@ public class MainActivity extends AppCompatActivity {
         public int getCount() {
             return 6;
         }
+
     }
 
+    /**
+     * 메인화면 상단에 Toggle Button들의 OnClickListener
+     */
     View.OnClickListener movePageListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             int tag = (int) v.getTag();
-            ToggleButton btn = (ToggleButton) v.findViewById(v.getId()); // 이거로 누른버튼 객체 가져올 수 있음!
             if (vp.getCurrentItem() != tag) {
                 vp.setCurrentItem(tag);
-                disable_all_button();
             }
-            btn.setChecked(true);
         }
     };
 
+    /**
+     * 모든 Toggle 버튼을 disable시키는 함수
+     */
     public void disable_all_button() {
         btnBob.setChecked(false);
         btnNoddle.setChecked(false);
