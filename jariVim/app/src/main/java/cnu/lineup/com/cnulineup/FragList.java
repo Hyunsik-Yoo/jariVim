@@ -85,11 +85,8 @@ public class FragList extends Fragment {
         category = bundle.getString("category");
 
         expandList = (ExpandableListView) view.findViewById(R.id.list_main);
-        Log.e(TAG,category);
         expListItems = setItems(category);
         Collections.sort(expListItems, UtilMethod.comparatorByPopular);
-
-        //setExpandListAdapter(expListItems);
 
         expAdapter = new ExpandListAdapter(this.getActivity(), expListItems, expandList);
         expandList.setAdapter(expAdapter);

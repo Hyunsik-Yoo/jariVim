@@ -47,6 +47,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -78,11 +79,24 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // 서버에서 정보 한번에 다운받는다.
+        try {
+            MainActivity.currentProportion = new UtilMethod.threadVote(MainActivity
+                    .this).execute().get();
+        }catch (ExecutionException e){
+            e.printStackTrace();
+        }catch (InterruptedException e){
+            e.printStackTrace();
+        }
+
+
         //setFullAd(); //메인엑티비티 로딩되면 광고 요청날림
         dbOpenHelper = new DBOpenHelper(this).open();
 
         //dbOpenHelper.insertFavoriteRestaurant("하오치");
         //Log.d(TAG,"insert 하오치 in sqlite");
+
 
 
         /** status bar 색상 변경 */

@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">혹여나?</string>
-    <string name="kakao_app_key">1332de52f56f20e75647868b4c6eebb5</string>
+    <string name="kakao_app_key">8247b7d785ad6c850f9b277ee09dcaaa</string>
     <string name="ad_unit_id">ca-app-pub-1527951560812478/7264077943</string>
     <string name="ad_test_id">74DF1FA2958302714C041CA304628B35</string>
 </resources>

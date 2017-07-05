@@ -32,7 +32,6 @@
 
         <activity android:name=".SearchActivity" />
         <activity android:name=".KakaoLogInActivity" />
-        <activity android:name=".FragList"></activity>
     </application>
 
 </manifest>

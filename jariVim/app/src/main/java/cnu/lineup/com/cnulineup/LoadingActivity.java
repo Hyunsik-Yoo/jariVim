@@ -36,42 +36,22 @@ public class LoadingActivity extends Activity {
         decorView.setSystemUiVisibility(uiOptions);
 
 
-
-        //TODO : 여기 get함수 때문에 처음에 앱 키는 속도가 줄어드는 것 같다 onCreate말고 다른데에서 쓰레드 돌려야 할듯
-        try {
-            MainActivity.currentProportion = new UtilMethod.threadVote(LoadingActivity
-                    .this).execute().get();
-            //Thread.sleep(3000);
-        }catch (ExecutionException e){
-            e.printStackTrace();
-        }catch (InterruptedException e){
-            e.printStackTrace();
-        }
-
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                redirectMainActivity();
-            }
-        }, 2000);
-
-        /*
         //postDelayed함수가 메세지큐에 함수를 넣고있다가 2초뒤에 실행하기 때문에 메인(UI)쓰레드에 영향을 주지 않는다.
+        callback = new SessionCallback();
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 if(Session.getCurrentSession().isClosed()){
+                    // 세션이 만료된 경우 닫혀있는 경우 카카오톡 로그인 필요
                     setContentView(R.layout.activity_kakao_log_in);
                     Session.getCurrentSession().addCallback(callback);
                     Session.getCurrentSession().checkAndImplicitOpen();
-                    Log.d(TAG,"in Handler()");
                 }else{
+                    // 세션이 만료되지 않은 경우, 바로 메인화면으로 이동
                     redirectSignupActivity();
                 }
             }
         },2000);
-        */
 
     }
 
@@ -101,7 +81,6 @@ public class LoadingActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (Session.getCurrentSession().handleActivityResult(requestCode, resultCode, data)) {
-            redirectMainActivity();
             return;
         }
         else{
