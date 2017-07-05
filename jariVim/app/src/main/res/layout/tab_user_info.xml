@@ -1,75 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="160dp"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
         <ImageView
-            android:id="@+id/kakao_profile"
             android:layout_width="match_parent"
-            android:layout_height="50dp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <ToggleButton
-            android:id="@+id/btn_favorite"
-            android:layout_width="540dp"
-            android:layout_height="100dp"
-            android:layout_weight="1"
-            android:checked="true"
-            />
-
-        <ToggleButton
-            android:id="@+id/btn_vote_list"
-            android:layout_width="540dp"
-            android:layout_height="100dp"
-            android:layout_weight="1"
-            />
-
-    </LinearLayout>
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
+            android:layout_height="175.18dp"
+            android:src="@drawable/profile_bg"
+            >
+        </ImageView>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/layout_favorite">
-            <ExpandableListView
-                android:id="@+id/list_favorite"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:childDivider="#00000000"
-                android:divider="@android:color/transparent"
-                android:dividerHeight="20.0dp" />
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ToggleButton
+                android:id="@+id/btn_favorite"
+                android:layout_width="205.2dp"
+                android:layout_height="100dp"
+                android:background="@drawable/selector_profile_favo"
+                android:textOff=""
+                android:textOn=""
+                android:checked="true" />
+
+            <ToggleButton
+                android:id="@+id/btn_vote_list"
+                android:layout_width="205.2dp"
+                android:layout_height="100dp"
+                android:background="@drawable/selector_profile_list"
+                android:textOff=""
+                android:textOn=""
+                />
+
         </LinearLayout>
 
-        <LinearLayout
+        <!-- 즐겨찾기메뉴, 투표한 메뉴 ExpandableListView-->
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/layout_vote_list"
-            android:visibility="invisible">
+            android:layout_height="match_parent">
 
-            <ExpandableListView
-                android:id="@+id/list_vote"
+            <LinearLayout
+                android:id="@+id/layout_favorite"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ExpandableListView
+                    android:id="@+id/list_favorite"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:childDivider="#00000000"
+                    android:divider="@android:color/transparent"
+                    android:dividerHeight="20.0dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_vote_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:childDivider="#00000000"
-                android:divider="@android:color/transparent"
-                android:dividerHeight="20.0dp" />
-        </LinearLayout>
+                android:visibility="invisible">
 
-    </FrameLayout>
+                <ExpandableListView
+                    android:id="@+id/list_vote"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:childDivider="#00000000"
+                    android:divider="@android:color/transparent"
+                    android:dividerHeight="20.0dp" />
+            </LinearLayout>
+        </FrameLayout>
+    </LinearLayout>
 
-</LinearLayout>
+    <ImageView
+        android:id="@+id/kakao_thumbnail"
+        android:layout_width="83.6dp"
+        android:layout_height="83.6dp"
+        android:layout_gravity="center_horizontal"
+        />
+</FrameLayout>

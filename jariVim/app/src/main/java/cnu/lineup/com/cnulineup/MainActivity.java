@@ -229,7 +229,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         /** 카카오 프로필사진 가져오기 */
-        kakaoProfile = (ImageView) findViewById(R.id.kakao_profile);
+        kakaoProfile = (ImageView) findViewById(R.id.kakao_thumbnail);
         Thread getThumbnail = new Thread() {
             @Override
             public void run() {
