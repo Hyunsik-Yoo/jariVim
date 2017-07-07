@@ -1,5 +1,6 @@
 package cnu.lineup.com.cnulineup;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -109,7 +110,6 @@ public class MainActivity extends AppCompatActivity {
 
 
         tabHost = (TabHost) findViewById(R.id.footer);
-
 
         btnBob = (ToggleButton) findViewById(R.id.btn_category_bob);
         btnNoddle = (ToggleButton) findViewById(R.id.btn_category_noodle);
@@ -283,7 +283,7 @@ public class MainActivity extends AppCompatActivity {
         btnVote.setOnClickListener(userInfoListener);
         expandListFavorite = (ExpandableListView) findViewById(R.id.list_favorite);
         expandListVote = (ExpandableListView) findViewById(R.id.list_vote);
-        expListItems = setItemsFavorite();
+        expListItems = UtilMethod.setItemsFavorite();
         setExpandListAdapter(expandListFavorite, expListItems);
 
 
@@ -304,13 +304,13 @@ public class MainActivity extends AppCompatActivity {
                     btnFavorite.setChecked(true);
                     frameFavorite.setVisibility(LinearLayout.VISIBLE);
                     frameVote.setVisibility(LinearLayout.INVISIBLE);
-                    expListItems = setItemsFavorite();
+                    expListItems = UtilMethod.setItemsFavorite();
                     setExpandListAdapter(expandListFavorite, expListItems);
                     break;
                 case R.id.btn_vote_list:
                     btnVote.setChecked(true);
                     btnFavorite.setChecked(false);
-                    expListItems = setItemsVote();
+                    expListItems = UtilMethod.setItemsVote();
                     setExpandListAdapter(expandListVote, expListItems);
                     frameFavorite.setVisibility(LinearLayout.INVISIBLE);
                     frameVote.setVisibility(LinearLayout.VISIBLE);
@@ -342,80 +342,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public ArrayList<Group> setItemsFavorite() {
-        try {
-            ArrayList<Group> list_group = new ArrayList<Group>();
-            ArrayList<JSONArray> restaurantList = new ArrayList<>();
-            restaurantList.add(currentProportion.getJSONArray("bob"));
-            restaurantList.add(currentProportion.getJSONArray("noddle"));
-            restaurantList.add(currentProportion.getJSONArray("cafe"));
-            restaurantList.add(currentProportion.getJSONArray("drink"));
-            restaurantList.add(currentProportion.getJSONArray("fastfood"));
-            restaurantList.add(currentProportion.getJSONArray("meat"));
-
-            List<String> favoriteRes = dbOpenHelper.getFavoriteRestaurant();
-
-
-            Iterator<JSONArray> iterRestaurant = restaurantList.iterator();
-            while (iterRestaurant.hasNext()) {
-                JSONArray restaurant = iterRestaurant.next();
-
-                if (restaurant != null) {
-                    for (int i = 0; i < restaurant.length(); i++) {
-                        String group_name = ((JSONObject) restaurant.get(i)).getString("title");
-                        int proportion = ((JSONObject) restaurant.get(i)).getInt("proportion");
-                        if (!favoriteRes.contains(group_name)) {
-                            continue;
-                        }
-                        Log.d(TAG, group_name);
-                        Group group = new Group();
-                        group.setName(group_name);
-                        group.setProportion(proportion);
-
-                        Child child = new Child();
-                        SeekBar seekBar = (SeekBar) findViewById(R.id.seekBar);
-                        Button btnConfirm = (Button) findViewById(R.id.btn_confirm);
-                        Button btnCancle = (Button) findViewById(R.id.btn_cancle);
-                        child.setSeekBar(seekBar);
-                        child.setConfirm(btnConfirm);
-                        child.setCancle(btnCancle);
-
-                        group.setItems(child);
-                        list_group.add(group);
-                    }
-                }
-            }
-            return list_group;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public ArrayList<Group> setItemsVote() {
-        try {
-            ArrayList<Group> list_group = new ArrayList<Group>();
-
-            ArrayList<ArrayList<String>> voteRes = new ArrayList<>(dbOpenHelper.getVote());
-            Iterator<ArrayList<String>> voteIter = voteRes.iterator();
-            while (voteIter.hasNext()) {
-                ArrayList<String> votePair = voteIter.next();
-                String group_name = votePair.get(0);
-                int proportion = Integer.parseInt(votePair.get(1));
-
-                Group group = new Group();
-                group.setName(group_name);
-                group.setProportion(proportion);
-                Log.d(TAG, group_name + " : " + proportion);
-
-                list_group.add(group);
-            }
-            return list_group;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
 
 
     private void setFullAd() {

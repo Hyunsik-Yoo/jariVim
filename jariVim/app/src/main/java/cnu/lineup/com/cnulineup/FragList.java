@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ExpandableListView;
 import android.widget.SeekBar;
 import android.widget.Toast;
@@ -18,6 +19,9 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+
+import static cnu.lineup.com.cnulineup.MainActivity.dbOpenHelper;
 
 /**
  * Created by macgongmon on 5/27/17.
@@ -108,27 +112,18 @@ public class FragList extends Fragment {
 
     public ArrayList<Group> setItems(String category) {
         try {
+
             JSONArray restaurantList = MainActivity.currentProportion.getJSONArray(category);
             ArrayList<Group> list_group = new ArrayList<Group>();
 
+
             if (restaurantList != null) {
                 for (int i = 0; i < restaurantList.length(); i++) {
-                    String group_name = ((JSONObject) restaurantList.get(i)).getString("title");
+                    final String group_name = ((JSONObject) restaurantList.get(i)).getString("title");
                     int proportion = ((JSONObject) restaurantList.get(i)).getInt("proportion");
                     Group group = new Group();
                     group.setName(group_name);
                     group.setProportion(proportion);
-
-                    Child child = new Child();
-
-                    SeekBar seekBar = (SeekBar) FragList.this.getActivity().findViewById(R.id.seekBar);
-                    Button btnConfirm = (Button) FragList.this.getActivity().findViewById(R.id.btn_confirm);
-                    Button btnCancle = (Button) FragList.this.getActivity().findViewById(R.id.btn_cancle);
-                    child.setSeekBar(seekBar);
-                    child.setConfirm(btnConfirm);
-                    child.setCancle(btnCancle);
-
-                    group.setItems(child);
                     list_group.add(group);
                 }
             }

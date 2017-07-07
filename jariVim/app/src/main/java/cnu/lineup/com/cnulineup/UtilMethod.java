@@ -1,8 +1,14 @@
 package cnu.lineup.com.cnulineup;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.widget.Button;
+import android.widget.SeekBar;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
@@ -15,9 +21,15 @@ import java.net.URL;
 import java.text.Collator;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 import java.util.TimeZone;
+
+import static cnu.lineup.com.cnulineup.MainActivity.currentProportion;
+import static cnu.lineup.com.cnulineup.MainActivity.dbOpenHelper;
 
 /**
  * Created by macgongmon on 6/11/17.
@@ -106,6 +118,70 @@ public class UtilMethod {
         }
     }
 
+    public static ArrayList<Group> setItemsFavorite() {
+        try {
+            ArrayList<Group> list_group = new ArrayList<Group>();
+            ArrayList<JSONArray> restaurantList = new ArrayList<>();
+            restaurantList.add(currentProportion.getJSONArray("bob"));
+            restaurantList.add(currentProportion.getJSONArray("noddle"));
+            restaurantList.add(currentProportion.getJSONArray("cafe"));
+            restaurantList.add(currentProportion.getJSONArray("drink"));
+            restaurantList.add(currentProportion.getJSONArray("fastfood"));
+            restaurantList.add(currentProportion.getJSONArray("meat"));
+
+            List<String> favoriteRes = dbOpenHelper.getFavoriteRestaurant();
+
+
+            Iterator<JSONArray> iterRestaurant = restaurantList.iterator();
+            while (iterRestaurant.hasNext()) {
+                JSONArray restaurant = iterRestaurant.next();
+
+                if (restaurant != null) {
+                    for (int i = 0; i < restaurant.length(); i++) {
+                        String group_name = ((JSONObject) restaurant.get(i)).getString("title");
+                        int proportion = ((JSONObject) restaurant.get(i)).getInt("proportion");
+                        // 즐겨찾기 리스트에 없으면 Pass
+                        if (!favoriteRes.contains(group_name)) {
+                            continue;
+                        }
+
+                        Group group = new Group();
+                        group.setName(group_name);
+                        group.setProportion(proportion);
+                        list_group.add(group);
+                    }
+                }
+            }
+            return list_group;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    // 내가 투표한 곳을 보여주네?
+    public static ArrayList<Group> setItemsVote() {
+        try {
+            ArrayList<Group> list_group = new ArrayList<Group>();
+
+            ArrayList<ArrayList<String>> voteRes = new ArrayList<>(dbOpenHelper.getVote());
+            Iterator<ArrayList<String>> voteIter = voteRes.iterator();
+            while (voteIter.hasNext()) {
+                ArrayList<String> votePair = voteIter.next();
+                String group_name = votePair.get(0);
+                int proportion = Integer.parseInt(votePair.get(1));
+
+                Group group = new Group();
+                group.setName(group_name);
+                group.setProportion(proportion);
+                list_group.add(group);
+            }
+            return list_group;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
     /**
      * 현재시간을 ISO format형태로 반환해줌
      * yyyy-MM-ddTHH:mmZ format

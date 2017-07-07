@@ -11,10 +11,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ExpandableListView;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import java.io.BufferedInputStream;
 import java.io.InputStream;
@@ -22,6 +24,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.List;
+
+import static cnu.lineup.com.cnulineup.MainActivity.dbOpenHelper;
 
 
 /**
@@ -54,18 +59,29 @@ public class ExpandListAdapter extends BaseExpandableListAdapter {
         return childPosition;
     }
 
+    /**
+     * 가게 이름 눌렀을 때 발생하는 Child 레이아웃
+     * 즐겨찾기 리스트를 불러와서 리스트와 동일한 가게가 존재하면 즐겨찾기 버튼은 눌린상태로 로드
+     * @param groupPosition
+     * @param childPosition
+     * @param isLastChild
+     * @param convertView
+     * @param parent
+     * @return
+     */
     @Override
     public View getChildView(final int groupPosition, int childPosition,
                              boolean isLastChild, View convertView, final ViewGroup parent) {
+
+        // 즐겨찾기 리스트 가져오기
+        List<String> favoriteList = dbOpenHelper.getFavoriteRestaurant();
 
         Group group = (Group)getGroup(groupPosition);
         final String title = group.getName();
         final ViewGroup parm_parent = parent;
         Child child = (Child)getChild(groupPosition,childPosition);
         if(convertView == null){
-            //새로 child 레이아웃을 생성하는 듯!
             LayoutInflater infalInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
             convertView = infalInflater.inflate(R.layout.child_item,null,false);
         }
 
@@ -88,6 +104,27 @@ public class ExpandListAdapter extends BaseExpandableListAdapter {
                 expandableListView.collapseGroup(groupPosition);
             }
         });
+
+
+        // 즐겨찾기 기능 동작하도록 체크하면 Local DB에 저장, 취소하면 삭제
+        ToggleButton btnFavo = (ToggleButton)convertView.findViewById(R.id.btn_favo);
+        btnFavo.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    dbOpenHelper.insertFavoriteRestaurant(title);
+                }
+                else{
+                    dbOpenHelper.deleteFavorite(title);
+                }
+            }
+        });
+
+        // 즐겨찾기 리스트에 포함되어 있으면 체크된 상태로 표시
+        if(favoriteList.contains(title))
+            btnFavo.setChecked(true);
+        else
+            btnFavo.setChecked(false);
 
 
         return convertView;
@@ -171,7 +208,7 @@ public class ExpandListAdapter extends BaseExpandableListAdapter {
                             {
                                 expandableListView.collapseGroup(parm_groupPosition);
                                 // 내가 투표한곳 보여주기위해 코딩중
-                                MainActivity.dbOpenHelper.insertVote(parm_title,parm_proportion);
+                                dbOpenHelper.insertVote(parm_title,parm_proportion);
                                 //MainActivity.displayAD(context);
                             }
 
@@ -225,9 +262,5 @@ public class ExpandListAdapter extends BaseExpandableListAdapter {
         }
 
     }
-
-
-
-
 
 }

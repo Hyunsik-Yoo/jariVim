@@ -26,6 +26,8 @@ public class DBOpenHelper {
             "create table favorite (_id integer primary key autoincrement, name text not null); ";
     public static final String CREATE_VOTE_LIST = "create table vote (_id integer primary key " +
             "autoincrement, name text not null, proportion text not null);";
+    public static final String CREATE_VOTE_COUNT = "create table count (_id integer primary key " +
+            "autoincrement, time text not null, count integer not null)";
 
     private DatabaseHelper DBHelper;
     private Context context;
@@ -43,6 +45,7 @@ public class DBOpenHelper {
         public void onCreate(SQLiteDatabase db) {
             db.execSQL(CREATE_FAVORITE);
             db.execSQL(CREATE_VOTE_LIST);
+            db.execSQL(CREATE_VOTE_COUNT);
         }
 
         @Override
@@ -75,7 +78,6 @@ public class DBOpenHelper {
     public List getFavoriteRestaurant(){
         DB = DBHelper.getReadableDatabase();
         String tableName = "favorite";
-        //String[] projection = {"name"};
 
         Cursor cursor = DB.query(tableName,null,null,null,null,null,null);;
         List resultList = new ArrayList<>();
@@ -83,14 +85,13 @@ public class DBOpenHelper {
             String name = cursor.getString(cursor.getColumnIndex("name"));
             resultList.add(name);
         }
-        //cursor.close();
+        cursor.close();
         return resultList;
     }
 
     public List getVote(){
         DB = DBHelper.getReadableDatabase();
         String tableName = "vote";
-        //String[] projection = {"name","proportion"};
 
         Cursor cursor = DB.query(tableName,null,null,null,null,null,null);
         List resultList = new ArrayList<ArrayList<String>>();
@@ -107,6 +108,20 @@ public class DBOpenHelper {
         return resultList;
     }
 
+    public int getCount(){
+        DB = DBHelper.getReadableDatabase();
+        String tableName = "count";
+
+        Cursor cursor = DB.query(tableName,null,null,null,null,null,null);
+        List resultList = new ArrayList<ArrayList<String>>();
+
+        while(cursor.moveToNext()){
+            String time = cursor.getString(cursor.getColumnIndex("time"));
+            int count =
+        }
+    }
+
+    // 즐겨찾기 식당 DB에 저장
     public void insertFavoriteRestaurant(String name){
         DB = DBHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -115,6 +130,7 @@ public class DBOpenHelper {
         DB.insert("favorite",null,values);
     }
 
+    // 투표했을 경우, 자신이 투표한 테이블에 투표가게 이름과 비율 저장
     public void insertVote(String name, String proportion){
         DB = DBHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -122,6 +138,21 @@ public class DBOpenHelper {
         values.put("proportion",proportion);
 
         DB.insert("vote",null,values);
+    }
+
+    // 가게이름 받아서 해당 가게를 DB에서 삭제
+    public void deleteFavorite(String name){
+        DB = DBHelper.getWritableDatabase();
+        DB.delete("favorite","name='" + name + "'",null);
+    }
+
+    // 기존 count테이블에 존재하는
+    public void decreaseVoteCount(){
+        DB = DBHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("time",UtilMethod.getTimeNow());
+        values.put("");
+        DB.update("count",ContentValues, where)
     }
 
 }
