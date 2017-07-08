@@ -1,7 +1,84 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        />
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fadeScrollbars="true"
+        android:scrollbarStyle="insideOverlay"
+        android:scrollbars="none"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ToggleButton
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="68.4dp"
+                android:layout_height="68.4dp"
+                android:background="@drawable/btn_cateogory_bob"
+                android:checked="true"
+                android:textOff=""
+                android:textOn=""/>
+
+            <ToggleButton
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="68.4dp"
+                android:layout_height="68.4dp"
+                android:background="@drawable/btn_category_noddle"
+                android:textOff=""
+                android:textOn=""/>
+
+            <ToggleButton
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="68.4dp"
+                android:layout_height="68.4dp"
+                android:background="@drawable/btn_category_fastfood"
+                android:textOff=""
+                android:textOn=""/>
+
+            <ToggleButton
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="68.4dp"
+                android:layout_height="68.4dp"
+                android:background="@drawable/btn_category_fork"
+                android:textOff=""
+                android:textOn=""/>
+
+            <ToggleButton
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="68.4dp"
+                android:layout_height="68.4dp"
+                android:background="@drawable/btn_category_cafe"
+                android:textOff=""
+                android:textOn=""/>
+
+            <ToggleButton
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="68.4dp"
+                android:layout_height="68.4dp"
+                android:background="@drawable/btn_category_drink"
+                android:textOff=""
+                android:textOn=""/>
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
+
+
 
 </LinearLayout>
+
+

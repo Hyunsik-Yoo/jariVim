@@ -13,6 +13,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -36,6 +38,13 @@ import android.widget.ToggleButton;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.kakao.auth.ApiResponseCallback;
 import com.kakao.network.ErrorResult;
 import com.kakao.usermgmt.UserManagement;
@@ -300,8 +309,21 @@ public class MainActivity extends AppCompatActivity {
         setExpandListAdapter(expandListFavorite, expListItems);
 
 
+        //지도 코드
+
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+
+        mapFragment.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(GoogleMap googleMap) {
+                LatLng gungdong = new LatLng(36.362428, 127.350651);
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(gungdong,16));
+            }
+        });
+
         /** 메인 탭을 제외한 타머지탭 disable */
-        tabHost.getTabWidget().getChildTabViewAt(1).setEnabled(false);
+        //tabHost.getTabWidget().getChildTabViewAt(1).setEnabled(false);
         tabHost.getTabWidget().getChildTabViewAt(2).setEnabled(false);
 
 
