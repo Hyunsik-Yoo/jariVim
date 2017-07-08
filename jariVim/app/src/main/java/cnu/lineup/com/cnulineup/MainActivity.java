@@ -11,8 +11,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -85,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ProgressDialog pd;
     private LinearLayout frameFavorite, frameVote;
-    private ViewPager vp;
+    private ViewPager vp, vp_info;
     public static TextView voteCount;
 
 
@@ -206,6 +204,51 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         btnBob.setChecked(true);
+
+        /** ViewPager Setting **/
+        // TODO : pagerAdapter를 새로만들어야함. FragList는 ExpandableListView인데 여기서 Expand 안되도록 수정필요
+        // 2번째 탭에서 버튼 누를때마다 지도의 Marker바뀌도록
+        vp_info = (ViewPager) findViewById(R.id.vp_info);
+        vp_info.setAdapter(new pagerAdapter(getSupportFragmentManager()));
+        vp_info.setCurrentItem(0);
+        vp_info.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                //현재 페이지가 스크롤되었을때 발생하는 CallBack함수
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                disable_all_button();
+                switch (position){
+                    case 0:
+                        btnBob.setChecked(true);
+                        break;
+                    case 1:
+                        btnNoddle.setChecked(true);
+                        break;
+                    case 2:
+                        btnFastfood.setChecked(true);
+                        break;
+                    case 3:
+                        btnFork.setChecked(true);
+                        break;
+                    case 4:
+                        btnCafe.setChecked(true);
+                        break;
+                    case 5:
+                        btnDrink.setChecked(true);
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                //스크롤 상태가 변했을 경우에 불리는 함수인데 스크롤 상태가 변한것이 어떤상태인지 아직 파악 못함
+            }
+        });
 
 
         /**
