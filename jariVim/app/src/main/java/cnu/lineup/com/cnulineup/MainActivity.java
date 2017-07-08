@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
@@ -33,6 +34,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.github.mikephil.charting.animation.Easing;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.formatter.PercentFormatter;
+import com.github.mikephil.charting.utils.ColorTemplate;
+import com.github.mikephil.charting.utils.MPPointF;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
@@ -85,6 +98,9 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayout frameFavorite, frameVote;
     private ViewPager vp, vp_info;
     public static TextView voteCount;
+
+    private LineChart lineChart;
+    private PieChart pieChart;
 
 
     @Override
@@ -340,6 +356,32 @@ public class MainActivity extends AppCompatActivity {
         tabHost.addTab(tab3);
         tabHost.addTab(tab4);
 
+        /**
+         * 통계 탭
+         */
+        lineChart = (LineChart)findViewById(R.id.line_chart);
+        List<Entry> entries = new ArrayList<Entry>();
+
+
+        entries.add(new Entry(1,1));
+        entries.add(new Entry(1.2f,1.2f));
+        entries.add(new Entry(1.4f,1.4f));
+        entries.add(new Entry(1.6f,1.6f));
+
+
+        LineDataSet dataSet = new LineDataSet(entries, "Example"); // add entries to dataset
+
+        LineData lineData = new LineData(dataSet);
+        lineChart.setData(lineData);
+        //lineChart.invalidate(); // refresh
+        lineChart.animateX(10000, Easing.EasingOption.EaseOutBack);
+
+        pieChart = (PieChart)findViewById(R.id.pie_chart);
+        setData(4,100);
+
+
+
+
 
         /**
          * 내정보 탭
@@ -367,7 +409,7 @@ public class MainActivity extends AppCompatActivity {
 
         /** 메인 탭을 제외한 타머지탭 disable */
         //tabHost.getTabWidget().getChildTabViewAt(1).setEnabled(false);
-        tabHost.getTabWidget().getChildTabViewAt(2).setEnabled(false);
+        //tabHost.getTabWidget().getChildTabViewAt(2).setEnabled(false);
 
 
     }
@@ -537,6 +579,64 @@ public class MainActivity extends AppCompatActivity {
         btnFork.setChecked(false);
         btnCafe.setChecked(false);
         btnDrink.setChecked(false);
+    }
+
+    //PieChart 데이터
+    private void setData(int count, float range) {
+
+        float mult = range;
+
+        ArrayList<PieEntry> entries = new ArrayList<PieEntry>();
+
+        // NOTE: The order of the entries when being added to the entries array determines their position around the center of
+        // the chart.
+        for (int i = 0; i < count ; i++) {
+            entries.add(new PieEntry((float) ((Math.random() * mult) + mult / 5)));
+        }
+
+        PieDataSet dataSet = new PieDataSet(entries, "Election Results");
+
+        dataSet.setDrawIcons(false);
+
+        dataSet.setSliceSpace(3f);
+        dataSet.setIconsOffset(new MPPointF(0, 40));
+        dataSet.setSelectionShift(5f);
+
+        // add a lot of colors
+
+        ArrayList<Integer> colors = new ArrayList<Integer>();
+
+        for (int c : ColorTemplate.VORDIPLOM_COLORS)
+            colors.add(c);
+
+        for (int c : ColorTemplate.JOYFUL_COLORS)
+            colors.add(c);
+
+        for (int c : ColorTemplate.COLORFUL_COLORS)
+            colors.add(c);
+
+        for (int c : ColorTemplate.LIBERTY_COLORS)
+            colors.add(c);
+
+        for (int c : ColorTemplate.PASTEL_COLORS)
+            colors.add(c);
+
+        colors.add(ColorTemplate.getHoloBlue());
+
+        dataSet.setColors(colors);
+        //dataSet.setSelectionShift(0f);
+
+        PieData data = new PieData(dataSet);
+        data.setValueFormatter(new PercentFormatter());
+        data.setValueTextSize(11f);
+        data.setValueTextColor(Color.WHITE);
+
+        pieChart.setData(data);
+
+        // undo all highlights
+        pieChart.highlightValues(null);
+
+        pieChart.invalidate();
     }
 
 }
