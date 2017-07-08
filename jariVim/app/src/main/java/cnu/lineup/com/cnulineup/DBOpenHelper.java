@@ -8,8 +8,13 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import static android.provider.BaseColumns._ID;
 
@@ -21,7 +26,8 @@ public class DBOpenHelper {
     public static SQLiteDatabase DB;
 
     private static final String DB_NAME = "user_info.db";
-    private static final int DB_VERSION = 1;
+    private static final int DB_VERSION = 2;
+
     public static final String CREATE_FAVORITE =
             "create table favorite (_id integer primary key autoincrement, name text not null); ";
     public static final String CREATE_VOTE_LIST = "create table vote (_id integer primary key " +
@@ -39,6 +45,7 @@ public class DBOpenHelper {
         public DatabaseHelper(Context context, String name,
                               SQLiteDatabase.CursorFactory factory, int version) {
             super(context, name, factory, version);
+            // version값을 올려주면 onUpgrade가 불림
         }
 
         @Override
@@ -50,7 +57,6 @@ public class DBOpenHelper {
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
         }
 
         @Override
@@ -108,18 +114,6 @@ public class DBOpenHelper {
         return resultList;
     }
 
-    public int getCount(){
-        DB = DBHelper.getReadableDatabase();
-        String tableName = "count";
-
-        Cursor cursor = DB.query(tableName,null,null,null,null,null,null);
-        List resultList = new ArrayList<ArrayList<String>>();
-
-        while(cursor.moveToNext()){
-            String time = cursor.getString(cursor.getColumnIndex("time"));
-            int count =
-        }
-    }
 
     // 즐겨찾기 식당 DB에 저장
     public void insertFavoriteRestaurant(String name){
@@ -146,14 +140,75 @@ public class DBOpenHelper {
         DB.delete("favorite","name='" + name + "'",null);
     }
 
-    // 기존 count테이블에 존재하는
-    public void decreaseVoteCount(){
+    // 기존 count테이블에 존재하는 투표횟수를 -1시키고 테이블 update 시키기
+    public int updateVoteCount(){
+        DB = DBHelper.getReadableDatabase();
+        String tableName = "count";
+
+        Cursor cursor = DB.query(tableName,null,null,null,null,null,null);
+
+        cursor.moveToNext();
+        String time = cursor.getString(cursor.getColumnIndex("time"));
+        int count = cursor.getInt(cursor.getColumnIndex("count"));
+
         DB = DBHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("time",UtilMethod.getTimeNow());
-        values.put("");
-        DB.update("count",ContentValues, where)
+        values.put("count", count-1);
+        DB.update("count", values, "time=?", new String[]{time});
+
+        return count-1;
     }
+
+    /**
+     * DB에 있는 count 값 반환
+     * @return DB에 있는 count
+     */
+    public int getCount(){
+        DB = DBHelper.getReadableDatabase();
+        Cursor cursor = DB.query("count",null,null,null,null,null,null);
+
+        cursor.moveToNext();
+        int count = cursor.getInt(cursor.getColumnIndex("count"));
+
+        return count;
+    }
+
+    public int resetCount() {
+        /**
+         * 앱이 실행될 때, DB에 저장된 날짜와 앱 실행시킨 날이 다르면 투표횟수를 5회로 초기화 시킴
+         * 동일한 날이라면 DB값 그대로 반환
+         */
+        DB = DBHelper.getReadableDatabase();
+        String tableName = "count";
+        String now = UtilMethod.getTimeNow();
+
+        Cursor cursor = DB.query(tableName, null, null, null, null, null, null);
+
+        if(cursor.getCount() == 0){
+            DB = DBHelper.getWritableDatabase();
+            ContentValues values = new ContentValues();
+            values.put("time", now);
+            values.put("count", 5);
+            DB.insert("count",null,values);
+            return 5;
+        }
+
+        cursor.moveToNext();
+
+        String time = cursor.getString(cursor.getColumnIndex("time"));
+        int count = cursor.getInt(cursor.getColumnIndex("count"));
+
+        time = time.substring(5,10);
+        now = now.substring(5,10);
+
+        if(!time.equals(now))
+            return 5;
+        else
+            return count;
+    }
+
+
 
 }
 

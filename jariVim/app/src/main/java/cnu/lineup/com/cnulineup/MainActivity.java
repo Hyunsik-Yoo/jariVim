@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,6 +16,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.TextViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -27,6 +29,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TabHost;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -74,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
     private ProgressDialog pd;
     private LinearLayout frameFavorite, frameVote;
     private ViewPager vp;
+    public static TextView voteCount;
 
 
     @Override
@@ -95,10 +99,6 @@ public class MainActivity extends AppCompatActivity {
         //setFullAd(); //메인엑티비티 로딩되면 광고 요청날림
         dbOpenHelper = new DBOpenHelper(this).open();
 
-        //dbOpenHelper.insertFavoriteRestaurant("하오치");
-        //Log.d(TAG,"insert 하오치 in sqlite");
-
-
 
         /** status bar 색상 변경 */
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
@@ -107,6 +107,19 @@ public class MainActivity extends AppCompatActivity {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(this.getResources().getColor(R.color.colorBlack));
         }
+
+        /**
+         * 남은 투표횟수 갱신
+         */
+        Typeface customFont;
+        customFont = Typeface.createFromAsset(getAssets(),"fonts/BMHANNA.ttf");
+
+        voteCount = (TextView)findViewById(R.id.text_count);
+        voteCount.setTypeface(customFont);
+        voteCount.setText("남은 투표 횟수 : " + dbOpenHelper.resetCount() + "회");
+
+
+
 
 
         tabHost = (TabHost) findViewById(R.id.footer);

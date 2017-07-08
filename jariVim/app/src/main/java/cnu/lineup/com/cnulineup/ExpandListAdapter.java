@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static cnu.lineup.com.cnulineup.MainActivity.dbOpenHelper;
+import static cnu.lineup.com.cnulineup.MainActivity.voteCount;
 
 
 /**
@@ -203,6 +204,12 @@ public class ExpandListAdapter extends BaseExpandableListAdapter {
                 false).setPositiveButton("Yes",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+                        if(dbOpenHelper.getCount()<=0){
+                            new AlertDialog.Builder(view.getContext())
+                                    .setMessage("일일 투표 한도를 초과하였습니다")
+                                    .show();
+                            return;
+                        }
                         try {
                             if(new threadVote().execute(parm_title, parm_proportion).get())
                             {
@@ -245,8 +252,10 @@ public class ExpandListAdapter extends BaseExpandableListAdapter {
                 InputStream in = new BufferedInputStream(urlConnection.getInputStream());
                 String result = UtilMethod.getStringFromInputStream(in);
 
-                if(result.substring(1,8).equals("Success"))
+                if(result.substring(1,8).equals("Success")) {
+                    publishProgress(dbOpenHelper.updateVoteCount());
                     return true;
+                }
                 else
                     return false;
 
@@ -254,6 +263,12 @@ public class ExpandListAdapter extends BaseExpandableListAdapter {
                 e.printStackTrace();
             }
             return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+            voteCount.setText("남은 투표 횟수 : " + values[0] + "회");
         }
 
         @Override
