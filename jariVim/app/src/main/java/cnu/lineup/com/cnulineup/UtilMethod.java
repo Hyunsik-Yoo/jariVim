@@ -91,8 +91,11 @@ public class UtilMethod {
 
     }
 
-    //현재 음식점 이름과 최근인구밀도를 서버로부터 받아 리턴
+
     public static class threadVote extends AsyncTask<String, Integer, JSONObject> {
+        /**
+         * 현재 시간에 해당하는 음식점 전체의 예측인구밀도를 반환해준다.
+         */
         Context context;
 
         public threadVote(Context context) {
@@ -118,12 +121,35 @@ public class UtilMethod {
         }
     }
 
+    public static class threadRestaurant extends AsyncTask<String, Integer, JSONObject>{
+        Context context;
+
+        public threadRestaurant(Context context){
+            this.context = context;
+        }
+
+        @Override
+        protected JSONObject doInBackground(String... params) {
+            try {
+                URL url = new URL("http://" + MainActivity.serverIP + ":8000/lineup/restaurnats/");
+                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+                JSONObject json = new JSONObject(UtilMethod.getStringFromInputStream(in));
+
+                return json;
+            } catch (Exception e){
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
+
     public static ArrayList<Group> setItemsFavorite() {
         try {
             ArrayList<Group> list_group = new ArrayList<Group>();
             ArrayList<JSONArray> restaurantList = new ArrayList<>();
             restaurantList.add(currentProportion.getJSONArray("bob"));
-            restaurantList.add(currentProportion.getJSONArray("noddle"));
+            restaurantList.add(currentProportion.getJSONArray("noodle"));
             restaurantList.add(currentProportion.getJSONArray("cafe"));
             restaurantList.add(currentProportion.getJSONArray("drink"));
             restaurantList.add(currentProportion.getJSONArray("fastfood"));

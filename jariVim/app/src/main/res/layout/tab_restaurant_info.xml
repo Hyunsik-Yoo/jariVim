@@ -26,6 +26,7 @@
 
             <ToggleButton
                 style="?android:attr/borderlessButtonStyle"
+                android:id="@+id/btn_category_bob_info"
                 android:layout_width="68.4dp"
                 android:layout_height="68.4dp"
                 android:background="@drawable/btn_cateogory_bob"
@@ -35,6 +36,7 @@
 
             <ToggleButton
                 style="?android:attr/borderlessButtonStyle"
+                android:id="@+id/btn_category_noodle_info"
                 android:layout_width="68.4dp"
                 android:layout_height="68.4dp"
                 android:background="@drawable/btn_category_noddle"
@@ -43,6 +45,7 @@
 
             <ToggleButton
                 style="?android:attr/borderlessButtonStyle"
+                android:id="@+id/btn_category_fastfood_info"
                 android:layout_width="68.4dp"
                 android:layout_height="68.4dp"
                 android:background="@drawable/btn_category_fastfood"
@@ -51,6 +54,7 @@
 
             <ToggleButton
                 style="?android:attr/borderlessButtonStyle"
+                android:id="@+id/btn_category_fork_info"
                 android:layout_width="68.4dp"
                 android:layout_height="68.4dp"
                 android:background="@drawable/btn_category_fork"
@@ -59,6 +63,7 @@
 
             <ToggleButton
                 style="?android:attr/borderlessButtonStyle"
+                android:id="@+id/btn_category_cafe_info"
                 android:layout_width="68.4dp"
                 android:layout_height="68.4dp"
                 android:background="@drawable/btn_category_cafe"
@@ -67,6 +72,7 @@
 
             <ToggleButton
                 style="?android:attr/borderlessButtonStyle"
+                android:id="@+id/btn_category_beer_info"
                 android:layout_width="68.4dp"
                 android:layout_height="68.4dp"
                 android:background="@drawable/btn_category_drink"

@@ -81,10 +81,13 @@ public class MainActivity extends AppCompatActivity {
     public static String serverIP = "168.188.127.132";
     public static Button btnRefresh;
     public static JSONObject currentProportion;
+    public static JSONObject restaurantInfo;
     public static DBOpenHelper dbOpenHelper;
 
-    private ToggleButton btnBob, btnNoddle, btnCafe, btnDrink, btnFastfood, btnFork,
+    private ToggleButton btnBob, btnNoodle, btnCafe, btnDrink, btnFastfood, btnFork,
             btnFavorite, btnVote;
+    private ToggleButton btnBobInfo, btnNoodleInfo, btnCafeInfo, btnDrinkInfo, btnFastfoodInfo
+            ,btnForkInfo;
     private ImageButton btnSearch;
     private TabHost tabHost;
     private ExpandListAdapter expAdapter;
@@ -110,8 +113,8 @@ public class MainActivity extends AppCompatActivity {
 
         // 서버에서 정보 한번에 다운받는다.
         try {
-            MainActivity.currentProportion = new UtilMethod.threadVote(MainActivity
-                    .this).execute().get();
+            MainActivity.currentProportion = new UtilMethod.threadVote(MainActivity.this)
+                    .execute().get();
         }catch (ExecutionException e){
             e.printStackTrace();
         }catch (InterruptedException e){
@@ -142,18 +145,21 @@ public class MainActivity extends AppCompatActivity {
         voteCount.setText("남은 투표 횟수 : " + dbOpenHelper.resetCount() + "회");
 
 
-
-
-
         tabHost = (TabHost) findViewById(R.id.footer);
 
         btnBob = (ToggleButton) findViewById(R.id.btn_category_bob);
-        btnNoddle = (ToggleButton) findViewById(R.id.btn_category_noodle);
+        btnNoodle = (ToggleButton) findViewById(R.id.btn_category_noodle);
         btnCafe = (ToggleButton) findViewById(R.id.btn_category_cafe);
         btnDrink = (ToggleButton) findViewById(R.id.btn_category_beer);
         btnFastfood = (ToggleButton) findViewById(R.id.btn_category_fastfood);
         btnFork = (ToggleButton) findViewById(R.id.btn_category_fork);
 
+        btnBobInfo = (ToggleButton) findViewById(R.id.btn_category_bob_info);
+        btnNoodleInfo = (ToggleButton) findViewById(R.id.btn_category_noodle_info);
+        btnCafeInfo = (ToggleButton) findViewById(R.id.btn_category_cafe_info);
+        btnDrinkInfo = (ToggleButton) findViewById(R.id.btn_category_beer_info);
+        btnFastfoodInfo = (ToggleButton) findViewById(R.id.btn_category_fastfood_info);
+        btnForkInfo = (ToggleButton) findViewById(R.id.btn_category_fork_info);
 
         btnSearch = (ImageButton) findViewById(R.id.btn_search);
         btnFavorite = (ToggleButton) findViewById(R.id.btn_favorite);
@@ -161,12 +167,11 @@ public class MainActivity extends AppCompatActivity {
         frameFavorite = (LinearLayout) findViewById(R.id.layout_favorite);
         frameVote = (LinearLayout) findViewById(R.id.layout_vote_list);
 
-
         /** Resgister ViewPager **/
         btnBob.setOnClickListener(movePageListener);
         btnBob.setTag(0);
-        btnNoddle.setOnClickListener(movePageListener);
-        btnNoddle.setTag(1);
+        btnNoodle.setOnClickListener(movePageListener);
+        btnNoodle.setTag(1);
         btnFastfood.setOnClickListener(movePageListener);
         btnFastfood.setTag(2);
         btnFork.setOnClickListener(movePageListener);
@@ -195,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
                         btnBob.setChecked(true);
                         break;
                     case 1:
-                        btnNoddle.setChecked(true);
+                        btnNoodle.setChecked(true);
                         break;
                     case 2:
                         btnFastfood.setChecked(true);
@@ -238,22 +243,22 @@ public class MainActivity extends AppCompatActivity {
                 disable_all_button();
                 switch (position){
                     case 0:
-                        btnBob.setChecked(true);
+                        btnBobInfo.setChecked(true);
                         break;
                     case 1:
-                        btnNoddle.setChecked(true);
+                        btnNoodleInfo.setChecked(true);
                         break;
                     case 2:
-                        btnFastfood.setChecked(true);
+                        btnFastfoodInfo.setChecked(true);
                         break;
                     case 3:
-                        btnFork.setChecked(true);
+                        btnForkInfo.setChecked(true);
                         break;
                     case 4:
-                        btnCafe.setChecked(true);
+                        btnCafeInfo.setChecked(true);
                         break;
                     case 5:
-                        btnDrink.setChecked(true);
+                        btnDrinkInfo.setChecked(true);
                         break;
                     default:
                         break;
@@ -535,7 +540,7 @@ public class MainActivity extends AppCompatActivity {
                 case 0:
                     return FragList.newInstance("bob");
                 case 1:
-                    return FragList.newInstance("noddle");
+                    return FragList.newInstance("noodle");
                 case 2:
                     return FragList.newInstance("fastfood");
                 case 3:
@@ -574,7 +579,7 @@ public class MainActivity extends AppCompatActivity {
      */
     public void disable_all_button() {
         btnBob.setChecked(false);
-        btnNoddle.setChecked(false);
+        btnNoodle.setChecked(false);
         btnFastfood.setChecked(false);
         btnFork.setChecked(false);
         btnCafe.setChecked(false);
