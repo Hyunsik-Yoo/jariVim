@@ -81,8 +81,8 @@ public class MainActivity extends AppCompatActivity {
     public static String serverIP = "168.188.127.132";
     public static Button btnRefresh;
     public static JSONObject currentProportion;
-    public static JSONObject restaurantInfo;
     public static DBOpenHelper dbOpenHelper;
+    public static SupportMapFragment mapFragment;
 
     private ToggleButton btnBob, btnNoodle, btnCafe, btnDrink, btnFastfood, btnFork,
             btnFavorite, btnVote;
@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ProgressDialog pd;
     private LinearLayout frameFavorite, frameVote;
-    private ViewPager vp, vp_info;
+    private ViewPager vp;
     public static TextView voteCount;
 
     private LineChart lineChart;
@@ -115,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             MainActivity.currentProportion = new UtilMethod.threadVote(MainActivity.this)
                     .execute().get();
+            Log.e(TAG,"hello");
         }catch (ExecutionException e){
             e.printStackTrace();
         }catch (InterruptedException e){
@@ -181,6 +182,13 @@ public class MainActivity extends AppCompatActivity {
         btnDrink.setOnClickListener(movePageListener);
         btnDrink.setTag(5);
 
+        btnBobInfo.setOnClickListener(movePageListenerInfo);
+        btnNoodleInfo.setOnClickListener(movePageListenerInfo);
+        btnFastfoodInfo.setOnClickListener(movePageListenerInfo);
+        btnForkInfo.setOnClickListener(movePageListenerInfo);
+        btnCafeInfo.setOnClickListener(movePageListenerInfo);
+        btnDrinkInfo.setOnClickListener(movePageListenerInfo);
+
 
         /** ViewPager Setting **/
         vp = (ViewPager) findViewById(R.id.vp);
@@ -226,50 +234,6 @@ public class MainActivity extends AppCompatActivity {
         });
         btnBob.setChecked(true);
 
-        /** ViewPager Setting **/
-        // TODO : pagerAdapter를 새로만들어야함. FragList는 ExpandableListView인데 여기서 Expand 안되도록 수정필요
-        // 2번째 탭에서 버튼 누를때마다 지도의 Marker바뀌도록
-        vp_info = (ViewPager) findViewById(R.id.vp_info);
-        vp_info.setAdapter(new pagerAdapter(getSupportFragmentManager()));
-        vp_info.setCurrentItem(0);
-        vp_info.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                //현재 페이지가 스크롤되었을때 발생하는 CallBack함수
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                disable_all_button();
-                switch (position){
-                    case 0:
-                        btnBobInfo.setChecked(true);
-                        break;
-                    case 1:
-                        btnNoodleInfo.setChecked(true);
-                        break;
-                    case 2:
-                        btnFastfoodInfo.setChecked(true);
-                        break;
-                    case 3:
-                        btnForkInfo.setChecked(true);
-                        break;
-                    case 4:
-                        btnCafeInfo.setChecked(true);
-                        break;
-                    case 5:
-                        btnDrinkInfo.setChecked(true);
-                        break;
-                    default:
-                        break;
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-                //스크롤 상태가 변했을 경우에 불리는 함수인데 스크롤 상태가 변한것이 어떤상태인지 아직 파악 못함
-            }
-        });
 
 
         /**
@@ -401,20 +365,28 @@ public class MainActivity extends AppCompatActivity {
 
         //지도 코드
 
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+        mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
 
         mapFragment.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap googleMap) {
+                googleMap.clear();
                 LatLng gungdong = new LatLng(36.362428, 127.350651);
                 googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(gungdong,16));
+                ArrayList<String> positionList = getPosition("bob");
+                Iterator<String> iter = positionList.iterator();
+                while(iter.hasNext()){
+                    String[] position = iter.next().split(",");
+                    double longitude = Double.parseDouble(position[0]);
+                    double latitude = Double.parseDouble(position[1]);
+                    googleMap.addMarker(new MarkerOptions()
+                            .position(new LatLng(longitude,latitude)));
+                }
             }
         });
 
-        /** 메인 탭을 제외한 타머지탭 disable */
-        //tabHost.getTabWidget().getChildTabViewAt(1).setEnabled(false);
-        //tabHost.getTabWidget().getChildTabViewAt(2).setEnabled(false);
+
 
 
     }
@@ -575,6 +547,167 @@ public class MainActivity extends AppCompatActivity {
     };
 
     /**
+     * 식당정보의 Toggle Button들의 OnClickListener
+     */
+    View.OnClickListener movePageListenerInfo = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            disable_all_button_info();
+            switch(v.getId()){
+                case R.id.btn_category_bob_info:
+                    btnBobInfo.setChecked(true);
+                    mapFragment.getMapAsync(new OnMapReadyCallback() {
+                        @Override
+                        public void onMapReady(GoogleMap googleMap) {
+                            googleMap.clear();
+                            ArrayList<String> positionList = getPosition("bob");
+                            Iterator<String> iter = positionList.iterator();
+                            while(iter.hasNext()){
+                                String[] position = iter.next().split(",");
+                                double longitude = Double.parseDouble(position[0]);
+                                double latitude = Double.parseDouble(position[1]);
+                                googleMap.addMarker(new MarkerOptions()
+                                        .position(new LatLng(longitude,latitude)));
+                            }
+                        }
+                    });
+                    break;
+                case R.id.btn_category_noodle_info:
+                    btnNoodleInfo.setChecked(true);
+                    mapFragment.getMapAsync(new OnMapReadyCallback() {
+                        @Override
+                        public void onMapReady(GoogleMap googleMap) {
+                            googleMap.clear();
+                            ArrayList<String> positionList = getPosition("noodle");
+                            Iterator<String> iter = positionList.iterator();
+                            while(iter.hasNext()){
+                                String[] position = iter.next().split(",");
+                                double longitude = Double.parseDouble(position[0]);
+                                double latitude = Double.parseDouble(position[1]);
+                                googleMap.addMarker(new MarkerOptions()
+                                        .position(new LatLng(longitude,latitude)));
+                            }
+                        }
+                    });
+                    break;
+                case R.id.btn_category_fastfood_info:
+                    btnFastfoodInfo.setChecked(true);
+                    mapFragment.getMapAsync(new OnMapReadyCallback() {
+                        @Override
+                        public void onMapReady(GoogleMap googleMap) {
+                            googleMap.clear();
+                            ArrayList<String> positionList = getPosition("fastfood");
+                            Iterator<String> iter = positionList.iterator();
+                            while(iter.hasNext()){
+                                String[] position = iter.next().split(",");
+                                double longitude = Double.parseDouble(position[0]);
+                                double latitude = Double.parseDouble(position[1]);
+                                googleMap.addMarker(new MarkerOptions()
+                                        .position(new LatLng(longitude,latitude)));
+                            }
+                        }
+                    });
+                    break;
+                case R.id.btn_category_fork_info:
+                    btnForkInfo.setChecked(true);
+                    mapFragment.getMapAsync(new OnMapReadyCallback() {
+                        @Override
+                        public void onMapReady(GoogleMap googleMap) {
+                            googleMap.clear();
+                            ArrayList<String> positionList = getPosition("meat");
+                            Iterator<String> iter = positionList.iterator();
+                            while(iter.hasNext()){
+                                String[] position = iter.next().split(",");
+                                double longitude = Double.parseDouble(position[0]);
+                                double latitude = Double.parseDouble(position[1]);
+                                googleMap.addMarker(new MarkerOptions()
+                                        .position(new LatLng(longitude,latitude)));
+                            }
+                        }
+                    });
+                    break;
+                case R.id.btn_category_cafe_info:
+                    btnCafeInfo.setChecked(true);
+                    mapFragment.getMapAsync(new OnMapReadyCallback() {
+                        @Override
+                        public void onMapReady(GoogleMap googleMap) {
+                            googleMap.clear();
+                            ArrayList<String> positionList = getPosition("cafe");
+                            Iterator<String> iter = positionList.iterator();
+                            while(iter.hasNext()){
+                                String[] position = iter.next().split(",");
+                                double longitude = Double.parseDouble(position[0]);
+                                double latitude = Double.parseDouble(position[1]);
+                                googleMap.addMarker(new MarkerOptions()
+                                        .position(new LatLng(longitude,latitude)));
+                            }
+                        }
+                    });
+                    break;
+                case R.id.btn_category_beer_info:
+                    btnDrinkInfo.setChecked(true);
+                    mapFragment.getMapAsync(new OnMapReadyCallback() {
+                        @Override
+                        public void onMapReady(GoogleMap googleMap) {
+                            googleMap.clear();
+                            ArrayList<String> positionList = getPosition("drink");
+                            Iterator<String> iter = positionList.iterator();
+                            while(iter.hasNext()){
+                                String[] position = iter.next().split(",");
+                                double longitude = Double.parseDouble(position[0]);
+                                double latitude = Double.parseDouble(position[1]);
+                                googleMap.addMarker(new MarkerOptions()
+                                        .position(new LatLng(longitude,latitude)));
+                            }
+                        }
+                    });
+                    break;
+                default:
+                    btnBobInfo.setChecked(true);
+                    mapFragment.getMapAsync(new OnMapReadyCallback() {
+                        @Override
+                        public void onMapReady(GoogleMap googleMap) {
+                            googleMap.clear();
+                            ArrayList<String> positionList = getPosition("bob");
+                            Iterator<String> iter = positionList.iterator();
+                            while(iter.hasNext()){
+                                String[] position = iter.next().split(",");
+                                double longitude = Double.parseDouble(position[0]);
+                                double latitude = Double.parseDouble(position[1]);
+                                googleMap.addMarker(new MarkerOptions()
+                                        .position(new LatLng(longitude,latitude)));
+                            }
+                        }
+                    });
+                    break;
+            }
+
+        }
+    };
+
+    public ArrayList<String> getPosition(String catgeory) {
+        try {
+
+            ArrayList<String> result = new ArrayList<String>();
+            JSONArray categoryRestaurant = currentProportion.getJSONArray(catgeory);
+
+
+            for(int i = 0; i<categoryRestaurant.length(); i++){
+                JSONObject row = categoryRestaurant.getJSONObject(i);
+                String longitude = (String)row.get("longitude");
+                String latitude = (String)row.get("latitude");
+                result.add(longitude + "," +latitude);
+            }
+
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+    /**
      * 모든 Toggle 버튼을 disable시키는 함수
      */
     public void disable_all_button() {
@@ -584,6 +717,15 @@ public class MainActivity extends AppCompatActivity {
         btnFork.setChecked(false);
         btnCafe.setChecked(false);
         btnDrink.setChecked(false);
+    }
+
+    public void disable_all_button_info() {
+        btnBobInfo.setChecked(false);
+        btnNoodleInfo.setChecked(false);
+        btnFastfoodInfo.setChecked(false);
+        btnForkInfo.setChecked(false);
+        btnCafeInfo.setChecked(false);
+        btnDrinkInfo.setChecked(false);
     }
 
     //PieChart 데이터
