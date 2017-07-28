@@ -371,18 +371,37 @@ public class MainActivity extends AppCompatActivity {
         mapFragment.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap googleMap) {
+                ArrayList<Double> longitudeList = new ArrayList<Double>();
+                ArrayList<Double> latitudeList = new ArrayList<Double>();
+
                 googleMap.clear();
-                LatLng gungdong = new LatLng(36.362428, 127.350651);
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(gungdong,16));
                 ArrayList<String> positionList = getPosition("bob");
                 Iterator<String> iter = positionList.iterator();
                 while(iter.hasNext()){
                     String[] position = iter.next().split(",");
                     double longitude = Double.parseDouble(position[0]);
                     double latitude = Double.parseDouble(position[1]);
+                    String title = position[2];
                     googleMap.addMarker(new MarkerOptions()
-                            .position(new LatLng(longitude,latitude)));
+                            .position(new LatLng(longitude,latitude))
+                            .title(title));
+
+                    longitudeList.add(longitude);
+                    latitudeList.add(latitude);
                 }
+                double centerLongitude=0, centerLatitude = 0;
+                for(Double longitude :longitudeList){
+                    centerLongitude += longitude;
+                }
+                centerLongitude /= longitudeList.size();
+
+                for(Double latitude : latitudeList){
+                    centerLatitude += latitude;
+                }
+                centerLatitude /= latitudeList.size();
+
+                LatLng gungdong = new LatLng(centerLongitude, centerLatitude);
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(gungdong,15));
             }
         });
 
@@ -552,7 +571,10 @@ public class MainActivity extends AppCompatActivity {
     View.OnClickListener movePageListenerInfo = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            disable_all_button_info();
+            disable_all_button_info(); // 다른 모든 토글버든 비활성화
+            final ArrayList<Double> longitudeList = new ArrayList<Double>();
+            final ArrayList<Double> latitudeList = new ArrayList<Double>();
+
             switch(v.getId()){
                 case R.id.btn_category_bob_info:
                     btnBobInfo.setChecked(true);
@@ -566,9 +588,27 @@ public class MainActivity extends AppCompatActivity {
                                 String[] position = iter.next().split(",");
                                 double longitude = Double.parseDouble(position[0]);
                                 double latitude = Double.parseDouble(position[1]);
+                                String title = position[2];
                                 googleMap.addMarker(new MarkerOptions()
-                                        .position(new LatLng(longitude,latitude)));
+                                        .position(new LatLng(longitude,latitude))
+                                        .title(title));
+
+                                longitudeList.add(longitude);
+                                latitudeList.add(latitude);
                             }
+                            double centerLongitude=0, centerLatitude = 0;
+                            for(Double longitude :longitudeList){
+                                centerLongitude += longitude;
+                            }
+                            centerLongitude /= longitudeList.size();
+
+                            for(Double latitude : latitudeList){
+                                centerLatitude += latitude;
+                            }
+                            centerLatitude /= latitudeList.size();
+
+                            LatLng gungdong = new LatLng(centerLongitude, centerLatitude);
+                            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(gungdong,15));
                         }
                     });
                     break;
@@ -584,9 +624,27 @@ public class MainActivity extends AppCompatActivity {
                                 String[] position = iter.next().split(",");
                                 double longitude = Double.parseDouble(position[0]);
                                 double latitude = Double.parseDouble(position[1]);
+                                String title = position[2];
                                 googleMap.addMarker(new MarkerOptions()
-                                        .position(new LatLng(longitude,latitude)));
+                                        .position(new LatLng(longitude,latitude))
+                                        .title(title));
+
+                                longitudeList.add(longitude);
+                                latitudeList.add(latitude);
                             }
+                            double centerLongitude=0, centerLatitude = 0;
+                            for(Double longitude :longitudeList){
+                                centerLongitude += longitude;
+                            }
+                            centerLongitude /= longitudeList.size();
+
+                            for(Double latitude : latitudeList){
+                                centerLatitude += latitude;
+                            }
+                            centerLatitude /= latitudeList.size();
+
+                            LatLng gungdong = new LatLng(centerLongitude, centerLatitude);
+                            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(gungdong,15));
                         }
                     });
                     break;
@@ -602,9 +660,27 @@ public class MainActivity extends AppCompatActivity {
                                 String[] position = iter.next().split(",");
                                 double longitude = Double.parseDouble(position[0]);
                                 double latitude = Double.parseDouble(position[1]);
+                                String title = position[2];
                                 googleMap.addMarker(new MarkerOptions()
-                                        .position(new LatLng(longitude,latitude)));
+                                        .position(new LatLng(longitude,latitude))
+                                        .title(title));
+
+                                longitudeList.add(longitude);
+                                latitudeList.add(latitude);
                             }
+                            double centerLongitude=0, centerLatitude = 0;
+                            for(Double longitude :longitudeList){
+                                centerLongitude += longitude;
+                            }
+                            centerLongitude /= longitudeList.size();
+
+                            for(Double latitude : latitudeList){
+                                centerLatitude += latitude;
+                            }
+                            centerLatitude /= latitudeList.size();
+
+                            LatLng gungdong = new LatLng(centerLongitude, centerLatitude);
+                            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(gungdong,15));
                         }
                     });
                     break;
@@ -620,9 +696,27 @@ public class MainActivity extends AppCompatActivity {
                                 String[] position = iter.next().split(",");
                                 double longitude = Double.parseDouble(position[0]);
                                 double latitude = Double.parseDouble(position[1]);
+                                String title = position[2];
                                 googleMap.addMarker(new MarkerOptions()
-                                        .position(new LatLng(longitude,latitude)));
+                                        .position(new LatLng(longitude,latitude))
+                                        .title(title));
+
+                                longitudeList.add(longitude);
+                                latitudeList.add(latitude);
                             }
+                            double centerLongitude=0, centerLatitude = 0;
+                            for(Double longitude :longitudeList){
+                                centerLongitude += longitude;
+                            }
+                            centerLongitude /= longitudeList.size();
+
+                            for(Double latitude : latitudeList){
+                                centerLatitude += latitude;
+                            }
+                            centerLatitude /= latitudeList.size();
+
+                            LatLng gungdong = new LatLng(centerLongitude, centerLatitude);
+                            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(gungdong,15));
                         }
                     });
                     break;
@@ -638,9 +732,27 @@ public class MainActivity extends AppCompatActivity {
                                 String[] position = iter.next().split(",");
                                 double longitude = Double.parseDouble(position[0]);
                                 double latitude = Double.parseDouble(position[1]);
+                                String title = position[2];
                                 googleMap.addMarker(new MarkerOptions()
-                                        .position(new LatLng(longitude,latitude)));
+                                        .position(new LatLng(longitude,latitude))
+                                        .title(title));
+
+                                longitudeList.add(longitude);
+                                latitudeList.add(latitude);
                             }
+                            double centerLongitude=0, centerLatitude = 0;
+                            for(Double longitude :longitudeList){
+                                centerLongitude += longitude;
+                            }
+                            centerLongitude /= longitudeList.size();
+
+                            for(Double latitude : latitudeList){
+                                centerLatitude += latitude;
+                            }
+                            centerLatitude /= latitudeList.size();
+
+                            LatLng gungdong = new LatLng(centerLongitude, centerLatitude);
+                            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(gungdong,15));
                         }
                     });
                     break;
@@ -656,9 +768,27 @@ public class MainActivity extends AppCompatActivity {
                                 String[] position = iter.next().split(",");
                                 double longitude = Double.parseDouble(position[0]);
                                 double latitude = Double.parseDouble(position[1]);
+                                String title = position[2];
                                 googleMap.addMarker(new MarkerOptions()
-                                        .position(new LatLng(longitude,latitude)));
+                                        .position(new LatLng(longitude,latitude))
+                                        .title(title));
+
+                                longitudeList.add(longitude);
+                                latitudeList.add(latitude);
                             }
+                            double centerLongitude=0, centerLatitude = 0;
+                            for(Double longitude :longitudeList){
+                                centerLongitude += longitude;
+                            }
+                            centerLongitude /= longitudeList.size();
+
+                            for(Double latitude : latitudeList){
+                                centerLatitude += latitude;
+                            }
+                            centerLatitude /= latitudeList.size();
+
+                            LatLng gungdong = new LatLng(centerLongitude, centerLatitude);
+                            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(gungdong,15));
                         }
                     });
                     break;
@@ -674,9 +804,27 @@ public class MainActivity extends AppCompatActivity {
                                 String[] position = iter.next().split(",");
                                 double longitude = Double.parseDouble(position[0]);
                                 double latitude = Double.parseDouble(position[1]);
+                                String title = position[2];
                                 googleMap.addMarker(new MarkerOptions()
-                                        .position(new LatLng(longitude,latitude)));
+                                        .position(new LatLng(longitude,latitude))
+                                        .title(title));
+
+                                longitudeList.add(longitude);
+                                latitudeList.add(latitude);
                             }
+                            double centerLongitude=0, centerLatitude = 0;
+                            for(Double longitude :longitudeList){
+                                centerLongitude += longitude;
+                            }
+                            centerLongitude /= longitudeList.size();
+
+                            for(Double latitude : latitudeList){
+                                centerLatitude += latitude;
+                            }
+                            centerLatitude /= latitudeList.size();
+
+                            LatLng gungdong = new LatLng(centerLongitude, centerLatitude);
+                            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(gungdong,15));
                         }
                     });
                     break;
@@ -696,7 +844,8 @@ public class MainActivity extends AppCompatActivity {
                 JSONObject row = categoryRestaurant.getJSONObject(i);
                 String longitude = (String)row.get("longitude");
                 String latitude = (String)row.get("latitude");
-                result.add(longitude + "," +latitude);
+                String name = (String)row.get("title");
+                result.add(longitude + "," +latitude + "," + name);
             }
 
             return result;
