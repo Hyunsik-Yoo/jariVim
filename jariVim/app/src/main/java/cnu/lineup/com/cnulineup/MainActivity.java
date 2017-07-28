@@ -55,6 +55,7 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.kakao.auth.ApiResponseCallback;
 import com.kakao.network.ErrorResult;
@@ -400,6 +401,17 @@ public class MainActivity extends AppCompatActivity {
                 }
                 centerLatitude /= latitudeList.size();
 
+                googleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                    @Override
+                    public void onInfoWindowClick(Marker marker) {
+                        String title = marker.getTitle();
+                        Bundle arg = new Bundle();
+                        arg.putString("title",title);
+                        Intent intent = new Intent(MainActivity.this, RestaurantInfoActivity.class);
+                        intent.putExtras(arg);
+                        startActivity(intent);
+                    }
+                });
                 LatLng gungdong = new LatLng(centerLongitude, centerLatitude);
                 googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(gungdong,15));
             }
