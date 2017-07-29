@@ -185,6 +185,42 @@ public class UtilMethod {
         }
     }
 
+    public static JSONObject getOneRest(String title){
+        try {
+            ArrayList<Group> list_group = new ArrayList<Group>();
+            ArrayList<JSONArray> restaurantList = new ArrayList<>();
+
+
+            restaurantList.add(currentProportion.getJSONArray("bob"));
+            restaurantList.add(currentProportion.getJSONArray("noodle"));
+            restaurantList.add(currentProportion.getJSONArray("cafe"));
+            restaurantList.add(currentProportion.getJSONArray("drink"));
+            restaurantList.add(currentProportion.getJSONArray("fastfood"));
+            restaurantList.add(currentProportion.getJSONArray("meat"));
+
+            //List<String> favoriteRes = dbOpenHelper.getFavoriteRestaurant();
+
+
+            Iterator<JSONArray> iterRestaurant = restaurantList.iterator();
+            while (iterRestaurant.hasNext()) {
+                JSONArray restaurant = iterRestaurant.next();
+
+                if (restaurant != null) {
+                    for (int i = 0; i < restaurant.length(); i++) {
+                        String group_name = ((JSONObject) restaurant.get(i)).getString("title");
+
+                        if(group_name.equals(title))
+                            return (JSONObject) restaurant.get(i);
+                    }
+                }
+            }
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     // 내가 투표한 곳을 보여주네?
     public static ArrayList<Group> setItemsVote() {
         try {
