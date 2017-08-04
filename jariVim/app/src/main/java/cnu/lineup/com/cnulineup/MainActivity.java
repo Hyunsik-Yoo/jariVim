@@ -8,11 +8,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -33,9 +34,29 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.github.mikephil.charting.animation.Easing;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.formatter.PercentFormatter;
+import com.github.mikephil.charting.utils.ColorTemplate;
+import com.github.mikephil.charting.utils.MPPointF;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.kakao.auth.ApiResponseCallback;
 import com.kakao.network.ErrorResult;
 import com.kakao.usermgmt.UserManagement;
@@ -62,9 +83,12 @@ public class MainActivity extends AppCompatActivity {
     public static Button btnRefresh;
     public static JSONObject currentProportion;
     public static DBOpenHelper dbOpenHelper;
+    public static SupportMapFragment mapFragment;
 
-    private ToggleButton btnBob, btnNoddle, btnCafe, btnDrink, btnFastfood, btnFork,
+    private ToggleButton btnBob, btnNoodle, btnCafe, btnDrink, btnFastfood, btnFork,
             btnFavorite, btnVote;
+    private ToggleButton btnBobInfo, btnNoodleInfo, btnCafeInfo, btnDrinkInfo, btnFastfoodInfo
+            ,btnForkInfo;
     private ImageButton btnSearch;
     private TabHost tabHost;
     private ExpandListAdapter expAdapter;
@@ -79,6 +103,9 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager vp;
     public static TextView voteCount;
 
+    private LineChart lineChart;
+    private PieChart pieChart;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,8 +114,9 @@ public class MainActivity extends AppCompatActivity {
 
         // 서버에서 정보 한번에 다운받는다.
         try {
-            MainActivity.currentProportion = new UtilMethod.threadVote(MainActivity
-                    .this).execute().get();
+            MainActivity.currentProportion = new UtilMethod.threadVote(MainActivity.this)
+                    .execute().get();
+            Log.e(TAG,"hello");
         }catch (ExecutionException e){
             e.printStackTrace();
         }catch (InterruptedException e){
@@ -119,18 +147,21 @@ public class MainActivity extends AppCompatActivity {
         voteCount.setText("남은 투표 횟수 : " + dbOpenHelper.resetCount() + "회");
 
 
-
-
-
         tabHost = (TabHost) findViewById(R.id.footer);
 
         btnBob = (ToggleButton) findViewById(R.id.btn_category_bob);
-        btnNoddle = (ToggleButton) findViewById(R.id.btn_category_noodle);
+        btnNoodle = (ToggleButton) findViewById(R.id.btn_category_noodle);
         btnCafe = (ToggleButton) findViewById(R.id.btn_category_cafe);
         btnDrink = (ToggleButton) findViewById(R.id.btn_category_beer);
         btnFastfood = (ToggleButton) findViewById(R.id.btn_category_fastfood);
         btnFork = (ToggleButton) findViewById(R.id.btn_category_fork);
 
+        btnBobInfo = (ToggleButton) findViewById(R.id.btn_category_bob_info);
+        btnNoodleInfo = (ToggleButton) findViewById(R.id.btn_category_noodle_info);
+        btnCafeInfo = (ToggleButton) findViewById(R.id.btn_category_cafe_info);
+        btnDrinkInfo = (ToggleButton) findViewById(R.id.btn_category_beer_info);
+        btnFastfoodInfo = (ToggleButton) findViewById(R.id.btn_category_fastfood_info);
+        btnForkInfo = (ToggleButton) findViewById(R.id.btn_category_fork_info);
 
         btnSearch = (ImageButton) findViewById(R.id.btn_search);
         btnFavorite = (ToggleButton) findViewById(R.id.btn_favorite);
@@ -138,12 +169,11 @@ public class MainActivity extends AppCompatActivity {
         frameFavorite = (LinearLayout) findViewById(R.id.layout_favorite);
         frameVote = (LinearLayout) findViewById(R.id.layout_vote_list);
 
-
         /** Resgister ViewPager **/
         btnBob.setOnClickListener(movePageListener);
         btnBob.setTag(0);
-        btnNoddle.setOnClickListener(movePageListener);
-        btnNoddle.setTag(1);
+        btnNoodle.setOnClickListener(movePageListener);
+        btnNoodle.setTag(1);
         btnFastfood.setOnClickListener(movePageListener);
         btnFastfood.setTag(2);
         btnFork.setOnClickListener(movePageListener);
@@ -152,6 +182,13 @@ public class MainActivity extends AppCompatActivity {
         btnCafe.setTag(4);
         btnDrink.setOnClickListener(movePageListener);
         btnDrink.setTag(5);
+
+        btnBobInfo.setOnClickListener(movePageListenerInfo);
+        btnNoodleInfo.setOnClickListener(movePageListenerInfo);
+        btnFastfoodInfo.setOnClickListener(movePageListenerInfo);
+        btnForkInfo.setOnClickListener(movePageListenerInfo);
+        btnCafeInfo.setOnClickListener(movePageListenerInfo);
+        btnDrinkInfo.setOnClickListener(movePageListenerInfo);
 
 
         /** ViewPager Setting **/
@@ -172,7 +209,7 @@ public class MainActivity extends AppCompatActivity {
                         btnBob.setChecked(true);
                         break;
                     case 1:
-                        btnNoddle.setChecked(true);
+                        btnNoodle.setChecked(true);
                         break;
                     case 2:
                         btnFastfood.setChecked(true);
@@ -197,6 +234,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         btnBob.setChecked(true);
+
 
 
         /**
@@ -288,6 +326,32 @@ public class MainActivity extends AppCompatActivity {
         tabHost.addTab(tab3);
         tabHost.addTab(tab4);
 
+        /**
+         * 통계 탭
+         */
+        lineChart = (LineChart)findViewById(R.id.line_chart);
+        List<Entry> entries = new ArrayList<Entry>();
+
+
+        entries.add(new Entry(1,1));
+        entries.add(new Entry(1.2f,1.2f));
+        entries.add(new Entry(1.4f,1.4f));
+        entries.add(new Entry(1.6f,1.6f));
+
+
+        LineDataSet dataSet = new LineDataSet(entries, "Example"); // add entries to dataset
+
+        LineData lineData = new LineData(dataSet);
+        lineChart.setData(lineData);
+        //lineChart.invalidate(); // refresh
+        lineChart.animateX(10000, Easing.EasingOption.EaseOutBack);
+
+        pieChart = (PieChart)findViewById(R.id.pie_chart);
+        setData(4,100);
+
+
+
+
 
         /**
          * 내정보 탭
@@ -300,9 +364,60 @@ public class MainActivity extends AppCompatActivity {
         setExpandListAdapter(expandListFavorite, expListItems);
 
 
-        /** 메인 탭을 제외한 타머지탭 disable */
-        tabHost.getTabWidget().getChildTabViewAt(1).setEnabled(false);
-        tabHost.getTabWidget().getChildTabViewAt(2).setEnabled(false);
+        //지도 코드
+
+        mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+
+        mapFragment.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(GoogleMap googleMap) {
+                ArrayList<Double> longitudeList = new ArrayList<Double>();
+                ArrayList<Double> latitudeList = new ArrayList<Double>();
+
+                googleMap.clear();
+                ArrayList<String> positionList = getPosition("bob");
+                Iterator<String> iter = positionList.iterator();
+                while(iter.hasNext()){
+                    String[] position = iter.next().split(",");
+                    double longitude = Double.parseDouble(position[0]);
+                    double latitude = Double.parseDouble(position[1]);
+                    String title = position[2];
+                    googleMap.addMarker(new MarkerOptions()
+                            .position(new LatLng(longitude,latitude))
+                            .title(title));
+
+                    longitudeList.add(longitude);
+                    latitudeList.add(latitude);
+                }
+                double centerLongitude=0, centerLatitude = 0;
+                for(Double longitude :longitudeList){
+                    centerLongitude += longitude;
+                }
+                centerLongitude /= longitudeList.size();
+
+                for(Double latitude : latitudeList){
+                    centerLatitude += latitude;
+                }
+                centerLatitude /= latitudeList.size();
+
+                googleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                    @Override
+                    public void onInfoWindowClick(Marker marker) {
+                        String title = marker.getTitle();
+                        Bundle arg = new Bundle();
+                        arg.putString("title",title);
+                        Intent intent = new Intent(MainActivity.this, RestaurantInfoActivity.class);
+                        intent.putExtras(arg);
+                        startActivity(intent);
+                    }
+                });
+                LatLng gungdong = new LatLng(centerLongitude, centerLatitude);
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(gungdong,15));
+            }
+        });
+
+
 
 
     }
@@ -428,7 +543,7 @@ public class MainActivity extends AppCompatActivity {
                 case 0:
                     return FragList.newInstance("bob");
                 case 1:
-                    return FragList.newInstance("noddle");
+                    return FragList.newInstance("noodle");
                 case 2:
                     return FragList.newInstance("fastfood");
                 case 3:
@@ -463,15 +578,373 @@ public class MainActivity extends AppCompatActivity {
     };
 
     /**
+     * 식당정보의 Toggle Button들의 OnClickListener
+     */
+    View.OnClickListener movePageListenerInfo = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            disable_all_button_info(); // 다른 모든 토글버든 비활성화
+            final ArrayList<Double> longitudeList = new ArrayList<Double>();
+            final ArrayList<Double> latitudeList = new ArrayList<Double>();
+
+            switch(v.getId()){
+                case R.id.btn_category_bob_info:
+                    btnBobInfo.setChecked(true);
+                    mapFragment.getMapAsync(new OnMapReadyCallback() {
+                        @Override
+                        public void onMapReady(GoogleMap googleMap) {
+                            googleMap.clear();
+                            ArrayList<String> positionList = getPosition("bob");
+                            Iterator<String> iter = positionList.iterator();
+                            while(iter.hasNext()){
+                                String[] position = iter.next().split(",");
+                                double longitude = Double.parseDouble(position[0]);
+                                double latitude = Double.parseDouble(position[1]);
+                                String title = position[2];
+                                googleMap.addMarker(new MarkerOptions()
+                                        .position(new LatLng(longitude,latitude))
+                                        .title(title));
+
+                                longitudeList.add(longitude);
+                                latitudeList.add(latitude);
+                            }
+                            double centerLongitude=0, centerLatitude = 0;
+                            for(Double longitude :longitudeList){
+                                centerLongitude += longitude;
+                            }
+                            centerLongitude /= longitudeList.size();
+
+                            for(Double latitude : latitudeList){
+                                centerLatitude += latitude;
+                            }
+                            centerLatitude /= latitudeList.size();
+
+                            LatLng gungdong = new LatLng(centerLongitude, centerLatitude);
+                            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(gungdong,15));
+                        }
+                    });
+                    break;
+                case R.id.btn_category_noodle_info:
+                    btnNoodleInfo.setChecked(true);
+                    mapFragment.getMapAsync(new OnMapReadyCallback() {
+                        @Override
+                        public void onMapReady(GoogleMap googleMap) {
+                            googleMap.clear();
+                            ArrayList<String> positionList = getPosition("noodle");
+                            Iterator<String> iter = positionList.iterator();
+                            while(iter.hasNext()){
+                                String[] position = iter.next().split(",");
+                                double longitude = Double.parseDouble(position[0]);
+                                double latitude = Double.parseDouble(position[1]);
+                                String title = position[2];
+                                googleMap.addMarker(new MarkerOptions()
+                                        .position(new LatLng(longitude,latitude))
+                                        .title(title));
+
+                                longitudeList.add(longitude);
+                                latitudeList.add(latitude);
+                            }
+                            double centerLongitude=0, centerLatitude = 0;
+                            for(Double longitude :longitudeList){
+                                centerLongitude += longitude;
+                            }
+                            centerLongitude /= longitudeList.size();
+
+                            for(Double latitude : latitudeList){
+                                centerLatitude += latitude;
+                            }
+                            centerLatitude /= latitudeList.size();
+
+                            LatLng gungdong = new LatLng(centerLongitude, centerLatitude);
+                            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(gungdong,15));
+                        }
+                    });
+                    break;
+                case R.id.btn_category_fastfood_info:
+                    btnFastfoodInfo.setChecked(true);
+                    mapFragment.getMapAsync(new OnMapReadyCallback() {
+                        @Override
+                        public void onMapReady(GoogleMap googleMap) {
+                            googleMap.clear();
+                            ArrayList<String> positionList = getPosition("fastfood");
+                            Iterator<String> iter = positionList.iterator();
+                            while(iter.hasNext()){
+                                String[] position = iter.next().split(",");
+                                double longitude = Double.parseDouble(position[0]);
+                                double latitude = Double.parseDouble(position[1]);
+                                String title = position[2];
+                                googleMap.addMarker(new MarkerOptions()
+                                        .position(new LatLng(longitude,latitude))
+                                        .title(title));
+
+                                longitudeList.add(longitude);
+                                latitudeList.add(latitude);
+                            }
+                            double centerLongitude=0, centerLatitude = 0;
+                            for(Double longitude :longitudeList){
+                                centerLongitude += longitude;
+                            }
+                            centerLongitude /= longitudeList.size();
+
+                            for(Double latitude : latitudeList){
+                                centerLatitude += latitude;
+                            }
+                            centerLatitude /= latitudeList.size();
+
+                            LatLng gungdong = new LatLng(centerLongitude, centerLatitude);
+                            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(gungdong,15));
+                        }
+                    });
+                    break;
+                case R.id.btn_category_fork_info:
+                    btnForkInfo.setChecked(true);
+                    mapFragment.getMapAsync(new OnMapReadyCallback() {
+                        @Override
+                        public void onMapReady(GoogleMap googleMap) {
+                            googleMap.clear();
+                            ArrayList<String> positionList = getPosition("meat");
+                            Iterator<String> iter = positionList.iterator();
+                            while(iter.hasNext()){
+                                String[] position = iter.next().split(",");
+                                double longitude = Double.parseDouble(position[0]);
+                                double latitude = Double.parseDouble(position[1]);
+                                String title = position[2];
+                                googleMap.addMarker(new MarkerOptions()
+                                        .position(new LatLng(longitude,latitude))
+                                        .title(title));
+
+                                longitudeList.add(longitude);
+                                latitudeList.add(latitude);
+                            }
+                            double centerLongitude=0, centerLatitude = 0;
+                            for(Double longitude :longitudeList){
+                                centerLongitude += longitude;
+                            }
+                            centerLongitude /= longitudeList.size();
+
+                            for(Double latitude : latitudeList){
+                                centerLatitude += latitude;
+                            }
+                            centerLatitude /= latitudeList.size();
+
+                            LatLng gungdong = new LatLng(centerLongitude, centerLatitude);
+                            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(gungdong,15));
+                        }
+                    });
+                    break;
+                case R.id.btn_category_cafe_info:
+                    btnCafeInfo.setChecked(true);
+                    mapFragment.getMapAsync(new OnMapReadyCallback() {
+                        @Override
+                        public void onMapReady(GoogleMap googleMap) {
+                            googleMap.clear();
+                            ArrayList<String> positionList = getPosition("cafe");
+                            Iterator<String> iter = positionList.iterator();
+                            while(iter.hasNext()){
+                                String[] position = iter.next().split(",");
+                                double longitude = Double.parseDouble(position[0]);
+                                double latitude = Double.parseDouble(position[1]);
+                                String title = position[2];
+                                googleMap.addMarker(new MarkerOptions()
+                                        .position(new LatLng(longitude,latitude))
+                                        .title(title));
+
+                                longitudeList.add(longitude);
+                                latitudeList.add(latitude);
+                            }
+                            double centerLongitude=0, centerLatitude = 0;
+                            for(Double longitude :longitudeList){
+                                centerLongitude += longitude;
+                            }
+                            centerLongitude /= longitudeList.size();
+
+                            for(Double latitude : latitudeList){
+                                centerLatitude += latitude;
+                            }
+                            centerLatitude /= latitudeList.size();
+
+                            LatLng gungdong = new LatLng(centerLongitude, centerLatitude);
+                            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(gungdong,15));
+                        }
+                    });
+                    break;
+                case R.id.btn_category_beer_info:
+                    btnDrinkInfo.setChecked(true);
+                    mapFragment.getMapAsync(new OnMapReadyCallback() {
+                        @Override
+                        public void onMapReady(GoogleMap googleMap) {
+                            googleMap.clear();
+                            ArrayList<String> positionList = getPosition("drink");
+                            Iterator<String> iter = positionList.iterator();
+                            while(iter.hasNext()){
+                                String[] position = iter.next().split(",");
+                                double longitude = Double.parseDouble(position[0]);
+                                double latitude = Double.parseDouble(position[1]);
+                                String title = position[2];
+                                googleMap.addMarker(new MarkerOptions()
+                                        .position(new LatLng(longitude,latitude))
+                                        .title(title));
+
+                                longitudeList.add(longitude);
+                                latitudeList.add(latitude);
+                            }
+                            double centerLongitude=0, centerLatitude = 0;
+                            for(Double longitude :longitudeList){
+                                centerLongitude += longitude;
+                            }
+                            centerLongitude /= longitudeList.size();
+
+                            for(Double latitude : latitudeList){
+                                centerLatitude += latitude;
+                            }
+                            centerLatitude /= latitudeList.size();
+
+                            LatLng gungdong = new LatLng(centerLongitude, centerLatitude);
+                            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(gungdong,15));
+                        }
+                    });
+                    break;
+                default:
+                    btnBobInfo.setChecked(true);
+                    mapFragment.getMapAsync(new OnMapReadyCallback() {
+                        @Override
+                        public void onMapReady(GoogleMap googleMap) {
+                            googleMap.clear();
+                            ArrayList<String> positionList = getPosition("bob");
+                            Iterator<String> iter = positionList.iterator();
+                            while(iter.hasNext()){
+                                String[] position = iter.next().split(",");
+                                double longitude = Double.parseDouble(position[0]);
+                                double latitude = Double.parseDouble(position[1]);
+                                String title = position[2];
+                                googleMap.addMarker(new MarkerOptions()
+                                        .position(new LatLng(longitude,latitude))
+                                        .title(title));
+
+                                longitudeList.add(longitude);
+                                latitudeList.add(latitude);
+                            }
+                            double centerLongitude=0, centerLatitude = 0;
+                            for(Double longitude :longitudeList){
+                                centerLongitude += longitude;
+                            }
+                            centerLongitude /= longitudeList.size();
+
+                            for(Double latitude : latitudeList){
+                                centerLatitude += latitude;
+                            }
+                            centerLatitude /= latitudeList.size();
+
+                            LatLng gungdong = new LatLng(centerLongitude, centerLatitude);
+                            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(gungdong,15));
+                        }
+                    });
+                    break;
+            }
+
+        }
+    };
+
+    public ArrayList<String> getPosition(String catgeory) {
+        try {
+
+            ArrayList<String> result = new ArrayList<String>();
+            JSONArray categoryRestaurant = currentProportion.getJSONArray(catgeory);
+
+
+            for(int i = 0; i<categoryRestaurant.length(); i++){
+                JSONObject row = categoryRestaurant.getJSONObject(i);
+                String longitude = (String)row.get("longitude");
+                String latitude = (String)row.get("latitude");
+                String name = (String)row.get("title");
+                result.add(longitude + "," +latitude + "," + name);
+            }
+
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+    /**
      * 모든 Toggle 버튼을 disable시키는 함수
      */
     public void disable_all_button() {
         btnBob.setChecked(false);
-        btnNoddle.setChecked(false);
+        btnNoodle.setChecked(false);
         btnFastfood.setChecked(false);
         btnFork.setChecked(false);
         btnCafe.setChecked(false);
         btnDrink.setChecked(false);
+    }
+
+    public void disable_all_button_info() {
+        btnBobInfo.setChecked(false);
+        btnNoodleInfo.setChecked(false);
+        btnFastfoodInfo.setChecked(false);
+        btnForkInfo.setChecked(false);
+        btnCafeInfo.setChecked(false);
+        btnDrinkInfo.setChecked(false);
+    }
+
+    //PieChart 데이터
+    private void setData(int count, float range) {
+
+        float mult = range;
+
+        ArrayList<PieEntry> entries = new ArrayList<PieEntry>();
+
+        // NOTE: The order of the entries when being added to the entries array determines their position around the center of
+        // the chart.
+        for (int i = 0; i < count ; i++) {
+            entries.add(new PieEntry((float) ((Math.random() * mult) + mult / 5)));
+        }
+
+        PieDataSet dataSet = new PieDataSet(entries, "Election Results");
+
+        dataSet.setDrawIcons(false);
+
+        dataSet.setSliceSpace(3f);
+        dataSet.setIconsOffset(new MPPointF(0, 40));
+        dataSet.setSelectionShift(5f);
+
+        // add a lot of colors
+
+        ArrayList<Integer> colors = new ArrayList<Integer>();
+
+        for (int c : ColorTemplate.VORDIPLOM_COLORS)
+            colors.add(c);
+
+        for (int c : ColorTemplate.JOYFUL_COLORS)
+            colors.add(c);
+
+        for (int c : ColorTemplate.COLORFUL_COLORS)
+            colors.add(c);
+
+        for (int c : ColorTemplate.LIBERTY_COLORS)
+            colors.add(c);
+
+        for (int c : ColorTemplate.PASTEL_COLORS)
+            colors.add(c);
+
+        colors.add(ColorTemplate.getHoloBlue());
+
+        dataSet.setColors(colors);
+        //dataSet.setSelectionShift(0f);
+
+        PieData data = new PieData(dataSet);
+        data.setValueFormatter(new PercentFormatter());
+        data.setValueTextSize(11f);
+        data.setValueTextColor(Color.WHITE);
+
+        pieChart.setData(data);
+
+        // undo all highlights
+        pieChart.highlightValues(null);
+
+        pieChart.invalidate();
     }
 
 }

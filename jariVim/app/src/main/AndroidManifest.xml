@@ -16,6 +16,9 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
 
         <activity android:name=".MainActivity" />
         <activity android:name=".LoadingActivity">
@@ -32,6 +35,7 @@
 
         <activity android:name=".SearchActivity" />
         <activity android:name=".KakaoLogInActivity" />
+        <activity android:name=".RestaurantInfoActivity"></activity>
     </application>
 
 </manifest>

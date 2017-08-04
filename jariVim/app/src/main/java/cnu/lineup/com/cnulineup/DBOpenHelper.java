@@ -185,6 +185,8 @@ public class DBOpenHelper {
 
         Cursor cursor = DB.query(tableName, null, null, null, null, null, null);
 
+
+        // 처음에 디비가 없어서 새로 생성된 경우, 초기화
         if(cursor.getCount() == 0){
             DB = DBHelper.getWritableDatabase();
             ContentValues values = new ContentValues();
@@ -199,11 +201,17 @@ public class DBOpenHelper {
         String time = cursor.getString(cursor.getColumnIndex("time"));
         int count = cursor.getInt(cursor.getColumnIndex("count"));
 
-        time = time.substring(5,10);
-        now = now.substring(5,10);
+        String timeDate = time.substring(5,10);
+        String nowDate = now.substring(5,10);
 
-        if(!time.equals(now))
+        if(!timeDate.equals(nowDate)){
+            DB = DBHelper.getWritableDatabase();
+            ContentValues values = new ContentValues();
+            values.put("time", now);
+            values.put("count", 5);
+            DB.update("count",values,"time=?",new String[]{time});
             return 5;
+        }
         else
             return count;
     }
