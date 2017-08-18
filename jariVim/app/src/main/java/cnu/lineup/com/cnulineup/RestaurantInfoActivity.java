@@ -1,9 +1,16 @@
 package cnu.lineup.com.cnulineup;
 
 import android.graphics.Typeface;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ExpandableListView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -21,6 +28,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public class RestaurantInfoActivity extends AppCompatActivity {
+    public final String TAG = getClass().getSimpleName();
     public static SupportMapFragment mapInfo;
     private Typeface customFont;
     TextView textPhone;
@@ -29,7 +37,8 @@ public class RestaurantInfoActivity extends AppCompatActivity {
     int proportion;
     private int lastExpandedPosition = -1;
     private ExpandListAdapter expAdapter;
-    private ExpandableListView ListMain;
+    private ExpandableListView listMain;
+    private ListView listMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +47,8 @@ public class RestaurantInfoActivity extends AppCompatActivity {
 
         customFont = Typeface.createFromAsset(getAssets(),"fonts/BMHANNA.ttf");
         textPhone = (TextView)findViewById(R.id.phone_number);
-        ListMain = (ExpandableListView)findViewById(R.id.list_main);
+        listMain = (ExpandableListView)findViewById(R.id.list_main);
+        listMenu = (ListView)findViewById(R.id.list_menu);
 
         // 전달받은 인자저장 (식당이름)
         Bundle argument = getIntent().getExtras();
@@ -53,6 +63,7 @@ public class RestaurantInfoActivity extends AppCompatActivity {
             phoneNumber = restInfo.getString("phone_number");
             menu = restInfo.getString("menu");
             proportion = restInfo.getInt("proportion");
+            Log.d(TAG,menu);
         }
         catch (JSONException e){
             longitude=0;
@@ -68,7 +79,7 @@ public class RestaurantInfoActivity extends AppCompatActivity {
         group.setProportion(proportion);
         ArrayList<Group> list_group = new ArrayList<Group>();
         list_group.add(group);
-        setExpandListAdapter(ListMain, list_group);
+        setExpandListAdapter(listMain, list_group);
 
         textPhone.setText("전화번호 : " + phoneNumber);
         textPhone.setTypeface(customFont);
@@ -88,6 +99,11 @@ public class RestaurantInfoActivity extends AppCompatActivity {
                         .title(title));
             }
         });
+
+        //TODO : menu를 arrayList로 변경한 뒤, adapter설정해야 함
+        ArrayAdapter menuAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1,menu.split(";"));
+        listMenu.setAdapter(menuAdapter);
+
     }
 
     public void setExpandListAdapter(final ExpandableListView expandableListView, ArrayList<Group> ExpListItems) {

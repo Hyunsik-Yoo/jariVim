@@ -417,6 +417,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        tabHost.getTabWidget().getChildTabViewAt(2).setEnabled(false);
+
 
 
 

@@ -1,17 +1,12 @@
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <fragment
-        android:id="@+id/map"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="440dp"
-        />
-
     <HorizontalScrollView
+        android:id="@+id/scrollview"
+        android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fadeScrollbars="true"
@@ -82,17 +77,17 @@
         </LinearLayout>
     </HorizontalScrollView>
 
-    <!--
-    <android.support.v4.view.ViewPager
-        android:id="@+id/vp_info"
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </android.support.v4.view.ViewPager>
-    -->
+        android:layout_height="match_parent"
+        android:layout_above="@id/scrollview"
+        />
 
 
 
 
-</LinearLayout>
+</RelativeLayout>
 
 

@@ -16,6 +16,7 @@
             android:id="@+id/btn_sortby_popular"
             android:layout_width="205.2dp"
             android:layout_height="52.06dp"
+            android:layout_weight="1"
             android:background="@drawable/btn_sortby_popular"
             android:textOff=""
             android:textOn="" />
@@ -24,6 +25,7 @@
             android:id="@+id/btn_sortby_text"
             android:layout_width="205.2dp"
             android:layout_height="52.06dp"
+            android:layout_weight="1"
             android:background="@drawable/btn_sortby_text"
             android:textOff=""
             android:textOn="" />
