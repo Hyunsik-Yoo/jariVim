@@ -5,7 +5,7 @@
               android:orientation="vertical">
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
@@ -27,11 +27,8 @@
                 android:text="남은 투표 횟수 : 5회"/>
 
         </FrameLayout>
-
-
         <Button
             android:id="@+id/btn_refresh"
-            style="?android:attr/borderlessButtonStyle"
             android:layout_width="55.1dp"
             android:layout_height="38dp"
             android:background="@drawable/btn_refresh" />
@@ -48,7 +45,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="horizontal">
 
             <ToggleButton
@@ -60,6 +57,9 @@
                 android:checked="true"
                 android:textOff=""
                 android:textOn=""/>
+
+
+
 
             <ToggleButton
                 android:id="@+id/btn_category_noodle"

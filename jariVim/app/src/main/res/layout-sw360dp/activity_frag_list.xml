@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="cnu.lineup.com.cnulineup.FragList">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="52.06dp"
+        android:orientation="horizontal">
+
+        <ToggleButton
+            android:id="@+id/btn_sortby_popular"
+            android:layout_width="180dp"
+            android:layout_height="45.67dp"
+            android:layout_weight="1"
+            android:background="@drawable/btn_sortby_popular"
+            android:textOff=""
+            android:textOn="" />
+
+        <ToggleButton
+            android:id="@+id/btn_sortby_text"
+            android:layout_width="180dp"
+            android:layout_height="45.67dp"
+            android:layout_weight="1"
+            android:background="@drawable/btn_sortby_text"
+            android:textOff=""
+            android:textOn="" />
+
+    </LinearLayout>
+
+
+    <ExpandableListView
+        android:id="@+id/list_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:childDivider="#00000000"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="20.0dp"
+        />
+
+</LinearLayout>

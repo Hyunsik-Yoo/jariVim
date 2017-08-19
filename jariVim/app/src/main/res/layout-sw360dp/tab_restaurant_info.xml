@@ -1,0 +1,93 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <HorizontalScrollView
+        android:id="@+id/scrollview"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fadeScrollbars="true"
+        android:scrollbarStyle="insideOverlay"
+        android:scrollbars="none"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ToggleButton
+                style="?android:attr/borderlessButtonStyle"
+                android:id="@+id/btn_category_bob_info"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:background="@drawable/btn_cateogory_bob"
+                android:checked="true"
+                android:textOff=""
+                android:textOn=""/>
+
+            <ToggleButton
+                style="?android:attr/borderlessButtonStyle"
+                android:id="@+id/btn_category_noodle_info"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:background="@drawable/btn_category_noddle"
+                android:textOff=""
+                android:textOn=""/>
+
+            <ToggleButton
+                style="?android:attr/borderlessButtonStyle"
+                android:id="@+id/btn_category_fastfood_info"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:background="@drawable/btn_category_fastfood"
+                android:textOff=""
+                android:textOn=""/>
+
+            <ToggleButton
+                style="?android:attr/borderlessButtonStyle"
+                android:id="@+id/btn_category_fork_info"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:background="@drawable/btn_category_fork"
+                android:textOff=""
+                android:textOn=""/>
+
+            <ToggleButton
+                style="?android:attr/borderlessButtonStyle"
+                android:id="@+id/btn_category_cafe_info"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:background="@drawable/btn_category_cafe"
+                android:textOff=""
+                android:textOn=""/>
+
+            <ToggleButton
+                style="?android:attr/borderlessButtonStyle"
+                android:id="@+id/btn_category_beer_info"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:background="@drawable/btn_category_drink"
+                android:textOff=""
+                android:textOn=""/>
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/scrollview"
+        />
+
+
+
+
+</RelativeLayout>
+
+
